@@ -1,0 +1,449 @@
+import { lazy, Suspense, useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Check } from 'lucide-react'
+import { byId, gear, Product, products } from '../lib/data'
+import { fmt } from '../lib/currency'
+import { defaultSelection, priceFor, useStore } from '../lib/store'
+import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
+import { ProductVisual } from './ProductVisual'
+import { ProductCard, Sparkline } from './ProductCard'
+import { Button, Chip, Row, Stars, StockDot, Toggle } from './ui'
+import { PARTS, CanvasMode } from '../lib/parts'
+import { cn } from '../lib/cn'
+
+const ProductCanvas = lazy(() => import('./ProductCanvas').then((m) => ({ default: m.ProductCanvas })))
+
+type Tab = 'overview' | 'specs' | 'compat' | 'reviews'
+
+const STATE = {
+  ok: { mark: 'bg-pass', text: 'text-pass', tint: 'bg-pass-tint', label: 'Works with your setup' },
+  warn: { mark: 'bg-check', text: 'text-check', tint: 'bg-check-tint', label: 'Needs attention' },
+  bad: { mark: 'bg-fail', text: 'text-fail', tint: 'bg-fail-tint', label: 'Does not work with your setup' },
+}
+
+export function ProductPage({ product }: { product: Product }) {
+  const [variantId, setVariantId] = useState(product.variants[0].id)
+  const [selection, setSelection] = useState<Record<string, string>>(defaultSelection(product))
+  const [mode, setMode] = useState<CanvasMode | 'gallery'>(product.id === 'beam-4k' ? '360' : 'gallery')
+  const [hovered, setHovered] = useState<string | null>(null)
+  const [tab, setTab] = useState<Tab>('overview')
+  const [compareWith, setCompareWith] = useState<string | null>(products.find((p) => p.id !== product.id && p.category === product.category)?.id ?? null)
+  const [added, setAdded] = useState(false)
+
+  const currency = useStore((s) => s.currency)
+  const add = useStore((s) => s.add)
+  const go = useStore((s) => s.go)
+  const gearOn = useStore((s) => s.gearOn)
+  const toggleGear = useStore((s) => s.toggleGear)
+  const cart = useStore((s) => s.cart)
+  const setAdvisor = useStore((s) => s.setAdvisor)
+
+  const variant = product.variants.find((v) => v.id === variantId)!
+  const price = priceFor(product, selection)
+  const facts = useMemo(() => resolveFacts(product, selection), [product, selection])
+
+  // Live check: this configuration vs the shopper's setup + what is already in the cart.
+  const compat: CompatResult = useMemo(() => {
+    const owned = gear.filter((g) => gearOn[g.id]).map((g) => ({ id: g.id, name: g.name, facts: g.facts }))
+    const inCart = cart.filter((l) => l.productId !== product.id).map((l) => ({ id: l.key, name: byId(l.productId).name, facts: resolveFacts(byId(l.productId), l.selection) }))
+    return checkBuild({ name: product.name, facts, product }, [...owned, ...inCart])
+  }, [facts, gearOn, cart, product])
+
+  const applyFix = (fix: NonNullable<CompatResult['issues'][number]['fix']>) => {
+    if (fix.kind === 'add-sku' && fix.sku) add(byId(fix.sku), byId(fix.sku).variants[0].id)
+    if (fix.kind === 'select-option' && fix.optionGroup && fix.choice) setSelection((s) => ({ ...s, [fix.optionGroup!]: fix.choice! }))
+  }
+
+  const onAdd = () => {
+    add(product, variantId, selection)
+    setAdded(true)
+    window.setTimeout(() => setAdded(false), 1600)
+  }
+
+  const other = compareWith ? byId(compareWith) : null
+  const related = product.id === 'beam-4k'
+    ? ['halo-screen', 'aether-cube-100', 'pulse-open', 'snap-tag'].map(byId)
+    : [...products.filter((p) => p.id !== product.id && p.category === product.category), ...[...products].sort((a, b) => b.trend.delta - a.trend.delta).filter((p) => p.id !== product.id && p.category !== product.category)].slice(0, 4)
+  const is3D = product.id === 'beam-4k'
+  const local = product.fulfil.route === 'warehouse'
+  const topSpecs = product.specs[0].rows.slice(0, 4)
+  const st = STATE[compat.status]
+  const fallback = <div className="h-full w-full p-10"><ProductVisual visual={product.visual} hue={variant.hue} swatch={variant.swatch} glow={false} /></div>
+
+  return (
+    <div className="mx-auto max-w-[1440px] px-4 pb-28 md:px-6 lg:pb-16">
+      <nav aria-label="Breadcrumb" className="py-4 text-[13px] text-ink-3">
+        <button type="button" onClick={() => go({ name: 'home' })} className="hover:text-ink">Home</button>
+        <span className="mx-1.5">/</span>
+        <span>{product.category}</span>
+        <span className="mx-1.5">/</span>
+        <span className="text-ink">{product.brand} {product.name}</span>
+      </nav>
+
+      <div className="grid grid-cols-12 gap-x-8 gap-y-8">
+        {/* ---------- media on the bench mat ---------- */}
+        <div className="col-span-12 lg:col-span-7">
+          <div className="border border-ink">
+            <div className="flex items-center justify-between border-b border-ink bg-sheet px-3">
+              <div className="flex gap-4" role="tablist" aria-label="View mode">
+                {([
+                  { id: '360', label: '360°', show: is3D },
+                  { id: 'exploded', label: 'Exploded view', show: is3D },
+                  { id: 'gallery', label: 'Photos', show: true },
+                ] as const).filter((m) => m.show).map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={mode === m.id}
+                    onClick={() => setMode(m.id)}
+                    className={cn('relative py-2.5 text-[13.5px]', mode === m.id ? 'text-ink' : 'text-ink-2 hover:text-ink')}
+                  >
+                    {m.label}
+                    {mode === m.id && <span className="absolute inset-x-0 -bottom-px h-[2px] bg-signal" />}
+                  </button>
+                ))}
+              </div>
+              <span className="reading hidden text-[11px] text-ink-3 sm:inline">{is3D && mode !== 'gallery' ? 'GLB 1.2 MB, Draco' : 'AVIF 240 KB'}</span>
+            </div>
+
+            <div className="aspect-[4/3] w-full bg-mat">
+              {is3D && mode !== 'gallery' ? (
+                <Suspense fallback={fallback}>
+                  <ProductCanvas mode={mode} light={variant.id === 'lunar'} hue={variant.hue} hovered={hovered} setHovered={setHovered} fallback={fallback} />
+                </Suspense>
+              ) : (
+                <div className="h-full w-full p-6 sm:p-10"><ProductVisual visual={product.visual} hue={variant.hue} swatch={variant.swatch} glow={false} /></div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between border-t border-ink bg-sheet px-3 py-1.5 text-[12px] text-ink-3">
+              <span>{is3D && mode !== 'gallery' ? 'Drag to rotate, scroll to zoom, arrow keys rotate' : `${product.brand} ${product.name}, ${variant.label.toLowerCase()}`}</span>
+              <span>{variant.label}</span>
+            </div>
+          </div>
+
+          {is3D && mode !== 'gallery' && (
+            <ul className="mt-px hidden sheet-grid grid-cols-3 border-t-0 md:grid lg:grid-cols-6" aria-label="Components">
+              {PARTS.map((p) => (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    onMouseEnter={() => setHovered(p.id)}
+                    onMouseLeave={() => setHovered(null)}
+                    onFocus={() => setHovered(p.id)}
+                    onBlur={() => setHovered(null)}
+                    onClick={() => setMode('exploded')}
+                    className={cn('block h-full w-full px-3 py-2 text-left transition-colors', hovered === p.id ? 'bg-signal-2' : 'bg-paper hover:bg-paper-2')}
+                  >
+                    <div className="text-[13px] text-ink">{p.name}</div>
+                    <div className="truncate text-[11.5px] text-ink-3">{p.spec}</div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* ---------- configurator on a white sheet ---------- */}
+        <aside className="col-span-12 lg:col-span-5 lg:row-span-2">
+          <div className="lg:sticky lg:top-[72px]">
+            <div className="border border-ink bg-sheet">
+              <div className="px-5 pt-5 sm:px-6">
+                <div className="text-[13px] text-ink-2">{product.brand}, {product.category.toLowerCase()}</div>
+                <div className="mt-1 flex items-start justify-between gap-4">
+                  <h1 className="display-md text-[34px] text-ink sm:text-[40px]">{product.name}</h1>
+                  <div className="text-right">
+                    <div className="reading text-[24px] text-ink" aria-live="polite">{fmt(price, currency, { compact: true })}</div>
+                    <div className="text-[12px] text-ink-3">or {fmt(price / 12, currency)} a month for 12</div>
+                  </div>
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  <Stars rating={product.rating} reviews={product.reviews} size={12} />
+                  <span className="flex items-center gap-2"><Sparkline series={product.trend.series} /><span className="reading text-[12px] text-ink-2">+{product.trend.delta}% this week</span></span>
+                </div>
+              </div>
+
+              {/* works-with row */}
+              <button
+                type="button"
+                onClick={() => { setTab('compat'); document.getElementById('tab-compat')?.scrollIntoView({ behavior: 'smooth', block: 'center' }) }}
+                className={cn('mt-5 flex w-full items-center gap-3 border-y border-rule px-5 py-3 text-left text-[13.5px] sm:px-6', st.tint)}
+                aria-live="polite"
+              >
+                <span className={cn('inline-block h-2.5 w-2.5 shrink-0', st.mark)} aria-hidden />
+                <span className={cn('font-medium', st.text)}>{st.label}</span>
+                <span className="min-w-0 flex-1 truncate text-ink-2">{compat.summary}</span>
+                <span className="shrink-0 text-ink-2 underline underline-offset-4">Details</span>
+              </button>
+
+              <div className="px-5 sm:px-6">
+                {/* finish */}
+                <div className="flex items-center justify-between border-b border-rule py-3">
+                  <span className="text-[13.5px] text-ink">Finish</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[13px] text-ink-3">{variant.label}</span>
+                    <div className="flex gap-1.5" role="radiogroup" aria-label="Finish">
+                      {product.variants.map((v) => (
+                        <button key={v.id} type="button" role="radio" aria-checked={v.id === variantId} aria-label={v.label} onClick={() => setVariantId(v.id)} className={cn('h-7 w-7 border p-[3px]', v.id === variantId ? 'border-ink' : 'border-rule-2')}>
+                          <span className="block h-full w-full" style={{ background: v.swatch }} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* options as ruled cells */}
+                {product.options?.map((g) => (
+                  <div key={g.id} className="border-b border-rule py-3">
+                    <div className="mb-2 flex items-center justify-between text-[13.5px]">
+                      <span className="text-ink">{g.label}</span>
+                      <span className="text-ink-3">{g.choices.find((c) => c.id === selection[g.id])?.label}</span>
+                    </div>
+                    <div className={cn('sheet-grid', g.choices.length === 3 ? 'grid-cols-3' : g.choices.length > 3 ? 'grid-cols-4' : 'grid-cols-2')} role="radiogroup" aria-label={g.label}>
+                      {g.choices.map((c) => (
+                        <Chip key={c.id} selected={selection[g.id] === c.id} role="radio" aria-checked={selection[g.id] === c.id} onClick={() => setSelection((s) => ({ ...s, [g.id]: c.id }))} sub={c.sub}>
+                          <span className="flex w-full items-baseline justify-between gap-2">
+                            {c.label}
+                            {c.delta ? <span className="reading text-[11px] font-normal text-ink-3">+{fmt(c.delta, currency, { compact: true })}</span> : null}
+                          </span>
+                        </Chip>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="flex items-center justify-between py-3 text-[13px]">
+                  <StockDot stock={product.stock} count={product.stockCount} />
+                  <span className="text-ink-2">{local ? 'Sydney stock' : 'Supplier direct'}, {product.fulfil.eta}</span>
+                </div>
+              </div>
+
+              <div className="hidden gap-px border-t border-ink bg-ink lg:grid lg:grid-cols-[1fr_auto]">
+                <button type="button" onClick={onAdd} className="flex h-14 items-center justify-center gap-2 bg-ink px-5 text-[15px] font-medium text-paper hover:bg-[#1f2730]" aria-live="polite">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span key={added ? 'ok' : 'add'} initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.14 }} className="flex items-center gap-2">
+                      {added ? <><Check size={16} strokeWidth={2.5} /> Added to cart</> : <>Add to cart, {fmt(price, currency, { compact: true })}</>}
+                    </motion.span>
+                  </AnimatePresence>
+                </button>
+                <button type="button" onClick={() => add(product, variantId, selection)} className="h-14 bg-sheet px-5 text-[15px] font-medium text-ink hover:bg-paper">Buy now</button>
+              </div>
+            </div>
+
+            <button type="button" onClick={() => setAdvisor(true)} className="mt-3 text-[13px] text-ink-2 underline underline-offset-4 hover:text-ink">
+              Will this work with my phone and home? Ask the Trend Scout
+            </button>
+            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[12.5px] text-ink-3">
+              <span>2-year warranty</span><span>Local repairs</span><span>Tracked on both routes</span>
+            </div>
+          </div>
+        </aside>
+
+        {/* ---------- tabs ---------- */}
+        <div className="col-span-12 lg:col-span-7">
+          <div role="tablist" aria-label="Product details" className="scrollbar-none flex gap-6 overflow-x-auto whitespace-nowrap border-b border-ink">
+            {([
+              ['overview', 'Overview'], ['specs', 'Specifications'], ['compat', 'Works with'], ['reviews', `Reviews (${product.reviews.toLocaleString()})`],
+            ] as [Tab, string][]).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                id={`tab-${id}`}
+                aria-selected={tab === id}
+                aria-controls={`panel-${id}`}
+                onClick={() => setTab(id)}
+                className={cn('relative flex items-center gap-2 py-2.5 text-[14px]', tab === id ? 'text-ink' : 'text-ink-2 hover:text-ink')}
+              >
+                {id === 'compat' && <span className={cn('h-2 w-2', st.mark)} />}
+                {label}
+                {tab === id && <span className="absolute inset-x-0 -bottom-px h-[2px] bg-signal" />}
+              </button>
+            ))}
+          </div>
+
+          <div className="py-6">
+            {tab === 'overview' && (
+              <div role="tabpanel" id="panel-overview" aria-labelledby="tab-overview" className="grid gap-8 md:grid-cols-5">
+                <div className="md:col-span-3">
+                  <h2 className="display-md text-[24px] text-ink">{product.tagline}</h2>
+                  <p className="mt-4 text-[15px] leading-relaxed text-ink-2">
+                    {product.id === 'beam-4k'
+                      ? 'The Beam 4K is the projector people are swapping their second TV for: a triple-laser light engine with no bulb to replace, autofocus and keystone that settle in about two seconds, and Netflix running natively rather than cast from a phone.'
+                      : `${product.brand} ${product.name} is in the catalogue because it cleared our week on the bench: it does what the clips claim, the return rate is under 3 %, and the supplier ships within 48 hours of an order.`}
+                  </p>
+                  <div className="mt-5">
+                    {topSpecs.map((r) => <Row key={r.label} label={r.label} value={r.value} />)}
+                  </div>
+                </div>
+                <div className="md:col-span-2">
+                  <div className="border border-rule bg-sheet">
+                    <div className="border-b border-rule px-4 py-2.5 text-[13px] text-ink-2">Why it is on the shelf</div>
+                    <div className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <Sparkline series={product.trend.series} width={96} height={28} />
+                        <div className="text-[13px]"><span className="reading text-ink">+{product.trend.delta}%</span> <span className="text-ink-2">interest, 7 days</span></div>
+                      </div>
+                      <div className="mt-1 text-[12px] text-ink-3">{product.trend.source}</div>
+                    </div>
+                    <div className="border-t border-rule px-4 py-3">
+                      <div className="text-[13px] text-ink-2">In the box</div>
+                      <ul className="mt-1 space-y-0.5 text-[13.5px] text-ink">
+                        {(product.inBox ?? [product.name, 'Quick-start card']).map((i) => <li key={i}>{i}</li>)}
+                      </ul>
+                    </div>
+                    <div className="grid grid-cols-3 divide-x divide-rule border-t border-rule text-center">
+                      {[[local ? '2 to 4 d' : '8 to 12 d', local ? 'Sydney stock' : 'supplier direct'], ['30 d', 'returns'], ['2 yr', 'warranty']].map(([v, l]) => (
+                        <div key={l} className="py-3"><div className="reading text-[14px] text-ink">{v}</div><div className="text-[11.5px] text-ink-3">{l}</div></div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {tab === 'specs' && (
+              <div role="tabpanel" id="panel-specs" aria-labelledby="tab-specs">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-3 text-[13px]">
+                  <span className="text-ink-2">Maker's specifications. Bench measurements are on the overview.</span>
+                  <label className="flex items-center gap-2 text-ink-2">
+                    Compare with
+                    <select id="compare-with" value={compareWith ?? ''} onChange={(e) => setCompareWith(e.target.value || null)} className="h-8 border border-rule-2 bg-sheet px-2 text-[13px] text-ink">
+                      <option value="">nothing</option>
+                      {products.filter((p) => p.id !== product.id && p.category === product.category).map((p) => <option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}
+                    </select>
+                  </label>
+                </div>
+                <div className="overflow-x-auto border border-rule">
+                  <table className="w-full min-w-[520px] border-collapse text-[13.5px]">
+                    <thead>
+                      <tr className="bg-sheet text-left">
+                        <th className="px-4 py-2 font-normal text-ink-3">Specification</th>
+                        <th className="px-4 py-2 font-medium text-ink">{product.name}</th>
+                        {other && <th className="px-4 py-2 font-normal text-ink-2">{other.name}</th>}
+                      </tr>
+                    </thead>
+                    {product.specs.map((g) => (
+                      <tbody key={g.group}>
+                        <tr><td colSpan={other ? 3 : 2} className="border-t border-rule bg-paper px-4 py-1.5 text-[12.5px] text-ink-3">{g.group}</td></tr>
+                        {g.rows.map((r) => {
+                          const o = other?.specs.flatMap((x) => x.rows).find((x) => x.label === r.label)
+                          let win: 'a' | 'b' | null = null
+                          if (o && r.n !== undefined && o.n !== undefined && r.n !== o.n) win = (r.better === 'low' ? r.n < o.n : r.n > o.n) ? 'a' : 'b'
+                          return (
+                            <tr key={r.label} className="border-t border-rule bg-sheet">
+                              <td className="px-4 py-2 text-ink-2">{r.label}</td>
+                              <td className={cn('reading px-4 py-2 text-[12.5px]', win === 'a' ? 'text-pass' : 'text-ink')}>{r.value}</td>
+                              {other && <td className={cn('reading px-4 py-2 text-[12.5px]', win === 'b' ? 'text-pass' : 'text-ink-2')}>{o?.value ?? '—'}</td>}
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    ))}
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {tab === 'compat' && (
+              <div role="tabpanel" id="panel-compat" aria-labelledby="tab-compat" className="grid gap-8 md:grid-cols-5">
+                <div className="md:col-span-3">
+                  <CompatPanel compat={compat} onFix={applyFix} />
+                </div>
+                <div className="md:col-span-2">
+                  <div className="mb-2 text-[13px] text-ink-2">My setup, checked live</div>
+                  <ul className="border border-rule bg-sheet">
+                    {gear.map((g) => (
+                      <li key={g.id} className="flex items-center justify-between gap-3 border-b border-rule px-4 py-2.5 last:border-b-0">
+                        <div className="min-w-0">
+                          <div className="truncate text-[13.5px] text-ink">{g.name}</div>
+                          <div className="truncate text-[12px] text-ink-3">{g.detail}</div>
+                        </div>
+                        <Toggle on={!!gearOn[g.id]} onChange={() => toggleGear(g.id)} label={`Include ${g.name} in the check`} />
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-2 text-[12px] text-ink-3">Items in your cart are checked too: app, magnets, finder network, home hub, plug, voltage and power. {compat.checked} items, 3 ms.</p>
+                </div>
+              </div>
+            )}
+
+            {tab === 'reviews' && (
+              <div role="tabpanel" id="panel-reviews" aria-labelledby="tab-reviews" className="sheet-grid md:grid-cols-3">
+                {(product.id === 'beam-4k' ? [
+                  ['Ava R.', 'Sydney', 'Saw it on a reel, expected a toy. It is not: the picture on my 100-inch screen with the lamp on is better than my old TV. Arrived in three days.', 5],
+                  ['Marcus T.', 'Melbourne', 'The setup check caught that my charger was 65 W before I bought the Pro, and offered the 100 W one. First store that has ever done that.', 5],
+                  ['Priya S.', 'Brisbane', 'Fan is quiet, autofocus is instant. Would like a longer power cable, which is why four stars.', 4],
+                ] : [
+                  ['Jordan K.', 'Perth', 'Exactly what the videos show. Took the supplier route to save money and it landed on day nine of the 8 to 12 promised.', 5],
+                  ['Sam L.', 'Adelaide', 'Works with my Pixel after I added the magnet case the page suggested. Would have bought the wrong thing elsewhere.', 4],
+                  ['Chen W.', 'Sydney', 'Packaging was proper retail, not a grey bag. Returned a second one for a gift swap with no fuss.', 5],
+                ]).map(([name, place, body, stars]) => (
+                  <figure key={name as string} className="bg-sheet p-4">
+                    <Stars rating={stars as number} />
+                    <blockquote className="mt-2 text-[13.5px] leading-relaxed text-ink-2">{body}</blockquote>
+                    <figcaption className="mt-3 text-[12.5px] text-ink-3"><span className="text-ink">{name}</span>, {place}, verified purchase</figcaption>
+                  </figure>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* related */}
+      <section className="mt-12">
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="display-md text-[26px] text-ink sm:text-[30px]">{product.id === 'beam-4k' ? `Checked to work with the ${product.name}` : `Rising alongside the ${product.name}`}</h2>
+        </div>
+        <div className="scrollbar-none -mx-4 flex gap-px overflow-x-auto border-y border-rule bg-rule md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:border-x">
+          {related.map((p) => <div key={p.id} className="min-w-[270px] md:min-w-0"><ProductCard product={p} /></div>)}
+        </div>
+      </section>
+
+      {/* mobile action bar */}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ink bg-sheet px-4 pt-3 lg:hidden" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }}>
+        <div className="flex items-center gap-3">
+          <div className="min-w-0">
+            <div className="reading text-[17px] text-ink">{fmt(price, currency, { compact: true })}</div>
+            <div className={cn('truncate text-[12px]', st.text)}>{compat.status === 'ok' ? 'Works with your setup' : compat.summary}</div>
+          </div>
+          <Button variant="primary" size="lg" onClick={onAdd} className="ml-auto h-12 flex-1 max-w-[240px]">{added ? 'Added' : 'Add to cart'}</Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function CompatPanel({ compat, onFix }: { compat: CompatResult; onFix: (fix: NonNullable<CompatResult['issues'][number]['fix']>) => void }) {
+  const st = STATE[compat.status]
+  return (
+    <div>
+      <div className={cn('flex items-center gap-3 border border-rule px-4 py-3', st.tint)}>
+        <span className={cn('h-2.5 w-2.5', st.mark)} aria-hidden />
+        <span className={cn('text-[14px] font-medium', st.text)}>{st.label}</span>
+        <span className="text-[13px] text-ink-2">{compat.summary}</span>
+      </div>
+      {compat.issues.length === 0 ? (
+        <p className="mt-3 text-[13.5px] text-ink-2">App, magnets, finder network, home hub, plug, voltage and power were checked for all {compat.checked} items in your setup and cart.</p>
+      ) : (
+        <ul className="mt-3 border border-rule bg-sheet">
+          {compat.issues.map((i) => (
+            <li key={i.id} className="border-b border-rule p-4 last:border-b-0">
+              <div className="flex items-start gap-3">
+                <span className={cn('mt-1.5 h-2.5 w-2.5 shrink-0', i.severity === 'bad' ? 'bg-fail' : 'bg-check')} aria-hidden />
+                <div className="min-w-0 flex-1">
+                  <div className="text-[14px] font-medium text-ink">{i.title}</div>
+                  <div className="mt-0.5 text-[13.5px] text-ink-2">{i.because}</div>
+                  {i.fix && <Button size="sm" variant="secondary" className="mt-3" onClick={() => onFix(i.fix!)}>{i.fix.label}</Button>}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+

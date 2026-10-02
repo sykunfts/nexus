@@ -1,0 +1,217 @@
+/*
+  NEXUS v2.0 · "Test Bench" design tokens
+  Layout: the same 12-col structure as v1, drawn as a ruled index sheet. Light-first, single theme by choice.
+  Paper ground; white only where you operate; ink for text and primary actions; one signal orange that is
+  never text (tiles, flip board, focus, dimension lines); printed-ink greens/ambers/reds for states.
+*/
+@import "tailwindcss";
+
+@theme {
+  /* Surfaces */
+  --color-paper: #edefea;
+  --color-paper-2: #e4e7e1;
+  --color-sheet: #ffffff;
+  --color-mat: #1b2027;
+  --color-mat-2: #262c35;
+
+  /* Ink */
+  --color-ink: #121820;
+  --color-ink-2: #4f5a66;
+  --color-ink-3: #5f6975;
+  --color-on-mat: #edefea;
+
+  /* Rules */
+  --color-rule: #c9cec6;
+  --color-rule-2: #b4bab1;
+
+  /* Signal (fills only) */
+  --color-signal: #ff4a1f;
+  --color-signal-2: #ffd9cd;
+
+  /* States, printed-ink */
+  --color-pass: #176b42;
+  --color-check: #8a5300;
+  --color-fail: #b52a15;
+  --color-pass-tint: #dcefe3;
+  --color-check-tint: #f6e7cc;
+  --color-fail-tint: #f7dcd6;
+
+  /* Type */
+  --font-sans: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Martian Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Motion */
+  --ease-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Radii: controls only */
+  --radius-ctl: 2px;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  line-height: 1.5;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100%;
+  isolation: isolate;
+}
+
+::selection {
+  background: var(--color-signal);
+  color: var(--color-ink);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+}
+
+/* Focus: a signal ring on every interactive element */
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Display type: Bricolage at its wide optical size */
+@utility display {
+  font-family: var(--font-sans);
+  font-variation-settings: "opsz" 96, "wdth" 100;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+}
+
+@utility display-md {
+  font-family: var(--font-sans);
+  font-variation-settings: "opsz" 48, "wdth" 100;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+}
+
+/* Measurement type: mono with tabular figures */
+@utility reading {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ruled sheet: a grid whose 1px gaps show the rule colour */
+@utility sheet-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--color-rule);
+  border: 1px solid var(--color-rule);
+}
+
+/* Orange tile: signal fill, ink text, label-maker proportions */
+@utility tile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  background: var(--color-signal);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 2px;
+}
+
+/* Ruled tag: outline label */
+@utility tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  border: 1px solid var(--color-rule-2);
+  color: var(--color-ink-2);
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Reduced motion: keep opacity, drop transforms */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 120ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.panel-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-rule-2) transparent;
+}
+
+/* Skeleton: ruled, no shimmer */
+.skeleton {
+  background: repeating-linear-gradient(90deg, var(--color-paper-2) 0 8px, var(--color-paper) 8px 16px);
+}
+
+/* Split-flap tile: the one load-time motion on the page */
+@keyframes flap {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(-90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+.flap {
+  display: inline-block;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transform-origin: 50% 50%;
+}
+.flap.is-flapping {
+  animation: flap 120ms linear;
+}
+
+/* Dimension lines over the bench mat */
+.dim-line {
+  stroke: var(--color-signal);
+  stroke-width: 1.25;
+}

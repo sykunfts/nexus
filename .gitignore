@@ -1,0 +1,5 @@
+node_modules
+dist
+shots
+src-v1-backup
+*.log
