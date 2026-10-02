@@ -7,7 +7,19 @@
   Facets: companion-app OS · magnetic attach (Qi2/MagSafe) · finder network · smart-home protocol
   and Thread · plug type and voltage · physical inputs (HDMI) · charging power.
 */
-import { CompatFacts, PORT_LABEL, PROTO_LABEL, PortKind, Product, REGION_LABEL } from './data'
+import { byId, CompatFacts, PORT_LABEL, PROTO_LABEL, PortKind, Product, REGION_LABEL } from './data'
+
+/** Fixes point at real SKUs in the catalogue; the label carries the live price. */
+const FIX = {
+  magnets: 'esr-halolock-ring',
+  thread: 'aqara-hub-m3',
+  adapter: 'sansai-au-travel-adapter',
+  charger: 'anker-prime-100w',
+} as const
+const addSku = (sku: string, what: string): Fix => {
+  const p = byId(sku)
+  return { label: `Add ${p.brand} ${what}`, kind: 'add-sku', sku, price: p.price }
+}
 
 export type Severity = 'ok' | 'warn' | 'bad'
 
@@ -15,6 +27,7 @@ export interface Fix {
   label: string
   kind: 'add-sku' | 'select-option'
   sku?: string
+  price?: number        // AUD, for add-sku fixes
   optionGroup?: string
   choice?: string
 }
@@ -80,8 +93,8 @@ export function checkBuild(subject: { name: string; facts: CompatFacts; product?
         id: 'magnets',
         severity: 'warn',
         title: `Won't snap onto your ${phones[0].name}`,
-        because: `${subject.name} attaches with Qi2 magnets. ${phones[0].name} has Qi charging but no magnet ring, so it will slide off.`,
-        fix: { label: 'Add Snap Case magnet ring · $25', kind: 'add-sku', sku: 'snap-case' },
+        because: `${subject.name} attaches with Qi2 magnets. ${phones[0].name} has Qi charging but no magnet ring, so it will slide off. A stick-on steel ring fixes that.`,
+        fix: addSku(FIX.magnets, 'HaloLock magnet ring'),
       })
     }
   }
@@ -110,7 +123,7 @@ export function checkBuild(subject: { name: string; facts: CompatFacts; product?
         id: 'home',
         severity: 'warn',
         title: `Won't appear in ${hubs.map((h) => h.name.split(' (')[0]).join(' or ')}`,
-        because: `${subject.name} works with ${f.home.map((p) => PROTO_LABEL[p]).join(', ')} but not Matter, so it stays in its own app rather than your home app.`,
+        because: `${subject.name} works with ${f.home.map((p) => PROTO_LABEL[p]).join(', ')}${f.home.includes('matter') ? '' : ' but not Matter'}, so it stays in its own app rather than your home app.`,
       })
     }
     if (f.needsThread && !provided.has('thread')) {
@@ -119,7 +132,7 @@ export function checkBuild(subject: { name: string; facts: CompatFacts; product?
         severity: 'warn',
         title: 'Needs a Thread border router',
         because: `${subject.name} talks Matter over Thread. ${hubs.map((h) => h.name).join(' and ')} has no Thread radio, so it cannot join your network.`,
-        fix: { label: 'Add Nimbus Hub (Thread + Matter) · $69', kind: 'add-sku', sku: 'nimbus-hub' },
+        fix: addSku(FIX.thread, 'Hub M3 (Thread + Matter)'),
       })
     }
   }
@@ -136,7 +149,7 @@ export function checkBuild(subject: { name: string; facts: CompatFacts; product?
         because: `You are in ${REGION_LABEL[region]}. This configuration ships with a ${f.plug} plug (${REGION_LABEL[f.plug]}).`,
         fix: choice
           ? { label: `Switch to the ${region} plug`, kind: 'select-option', optionGroup: 'plug', choice: choice.id }
-          : { label: 'Add travel plug adapter · $9', kind: 'add-sku', sku: 'plug-adapter' },
+          : addSku(FIX.adapter, 'travel adapter'),
       })
     }
   }
@@ -172,7 +185,7 @@ export function checkBuild(subject: { name: string; facts: CompatFacts; product?
         severity: 'warn',
         title: 'Battery drains while plugged in',
         because: `${best.name} supplies ${best.facts.pdOut} W; this configuration draws up to ${f.pdInMin} W at full brightness, so a long film will still run the battery down.`,
-        fix: { label: 'Add Aether Cube 100 W · $59', kind: 'add-sku', sku: 'aether-cube-100' },
+        fix: addSku(FIX.charger, 'Prime 100 W charger'),
       })
     }
   }
@@ -184,7 +197,7 @@ export function checkBuild(subject: { name: string; facts: CompatFacts; product?
     status === 'ok'
       ? `Works with all ${build.length} items in your setup`
       : status === 'bad'
-        ? `${bad} blocker${bad > 1 ? 's' : ''}${warn ? ` · ${warn} to check` : ''}`
+        ? `${bad} blocker${bad > 1 ? 's' : ''}${warn ? `, ${warn} to check` : ''}`
         : `${warn} thing${warn > 1 ? 's' : ''} to check`
   return { status, issues, checked: build.length, summary }
 }

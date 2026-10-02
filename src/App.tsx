@@ -9,7 +9,7 @@ import { ProductPage } from './components/ProductPage'
 import { CartDrawer } from './components/CartDrawer'
 import { QuickView } from './components/QuickView'
 import { Advisor } from './components/Advisor'
-import { ProductVisual } from './components/ProductVisual'
+import { ProductImage } from './components/ProductVisual'
 import { Button } from './components/ui'
 import { cn } from './lib/cn'
 
@@ -63,7 +63,7 @@ function CompareTray() {
           <div className="flex gap-1">
             {compare.map((id) => (
               <button key={id} type="button" onClick={() => toggle(id)} aria-label={`Remove ${byId(id).name} from compare`} className="h-9 w-11 border border-rule bg-paper hover:border-ink">
-                <ProductVisual visual={byId(id).visual} hue={byId(id).hue} glow={false} />
+                <ProductImage product={byId(id)} />
               </button>
             ))}
           </div>
@@ -115,7 +115,7 @@ function Footer() {
       <div className="mx-auto grid max-w-[1440px] gap-8 px-4 py-10 md:grid-cols-5 md:px-6">
         <div className="md:col-span-2">
           <div className="display text-[28px] text-ink">Nexus</div>
-          <p className="mt-2 max-w-[38ch] text-[13.5px] text-ink-2">Trending tech, tested for a week on the bench, checked against your phone, home and plug, and shipped from Sydney or straight from the maker.</p>
+          <p className="mt-2 max-w-[38ch] text-[13.5px] text-ink-2">Trending tech, specs and prices checked against the maker, checked against your phone, home and plug, and shipped from Sydney or straight from the maker.</p>
           <div className="mt-4 flex items-center gap-2 text-[12.5px] text-ink-3"><span className="inline-block h-1.5 w-1.5 bg-pass" /> All systems operational, status.nexus.store</div>
         </div>
         {[

@@ -4,7 +4,7 @@ import { Search, X } from 'lucide-react'
 import { products, trendingSearches, nav } from '../lib/data'
 import { fmt } from '../lib/currency'
 import { useStore } from '../lib/store'
-import { ProductVisual } from './ProductVisual'
+import { ProductImage } from './ProductVisual'
 import { Kbd, StockDot, Tile } from './ui'
 import { cn } from '../lib/cn'
 
@@ -24,7 +24,7 @@ function score(q: string, hay: string[]) {
 
 const index = products.map((p) => ({ p, hay: tokens(`${p.brand} ${p.name} ${p.category} ${p.tagline}`) }))
 const categories = nav.flatMap((s) => s.columns.flatMap((c) => c.items.map((i) => ({ item: i, section: s.label }))))
-const RECENT = ['magnetic power bank', 'Beam 4K vs Beam Mini']
+const RECENT = ['magnetic power bank', 'MoGo 4 Laser vs Vibe One']
 
 export function PredictiveSearch() {
   const [q, setQ] = useState('')
@@ -158,7 +158,7 @@ export function PredictiveSearch() {
                           onClick={() => choose(i)}
                           className={cn('flex w-full items-center gap-3 px-3 py-2 text-left transition-colors', active === i ? 'bg-paper' : 'hover:bg-paper')}
                         >
-                          <div className="h-12 w-16 shrink-0"><ProductVisual visual={p.visual} hue={p.hue} glow={false} /></div>
+                          <div className="h-12 w-16 shrink-0"><ProductImage product={p} /></div>
                           <div className="min-w-0 flex-1">
                             <div className="truncate text-[14px] font-medium text-ink">{highlight(`${p.brand} ${p.name}`)}</div>
                             <div className="truncate text-[12.5px] text-ink-2">{p.category}, {highlight(p.tagline)}</div>

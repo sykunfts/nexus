@@ -1,5 +1,6 @@
 import { forwardRef, ButtonHTMLAttributes, ReactNode } from 'react'
 import { cn } from '../lib/cn'
+import type { Rating } from '../lib/data'
 
 /* ---------- Button ---------- */
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
@@ -104,17 +105,22 @@ export function StockDot({ stock, count }: { stock: 'in' | 'low' | 'out'; count?
 }
 
 /* ---------- Rating ---------- */
-export function Stars({ rating, reviews, size = 11 }: { rating: number; reviews?: number; size?: number }) {
-  const pct = Math.round((rating / 5) * 100)
+/** A retailer or maker rating, shown only where a value and a count were both visible; otherwise "No reviews yet". */
+export function Stars({ rating, size = 11, showCount = true }: { rating: Rating | number | null; size?: number; showCount?: boolean }) {
+  if (rating === null) return <span className="text-[11.5px] text-ink-3">No reviews yet</span>
+  const value = typeof rating === 'number' ? rating : rating.value
+  const count = typeof rating === 'number' ? undefined : rating.count
+  const at = typeof rating === 'number' ? undefined : rating.at
+  const pct = Math.round((value / 5) * 100)
   return (
-    <span className="inline-flex items-center gap-1.5" aria-label={`${rating} out of 5${reviews ? `, ${reviews} reviews` : ''}`}>
+    <span className="inline-flex items-center gap-1.5" aria-label={`${value} out of 5${count ? `, ${count} ratings at ${at}` : ''}`}>
       <span className="relative inline-block overflow-hidden leading-none text-rule-2" style={{ fontSize: size + 2 }} aria-hidden>
         ★★★★★
         <span className="absolute inset-y-0 left-0 overflow-hidden whitespace-nowrap text-ink" style={{ width: `${pct}%` }}>★★★★★</span>
       </span>
-      {reviews !== undefined && (
-        <span className="reading text-[11.5px] font-normal text-ink-2">
-          {rating.toFixed(1)} ({reviews.toLocaleString()})
+      {showCount && count !== undefined && (
+        <span className="reading text-[11.5px] font-normal text-ink-2" title={`Rated at ${at}`}>
+          {value.toFixed(1)} ({count.toLocaleString()})
         </span>
       )}
     </span>

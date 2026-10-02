@@ -1,11 +1,11 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check } from 'lucide-react'
-import { byId, gear, Product, products } from '../lib/data'
+import { byId, gear, priceCheckedText, Product, products } from '../lib/data'
 import { fmt } from '../lib/currency'
 import { defaultSelection, priceFor, useStore } from '../lib/store'
 import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
-import { ProductVisual } from './ProductVisual'
+import { isLightSwatch, ProductImage } from './ProductVisual'
 import { ProductCard, Sparkline } from './ProductCard'
 import { Button, Chip, Row, Stars, StockDot, Toggle } from './ui'
 import { PARTS, CanvasMode } from '../lib/parts'
@@ -14,6 +14,8 @@ import { cn } from '../lib/cn'
 const ProductCanvas = lazy(() => import('./ProductCanvas').then((m) => ({ default: m.ProductCanvas })))
 
 type Tab = 'overview' | 'specs' | 'compat' | 'reviews'
+
+const HERO = 'xgimi-mogo-4-laser'
 
 const STATE = {
   ok: { mark: 'bg-pass', text: 'text-pass', tint: 'bg-pass-tint', label: 'Works with your setup' },
@@ -24,7 +26,8 @@ const STATE = {
 export function ProductPage({ product }: { product: Product }) {
   const [variantId, setVariantId] = useState(product.variants[0].id)
   const [selection, setSelection] = useState<Record<string, string>>(defaultSelection(product))
-  const [mode, setMode] = useState<CanvasMode | 'gallery'>(product.id === 'beam-4k' ? '360' : 'gallery')
+  const [mode, setMode] = useState<CanvasMode | 'gallery'>(product.id === HERO ? '360' : 'gallery')
+  const [photo, setPhoto] = useState(0)
   const [hovered, setHovered] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>('overview')
   const [compareWith, setCompareWith] = useState<string | null>(products.find((p) => p.id !== product.id && p.category === product.category)?.id ?? null)
@@ -39,7 +42,7 @@ export function ProductPage({ product }: { product: Product }) {
   const setAdvisor = useStore((s) => s.setAdvisor)
 
   const variant = product.variants.find((v) => v.id === variantId)!
-  const price = priceFor(product, selection)
+  const price = priceFor(product, selection, variantId)
   const facts = useMemo(() => resolveFacts(product, selection), [product, selection])
 
   // Live check: this configuration vs the shopper's setup + what is already in the cart.
@@ -61,14 +64,15 @@ export function ProductPage({ product }: { product: Product }) {
   }
 
   const other = compareWith ? byId(compareWith) : null
-  const related = product.id === 'beam-4k'
-    ? ['halo-screen', 'aether-cube-100', 'pulse-open', 'snap-tag'].map(byId)
+  const related = product.id === HERO
+    ? ['elite-yard-master-2-100', 'anker-prime-100w', 'bose-ultra-open-2', 'chipolo-pop'].map(byId)
     : [...products.filter((p) => p.id !== product.id && p.category === product.category), ...[...products].sort((a, b) => b.trend.delta - a.trend.delta).filter((p) => p.id !== product.id && p.category !== product.category)].slice(0, 4)
-  const is3D = product.id === 'beam-4k'
+  const is3D = product.id === HERO
+  const photos = product.photos ?? []
   const local = product.fulfil.route === 'warehouse'
   const topSpecs = product.specs[0].rows.slice(0, 4)
   const st = STATE[compat.status]
-  const fallback = <div className="h-full w-full p-10"><ProductVisual visual={product.visual} hue={variant.hue} swatch={variant.swatch} glow={false} /></div>
+  const fallback = <div className="h-full w-full p-10"><ProductImage product={product} hue={variant.hue} swatch={variant.swatch} /></div>
 
   return (
     <div className="mx-auto max-w-[1440px] px-4 pb-28 md:px-6 lg:pb-16">
@@ -104,16 +108,16 @@ export function ProductPage({ product }: { product: Product }) {
                   </button>
                 ))}
               </div>
-              <span className="reading hidden text-[11px] text-ink-3 sm:inline">{is3D && mode !== 'gallery' ? 'GLB 1.2 MB, Draco' : 'AVIF 240 KB'}</span>
+              <span className="reading hidden text-[11px] text-ink-3 sm:inline">{is3D && mode !== 'gallery' ? 'Procedural model' : photos.length ? `Photo ${photo + 1} of ${photos.length}` : 'Render, photo pending'}</span>
             </div>
 
             <div className="aspect-[4/3] w-full bg-mat">
               {is3D && mode !== 'gallery' ? (
                 <Suspense fallback={fallback}>
-                  <ProductCanvas mode={mode} light={variant.id === 'lunar'} hue={variant.hue} hovered={hovered} setHovered={setHovered} fallback={fallback} />
+                  <ProductCanvas mode={mode} light={isLightSwatch(variant.swatch)} hue={variant.hue} hovered={hovered} setHovered={setHovered} fallback={fallback} label={`${product.brand} ${product.name}`} />
                 </Suspense>
               ) : (
-                <div className="h-full w-full p-6 sm:p-10"><ProductVisual visual={product.visual} hue={variant.hue} swatch={variant.swatch} glow={false} /></div>
+                <div className={cn('h-full w-full', photos.length ? '' : 'p-6 sm:p-10')}><ProductImage product={product} index={photo} hue={variant.hue} swatch={variant.swatch} /></div>
               )}
             </div>
 
@@ -122,6 +126,16 @@ export function ProductPage({ product }: { product: Product }) {
               <span>{variant.label}</span>
             </div>
           </div>
+
+          {mode === 'gallery' && photos.length > 1 && (
+            <div className="mt-px flex gap-px bg-rule" role="tablist" aria-label="Photos">
+              {photos.map((src, i) => (
+                <button key={i} type="button" role="tab" aria-selected={photo === i} onClick={() => setPhoto(i)} className={cn('h-16 w-20 overflow-hidden bg-paper', photo === i ? 'ring-2 ring-inset ring-ink' : 'opacity-80 hover:opacity-100')}>
+                  <img src={src} alt="" className="h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
 
           {is3D && mode !== 'gallery' && (
             <ul className="mt-px hidden sheet-grid grid-cols-3 border-t-0 md:grid lg:grid-cols-6" aria-label="Components">
@@ -159,7 +173,7 @@ export function ProductPage({ product }: { product: Product }) {
                   </div>
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-3">
-                  <Stars rating={product.rating} reviews={product.reviews} size={12} />
+                  <Stars rating={product.rating} size={12} />
                   <span className="flex items-center gap-2"><Sparkline series={product.trend.series} /><span className="reading text-[12px] text-ink-2">+{product.trend.delta}% this week</span></span>
                 </div>
               </div>
@@ -182,7 +196,7 @@ export function ProductPage({ product }: { product: Product }) {
                 <div className="flex items-center justify-between border-b border-rule py-3">
                   <span className="text-[13.5px] text-ink">Finish</span>
                   <div className="flex items-center gap-3">
-                    <span className="text-[13px] text-ink-3">{variant.label}</span>
+                    <span className="text-[13px] text-ink-3">{variant.label}{variant.delta ? <span className="reading ml-1.5 text-[11px]">+{fmt(variant.delta, currency, { compact: true })}</span> : null}</span>
                     <div className="flex gap-1.5" role="radiogroup" aria-label="Finish">
                       {product.variants.map((v) => (
                         <button key={v.id} type="button" role="radio" aria-checked={v.id === variantId} aria-label={v.label} onClick={() => setVariantId(v.id)} className={cn('h-7 w-7 border p-[3px]', v.id === variantId ? 'border-ink' : 'border-rule-2')}>
@@ -217,6 +231,10 @@ export function ProductPage({ product }: { product: Product }) {
                   <StockDot stock={product.stock} count={product.stockCount} />
                   <span className="text-ink-2">{local ? 'Sydney stock' : 'Supplier direct'}, {product.fulfil.eta}</span>
                 </div>
+                <div className="flex items-center justify-between border-t border-rule py-2 text-[11.5px] text-ink-3">
+                  <span>Price checked {priceCheckedText(product.priceCheckedAt)} at {product.sources[0]}{product.compareAt ? `, RRP ${fmt(product.compareAt, currency, { compact: true })}` : ''}</span>
+                  <span>AUD incl. GST</span>
+                </div>
               </div>
 
               <div className="hidden gap-px border-t border-ink bg-ink lg:grid lg:grid-cols-[1fr_auto]">
@@ -244,7 +262,7 @@ export function ProductPage({ product }: { product: Product }) {
         <div className="col-span-12 lg:col-span-7">
           <div role="tablist" aria-label="Product details" className="scrollbar-none flex gap-6 overflow-x-auto whitespace-nowrap border-b border-ink">
             {([
-              ['overview', 'Overview'], ['specs', 'Specifications'], ['compat', 'Works with'], ['reviews', `Reviews (${product.reviews.toLocaleString()})`],
+              ['overview', 'Overview'], ['specs', 'Specifications'], ['compat', 'Works with'], ['reviews', product.rating ? `Reviews (${product.rating.count.toLocaleString()})` : 'Reviews'],
             ] as [Tab, string][]).map(([id, label]) => (
               <button
                 key={id}
@@ -269,9 +287,9 @@ export function ProductPage({ product }: { product: Product }) {
                 <div className="md:col-span-3">
                   <h2 className="display-md text-[24px] text-ink">{product.tagline}</h2>
                   <p className="mt-4 text-[15px] leading-relaxed text-ink-2">
-                    {product.id === 'beam-4k'
-                      ? 'The Beam 4K is the projector people are swapping their second TV for: a triple-laser light engine with no bulb to replace, autofocus and keystone that settle in about two seconds, and Netflix running natively rather than cast from a phone.'
-                      : `${product.brand} ${product.name} is in the catalogue because it cleared our week on the bench: it does what the clips claim, the return rate is under 3 %, and the supplier ships within 48 hours of an order.`}
+                    {product.id === HERO
+                      ? 'The MoGo 4 Laser is the portable projector people are swapping their second TV for: a triple-laser light engine with no bulb to replace, Google TV with Netflix running natively rather than cast from a phone, and a built-in stand that swivels so the picture can go on a wall or the ceiling. Reviewers measure it well short of its 550-lumen claim, so plan on a dim room.'
+                      : `${product.brand} ${product.name} is listed because interest in it is climbing and it is on sale today at the price shown, checked ${priceCheckedText(product.priceCheckedAt)} at ${product.sources.join(' and ')}. Before you pay it is checked against your phone, your home hub and your plug.`}
                   </p>
                   <div className="mt-5">
                     {topSpecs.map((r) => <Row key={r.label} label={r.label} value={r.value} />)}
@@ -290,7 +308,7 @@ export function ProductPage({ product }: { product: Product }) {
                     <div className="border-t border-rule px-4 py-3">
                       <div className="text-[13px] text-ink-2">In the box</div>
                       <ul className="mt-1 space-y-0.5 text-[13.5px] text-ink">
-                        {(product.inBox ?? [product.name, 'Quick-start card']).map((i) => <li key={i}>{i}</li>)}
+                        {(product.inBox ?? [`${product.brand} ${product.name}`]).map((i) => <li key={i}>{i}</li>)}
                       </ul>
                     </div>
                     <div className="grid grid-cols-3 divide-x divide-rule border-t border-rule text-center">
@@ -306,7 +324,7 @@ export function ProductPage({ product }: { product: Product }) {
             {tab === 'specs' && (
               <div role="tabpanel" id="panel-specs" aria-labelledby="tab-specs">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-3 text-[13px]">
-                  <span className="text-ink-2">Maker's specifications. Bench measurements are on the overview.</span>
+                  <span className="text-ink-2">Maker's specifications, checked {priceCheckedText(product.priceCheckedAt)}.</span>
                   <label className="flex items-center gap-2 text-ink-2">
                     Compare with
                     <select id="compare-with" value={compareWith ?? ''} onChange={(e) => setCompareWith(e.target.value || null)} className="h-8 border border-rule-2 bg-sheet px-2 text-[13px] text-ink">
@@ -343,6 +361,10 @@ export function ProductPage({ product }: { product: Product }) {
                     ))}
                   </table>
                 </div>
+                <div className="mt-3 border border-rule bg-sheet px-4 py-3 text-[12.5px] text-ink-2">
+                  <div><span className="text-ink-3">Sources, checked {priceCheckedText(product.priceCheckedAt)}:</span> {product.sources.join(', ')}</div>
+                  {product.notes && <div className="mt-1"><span className="text-ink-3">Notes:</span> {product.notes}</div>}
+                </div>
               </div>
             )}
 
@@ -370,22 +392,19 @@ export function ProductPage({ product }: { product: Product }) {
             )}
 
             {tab === 'reviews' && (
-              <div role="tabpanel" id="panel-reviews" aria-labelledby="tab-reviews" className="sheet-grid md:grid-cols-3">
-                {(product.id === 'beam-4k' ? [
-                  ['Ava R.', 'Sydney', 'Saw it on a reel, expected a toy. It is not: the picture on my 100-inch screen with the lamp on is better than my old TV. Arrived in three days.', 5],
-                  ['Marcus T.', 'Melbourne', 'The setup check caught that my charger was 65 W before I bought the Pro, and offered the 100 W one. First store that has ever done that.', 5],
-                  ['Priya S.', 'Brisbane', 'Fan is quiet, autofocus is instant. Would like a longer power cable, which is why four stars.', 4],
-                ] : [
-                  ['Jordan K.', 'Perth', 'Exactly what the videos show. Took the supplier route to save money and it landed on day nine of the 8 to 12 promised.', 5],
-                  ['Sam L.', 'Adelaide', 'Works with my Pixel after I added the magnet case the page suggested. Would have bought the wrong thing elsewhere.', 4],
-                  ['Chen W.', 'Sydney', 'Packaging was proper retail, not a grey bag. Returned a second one for a gift swap with no fuss.', 5],
-                ]).map(([name, place, body, stars]) => (
-                  <figure key={name as string} className="bg-sheet p-4">
-                    <Stars rating={stars as number} />
-                    <blockquote className="mt-2 text-[13.5px] leading-relaxed text-ink-2">{body}</blockquote>
-                    <figcaption className="mt-3 text-[12.5px] text-ink-3"><span className="text-ink">{name}</span>, {place}, verified purchase</figcaption>
-                  </figure>
-                ))}
+              <div role="tabpanel" id="panel-reviews" aria-labelledby="tab-reviews" className="border border-rule bg-sheet">
+                {product.rating ? (
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-rule px-4 py-3">
+                    <span className="reading text-[28px] text-ink">{product.rating.value.toFixed(1)}</span>
+                    <div className="text-[13.5px]">
+                      <div className="text-ink">{product.rating.count.toLocaleString()} ratings at {product.rating.at}</div>
+                      <div className="text-ink-3">The maker's or retailer's rating, as shown on {priceCheckedText(product.priceCheckedAt)}.</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="border-b border-rule px-4 py-3 text-[13.5px] text-ink-2">No verified rating with a visible review count at the sources we checked.</div>
+                )}
+                <p className="px-4 py-3 text-[13.5px] text-ink-2">No NEXUS reviews yet. Reviews appear here after a verified purchase, and we do not write them ourselves.</p>
               </div>
             )}
           </div>
@@ -395,7 +414,7 @@ export function ProductPage({ product }: { product: Product }) {
       {/* related */}
       <section className="mt-12">
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="display-md text-[26px] text-ink sm:text-[30px]">{product.id === 'beam-4k' ? `Checked to work with the ${product.name}` : `Rising alongside the ${product.name}`}</h2>
+          <h2 className="display-md text-[26px] text-ink sm:text-[30px]">{product.id === HERO ? `Checked to work with the ${product.name}` : `Rising alongside the ${product.name}`}</h2>
         </div>
         <div className="scrollbar-none -mx-4 flex gap-px overflow-x-auto border-y border-rule bg-rule md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:border-x">
           {related.map((p) => <div key={p.id} className="min-w-[270px] md:min-w-0"><ProductCard product={p} /></div>)}
@@ -418,6 +437,7 @@ export function ProductPage({ product }: { product: Product }) {
 
 function CompatPanel({ compat, onFix }: { compat: CompatResult; onFix: (fix: NonNullable<CompatResult['issues'][number]['fix']>) => void }) {
   const st = STATE[compat.status]
+  const currency = useStore((s) => s.currency)
   return (
     <div>
       <div className={cn('flex items-center gap-3 border border-rule px-4 py-3', st.tint)}>
@@ -436,7 +456,7 @@ function CompatPanel({ compat, onFix }: { compat: CompatResult; onFix: (fix: Non
                 <div className="min-w-0 flex-1">
                   <div className="text-[14px] font-medium text-ink">{i.title}</div>
                   <div className="mt-0.5 text-[13.5px] text-ink-2">{i.because}</div>
-                  {i.fix && <Button size="sm" variant="secondary" className="mt-3" onClick={() => onFix(i.fix!)}>{i.fix.label}</Button>}
+                  {i.fix && <Button size="sm" variant="secondary" className="mt-3" onClick={() => onFix(i.fix!)}>{i.fix.label}{i.fix.price !== undefined ? <span className="reading ml-1 text-[11px] text-ink-3">{fmt(i.fix.price, currency, { compact: true })}</span> : null}</Button>}
                 </div>
               </div>
             </li>

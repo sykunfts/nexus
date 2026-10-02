@@ -46,8 +46,9 @@ interface State {
   dismissToast: (id: number) => void
 }
 
-export const priceFor = (product: Product, selection: Record<string, string>) =>
+export const priceFor = (product: Product, selection: Record<string, string>, variantId?: string) =>
   product.price +
+  (product.variants.find((v) => v.id === variantId)?.delta ?? 0) +
   (product.options ?? []).reduce((sum, g) => sum + (g.choices.find((c) => c.id === selection[g.id])?.delta ?? 0), 0)
 
 export const defaultSelection = (product: Product) =>
@@ -78,7 +79,7 @@ export const useStore = create<State>((set, get) => ({
 
   add: (product, variantId, selection = defaultSelection(product), qty = 1) => {
     const key = `${product.id}:${variantId}:${Object.values(selection).join('-')}`
-    const unitPrice = priceFor(product, selection)
+    const unitPrice = priceFor(product, selection, variantId)
     set((s) => {
       const existing = s.cart.find((l) => l.key === key)
       const cart = existing

@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, Minus, Plus, X } from 'lucide-react'
 import { byId, gear } from '../lib/data'
-import { CURRENCIES, Currency, fmt, shippingUsd, taxUsd } from '../lib/currency'
+import { CURRENCIES, Currency, fmt, shippingCost, taxOf } from '../lib/currency'
 import { cartSubtotal, useStore } from '../lib/store'
 import { checkBuild, resolveFacts } from '../lib/compat'
-import { ProductVisual } from './ProductVisual'
+import { ProductImage } from './ProductVisual'
 import { Button } from './ui'
 import { cn } from '../lib/cn'
 
@@ -63,9 +63,9 @@ export function CartDrawer() {
 
   const subtotal = cartSubtotal(cart)
   const info = CURRENCIES[currency]
-  const shipping = cart.length ? shippingUsd(subtotal, shipMethod, info.region) : 0
-  const tax = taxUsd(subtotal + shipping, currency)
-  const total = subtotal + shipping + tax
+  const shipping = cart.length ? shippingCost(subtotal, shipMethod, info.region) : 0
+  const tax = taxOf(subtotal + shipping, currency)
+  const total = subtotal + shipping + (tax.included ? 0 : tax.amount)
   const parcels = new Set(cart.map((l) => byId(l.productId).fulfil.route)).size
 
   const compat = useMemo(() => {
@@ -153,7 +153,7 @@ export function CartDrawer() {
                           transition={{ duration: 0.2 }}
                           className="flex gap-3 border-b border-rule px-5 py-3"
                         >
-                          <div className="h-16 w-20 shrink-0 bg-paper"><ProductVisual visual={p.visual} hue={v.hue} swatch={v.swatch} glow={false} /></div>
+                          <div className="h-16 w-20 shrink-0 bg-paper"><ProductImage product={p} hue={v.hue} swatch={v.swatch} /></div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-start justify-between gap-2">
                               <div className="min-w-0">
@@ -202,7 +202,7 @@ export function CartDrawer() {
                 <dl className="reading mt-3 text-[12.5px] text-ink-2">
                   <div className="flex justify-between py-0.5"><dt>Subtotal</dt><dd>{fmt(subtotal, currency)}</dd></div>
                   <div className="flex justify-between py-0.5"><dt>Shipping to {info.region}{parcels > 1 ? `, ${parcels} parcels` : ''}</dt><dd>{shipping === 0 ? 'Free' : fmt(shipping, currency)}</dd></div>
-                  <div className="flex justify-between py-0.5"><dt>{info.taxLabel}</dt><dd>{fmt(tax, currency)}</dd></div>
+                  <div className="flex justify-between py-0.5"><dt>{info.taxLabel}</dt><dd>{fmt(tax.amount, currency)}</dd></div>
                   <div className="mt-1 flex items-baseline justify-between border-t border-ink pt-2 text-ink">
                     <dt className="font-sans text-[14px] font-medium">Total</dt>
                     <dd className="text-[18px]" aria-live="polite">{fmt(total, currency)}</dd>

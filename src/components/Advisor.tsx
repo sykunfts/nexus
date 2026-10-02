@@ -10,7 +10,7 @@ import { byId, gear, Product, products } from '../lib/data'
 import { fmt } from '../lib/currency'
 import { useStore } from '../lib/store'
 import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
-import { ProductVisual } from './ProductVisual'
+import { ProductImage } from './ProductVisual'
 import { Sparkline } from './ProductCard'
 import { Button, Tile } from './ui'
 import { cn } from '../lib/cn'
@@ -21,15 +21,15 @@ interface Msg { id: number; from: 'user' | 'ai'; text: string; kit?: Kit; trends
 
 const PROMPTS = [
   'What is trending this week?',
-  'Movie night setup under $1,000',
-  'Gift for a runner under $150',
-  'Does the Beam 4K work with my setup?',
+  'Movie night setup under $2,000',
+  'Gift for a runner under $600',
+  'Does the MoGo 4 Laser work with my setup?',
 ]
 
 function plan(prompt: string, setupOn: Record<string, boolean>): Omit<Msg, 'id' | 'from'> {
   const p = prompt.toLowerCase()
   const m = p.match(/\$\s?(\d[\d,]*)/)
-  const budget = m ? Number(m[1].replace(/,/g, '')) : 1000
+  const budget = m ? Number(m[1].replace(/,/g, '')) : 2000
 
   const named = products.find((x) => p.includes(x.name.toLowerCase()) || p.includes(`${x.brand} ${x.name}`.toLowerCase()))
   if (named && /(work|compatible|setup|phone|home|plug|switch)/.test(p)) {
@@ -51,40 +51,40 @@ function plan(prompt: string, setupOn: Record<string, boolean>): Omit<Msg, 'id' 
     return {
       text: cat
         ? `${cat} this week, ranked by 7-day search and social velocity. Figures are growth in interest, not sales.`
-        : 'Across the catalogue this week, ranked by 7-day search and social velocity. LED masks and AI recorders are the breakouts; smart rings are still climbing after three weeks.',
+        : 'Across the catalogue this week, ranked by 7-day search and social velocity. The Omnilux mask and the Plaud NotePin S are the breakouts; smart rings are still climbing. Sample figures until the trend worker runs.',
       trends: top,
     }
   }
 
   if (/(movie|cinema|projector|film)/.test(p)) {
     return {
-      text: `A movie-night kit under ${fmt(budget, 'USD', { compact: true })}: a projector, a screen that keeps blacks black with the lights on, and the charger that stops the battery draining mid-film. Checked against your setup.`,
+      text: `A movie-night kit under ${fmt(budget, 'AUD', { compact: true })}: a projector, a 100-inch screen for the yard, and a charger that keeps the battery topped up mid-film. Checked against your setup.`,
       kit: { budget, roles: [
-        { role: 'Projector', why: 'Triple-laser 4K; the Mini is the 1080p fallback', options: ['beam-4k', 'beam-mini'] },
-        { role: 'Screen', why: 'ALR fabric, folds into a 60 cm tube', options: ['halo-screen'] },
-        { role: 'Power', why: '100 W so the Pro edition charges while playing', options: ['aether-cube-100'], optional: true },
+        { role: 'Projector', why: 'Triple-laser 1080p with Google TV; the Vibe One is the cheaper LCD fallback', options: ['xgimi-mogo-4-laser', 'xgimi-vibe-one'] },
+        { role: 'Screen', why: '100-inch matte white frame, folds into its bag', options: ['elite-yard-master-2-100'] },
+        { role: 'Power', why: '100 W GaN, two USB-C, covers the 65 W draw with room to spare', options: ['anker-prime-100w'], optional: true },
       ] },
     }
   }
 
   if (/(gift|runner|run|present)/.test(p)) {
     return {
-      text: `Gift for a runner under ${fmt(budget, 'USD', { compact: true })}: open-ear buds are the safe pick because they work with any phone and do not block traffic noise. I added trackers and the ring as optional extras if the budget allows.`,
+      text: `Gift for a runner under ${fmt(budget, 'AUD', { compact: true })}: open-ear buds are the safe pick because they work with any phone and do not block traffic noise. I added a finder tag and the ring as optional extras if the budget allows.`,
       kit: { budget, roles: [
-        { role: 'Earbuds', why: 'Open-ear, 8 h, IPX5 sweat-proof', options: ['pulse-open'] },
-        { role: 'Tracker', why: 'For keys on the run', options: ['snap-tag'], optional: true },
-        { role: 'Recovery', why: 'Sleep and HRV, no subscription', options: ['loop-ring'], optional: true },
+        { role: 'Earbuds', why: 'Open-ear clip-ons, 9 h, IPX4', options: ['bose-ultra-open-2'] },
+        { role: 'Tracker', why: 'For keys on the run, Find My or Find Hub', options: ['chipolo-pop'], optional: true },
+        { role: 'Recovery', why: 'Sleep and HRV, 14 days a charge, no subscription', options: ['ringconn-gen-3'], optional: true },
       ] },
     }
   }
 
   return {
-    text: `A desk upgrade under ${fmt(budget, 'USD', { compact: true })}: a light strip for the wall, a camera for the room, and a magnetic power bank for the desk edge. Everything works with the phone and hub in your setup.`,
+    text: `A desk upgrade under ${fmt(budget, 'AUD', { compact: true })}: a light strip for the wall, a camera for the room, and a magnetic power bank for the desk edge. Everything is checked against the phone and hub in your setup.`,
     kit: { budget, roles: [
-      { role: 'Lighting', why: 'Matter over Thread, music sync', options: ['nimbus-glow'] },
-      { role: 'Camera', why: 'Matter, local storage, no cloud fee', options: ['nimbus-orbit'] },
-      { role: 'Power', why: 'Qi2 magnetic, solar top-up', options: ['aether-magpack'], optional: true },
-      { role: 'Hub', why: 'Only if you lack a Thread border router', options: ['nimbus-hub'], optional: true },
+      { role: 'Lighting', why: 'Matter over Thread, 2,200 lm', options: ['nanoleaf-matter-strip-5m'] },
+      { role: 'Camera', why: 'Apple Home, Google Home or Alexa, microSD, no cloud fee', options: ['aqara-camera-e1'] },
+      { role: 'Power', why: 'Qi2 magnetic, kickstand, 27 W USB-C', options: ['anker-maggo-10k'], optional: true },
+      { role: 'Hub', why: 'Only if you lack a Thread border router', options: ['aqara-hub-m3'], optional: true },
     ] },
   }
 }
@@ -149,7 +149,7 @@ function KitCard({ kit }: { kit: Kit }) {
         <AnimatePresence initial={false}>
           {picks.slice(0, shown).map(({ role, product }) => (
             <motion.li key={role.role + product.id} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3 px-4 py-2.5">
-              <div className="h-11 w-14 shrink-0 bg-paper"><ProductVisual visual={product.visual} hue={product.hue} glow={false} /></div>
+              <div className="h-11 w-14 shrink-0 bg-paper"><ProductImage product={product} /></div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline gap-2">
                   <span className="text-[11.5px] text-ink-3">{role.role}</span>
@@ -194,7 +194,7 @@ function TrendCard({ ids }: { ids: string[] }) {
         return (
           <li key={id} className="flex items-center gap-3 px-3 py-2.5">
             <span className="reading w-4 text-[11px] text-ink-3">{i + 1}</span>
-            <div className="h-10 w-12 shrink-0 bg-paper"><ProductVisual visual={p.visual} hue={p.hue} glow={false} /></div>
+            <div className="h-10 w-12 shrink-0 bg-paper"><ProductImage product={p} /></div>
             <div className="min-w-0 flex-1">
               <button type="button" onClick={() => go({ name: 'pdp', id })} className="block truncate text-[13.5px] font-medium text-ink hover:underline underline-offset-4">{p.brand} {p.name}</button>
               <div className="truncate text-[12px] text-ink-3">{p.category}, {fmt(p.price, currency, { compact: true })}, {p.fulfil.eta}</div>
@@ -215,7 +215,7 @@ function CheckCard({ product, result }: { product: Product; result: CompatResult
   return (
     <div className="mt-3 border border-rule bg-sheet">
       <button type="button" onClick={() => go({ name: 'pdp', id: product.id })} className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-paper">
-        <div className="h-10 w-12 shrink-0 bg-paper"><ProductVisual visual={product.visual} hue={product.hue} glow={false} /></div>
+        <div className="h-10 w-12 shrink-0 bg-paper"><ProductImage product={product} /></div>
         <div className="min-w-0 flex-1">
           <div className="truncate text-[13.5px] font-medium text-ink">{product.brand} {product.name}</div>
           <div className={cn('text-[12px]', result.status === 'ok' ? 'text-pass' : result.status === 'warn' ? 'text-check' : 'text-fail')}>{result.summary}</div>

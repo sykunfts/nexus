@@ -3,8 +3,36 @@
   from the product pipeline; here they are procedural so the prototype ships with no external assets.
 */
 import { useId } from 'react'
-import { Visual } from '../lib/data'
+import { Product, Visual } from '../lib/data'
 import { cn } from '../lib/cn'
+
+/** True for light finishes, so the procedural render and the 3D shell switch to the light material. */
+export const isLightSwatch = (swatch: string) => {
+  const m = swatch.match(/^#([0-9a-f]{6})$/i)
+  if (!m) return false
+  const n = parseInt(m[1], 16)
+  const l = 0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)
+  return l > 150
+}
+
+/**
+ * The product picture: the supplied photo when one exists (photos/<id>-N.jpg embedded at build time),
+ * otherwise the procedural render. `index` picks a gallery photo; it falls back to the first.
+ */
+export function ProductImage({ product, index = 0, hue, swatch, glow = false, className }: {
+  product: Pick<Product, 'photos' | 'visual' | 'hue' | 'brand' | 'name' | 'variants'>
+  index?: number
+  hue?: number
+  swatch?: string
+  glow?: boolean
+  className?: string
+}) {
+  const src = product.photos?.[index] ?? product.photos?.[0]
+  if (src) {
+    return <img src={src} alt={`${product.brand} ${product.name}`} loading="lazy" decoding="async" className={cn('block h-full w-full object-cover', className)} />
+  }
+  return <ProductVisual visual={product.visual} hue={hue ?? product.hue} swatch={swatch ?? product.variants[0]?.swatch} glow={glow} className={className} />
+}
 
 interface Props {
   visual: Visual
@@ -23,7 +51,7 @@ export function ProductVisual({ visual, hue = 78, swatch = '#2b2b30', className,
   const metal = `url(#${g('metal')})`
   const spec = `url(#${g('spec')})`
   const edge = 'rgba(255,255,255,0.14)'
-  const light = ['#c9ccd3', '#e8e8ec', '#d8c9a6', '#d2ff4a', '#d8b25c'].includes(swatch)
+  const light = isLightSwatch(swatch)
   const gold = swatch === '#d8b25c'
   const bodyA = gold ? '#e2c27a' : light ? '#d7d9df' : '#2e2e34'
   const bodyB = gold ? '#8a6a2a' : light ? '#9ea2ab' : '#121215'
@@ -94,6 +122,44 @@ export function ProductVisual({ visual, hue = 78, swatch = '#2b2b30', className,
           <circle cx="258" cy="208" r="3" fill={accent} />
           <rect x="106" y="232" width="36" height="6" rx="3" fill={bodyDark} />
           <rect x="258" y="232" width="36" height="6" rx="3" fill={bodyDark} />
+        </g>
+      )}
+
+      {visual === 'projector-can' && (
+        <g>
+          {/* stand */}
+          <ellipse cx="200" cy="250" rx="66" ry="11" fill={bodyDark} stroke={edge} />
+          <rect x="134" y="236" width="132" height="14" rx="4" fill={bodyDark} />
+          <ellipse cx="200" cy="236" rx="66" ry="11" fill={light ? '#dcdde2' : '#26262c'} stroke={edge} />
+          {/* body */}
+          <rect x="146" y="46" width="108" height="194" rx="10" fill={body} stroke={edge} />
+          <rect x="146" y="46" width="108" height="194" rx="10" fill={spec} />
+          <ellipse cx="200" cy="48" rx="54" ry="9" fill={light ? '#e9eaee' : '#3a3a42'} stroke={edge} />
+          <ellipse cx="200" cy="48" rx="20" ry="3.5" fill={light ? '#c5c7ce' : '#111114'} />
+          {/* lens on the upper front */}
+          <circle cx="200" cy="106" r="31" fill="#0a0a0c" stroke="rgba(255,255,255,0.25)" />
+          <circle cx="200" cy="106" r="22" fill={wall} />
+          <circle cx="200" cy="106" r="10" fill="#06060a" />
+          <circle cx="192" cy="98" r="3.5" fill="#fff" opacity="0.6" />
+          <circle cx="238" cy="78" r="2.5" fill={accent} />
+          {/* speaker grille */}
+          {Array.from({ length: 48 }).map((_, i) => (
+            <circle key={i} cx={166 + (i % 8) * 9.7} cy={156 + Math.floor(i / 8) * 11} r="2" fill={light ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.2)'} />
+          ))}
+          <rect x="184" y="226" width="32" height="5" rx="2.5" fill={light ? 'rgba(0,0,0,0.25)' : 'rgba(255,255,255,0.18)'} />
+        </g>
+      )}
+
+      {visual === 'scale' && (
+        <g>
+          <rect x="96" y="66" width="208" height="176" rx="16" fill={body} stroke={edge} />
+          <rect x="96" y="66" width="208" height="176" rx="16" fill={spec} />
+          <rect x="104" y="74" width="192" height="160" rx="12" fill="none" stroke={light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.1)'} />
+          {[[122, 92], [278, 92], [122, 216], [278, 216]].map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r="7" fill={metal} opacity="0.8" />)}
+          <rect x="156" y="92" width="88" height="34" rx="4" fill="#0a0a0c" stroke="rgba(255,255,255,0.2)" />
+          <text x="200" y="116" textAnchor="middle" fontFamily="Martian Mono, monospace" fontSize="17" fontWeight="500" fill={accent}>72.4</text>
+          <rect x="150" y="146" width="100" height="2" rx="1" fill={light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.12)'} />
+          <rect x="150" y="166" width="100" height="2" rx="1" fill={light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.12)'} />
         </g>
       )}
 
@@ -252,8 +318,8 @@ export function ProductVisual({ visual, hue = 78, swatch = '#2b2b30', className,
       {visual === 'screen' && (
         <g>
           <rect x="40" y="56" width="320" height="180" rx="4" fill={bodyDark} stroke={edge} />
-          <rect x="52" y="68" width="296" height="156" fill="#15151a" />
-          <rect x="52" y="68" width="296" height="156" fill={wall} opacity="0.25" />
+          <rect x="52" y="68" width="296" height="156" fill={light ? '#f4f4f6' : '#15151a'} />
+          <rect x="52" y="68" width="296" height="156" fill={wall} opacity={light ? 0.08 : 0.25} />
           <rect x="52" y="68" width="296" height="156" fill={spec} />
           <path d="M120 236 L96 268 M280 236 L304 268" stroke={bodyA} strokeWidth="6" strokeLinecap="round" />
           <rect x="60" y="246" width="280" height="8" rx="4" fill={bodyDark} stroke={edge} />
@@ -291,7 +357,7 @@ export function ProductVisual({ visual, hue = 78, swatch = '#2b2b30', className,
           <rect x="178" y="66" width="8" height="22" rx="2" fill={metal} transform="rotate(-12 182 77)" />
           <rect x="214" y="66" width="8" height="22" rx="2" fill={metal} transform="rotate(12 218 77)" />
           <rect x="186" y="188" width="28" height="10" rx="5" fill="#0a0a0c" stroke="rgba(255,255,255,0.25)" />
-          <text x="200" y="146" textAnchor="middle" fontFamily="Geist Mono, monospace" fontSize="14" fontWeight="600" fill={ink}>100W</text>
+          <text x="200" y="146" textAnchor="middle" fontFamily="Martian Mono, monospace" fontSize="14" fontWeight="500" fill={ink}>100 W</text>
           <circle cx="200" cy="112" r="2" fill={accent} />
         </g>
       )}

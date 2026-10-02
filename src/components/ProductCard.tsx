@@ -3,7 +3,7 @@ import { Check, Plus } from 'lucide-react'
 import { Product } from '../lib/data'
 import { fmt } from '../lib/currency'
 import { useStore } from '../lib/store'
-import { ProductVisual } from './ProductVisual'
+import { ProductImage } from './ProductVisual'
 import { Pill, Stars, StockDot, Tile } from './ui'
 import { cn } from '../lib/cn'
 
@@ -55,7 +55,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
       {/* render */}
       <div className="relative">
         <button type="button" onClick={() => go({ name: 'pdp', id: product.id })} className="block aspect-[4/3] w-full cursor-pointer" aria-label={`View ${product.name}`}>
-          <ProductVisual visual={product.visual} hue={variant.hue} swatch={variant.swatch} />
+          <ProductImage product={product} hue={variant.hue} swatch={variant.swatch} glow />
         </button>
         <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5">
           <TrendPill product={product} />
@@ -92,7 +92,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
         <p className="mt-2 line-clamp-2 text-[13.5px] leading-snug text-ink-2">{product.tagline}</p>
 
         <div className="mt-3 flex items-center justify-between gap-3 border-t border-rule pt-3">
-          <Stars rating={product.rating} reviews={product.reviews} />
+          <Stars rating={product.rating} />
           <span className="flex items-center gap-2" title={`${product.trend.source}: +${product.trend.delta}%`}>
             <Sparkline series={product.trend.series} />
             <span className="reading text-[12px] text-ink-2">+{product.trend.delta}%</span>

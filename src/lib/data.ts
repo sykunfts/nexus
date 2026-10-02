@@ -1,20 +1,24 @@
 /*
-  Catalogue model + sample data for a trend-tech dropshipping marketplace.
+  Catalogue model + the real catalogue.
+  21 products sold today, names, prices, specs and works-with facts checked on 2 Oct 2026 at the maker's
+  site or a major Australian retailer (see `sources` on each product). Prices are AUD, GST inclusive.
+  Trend numbers are sample data until the trend worker writes trends.json.
   In production: products come from Medusa, trend signals from the trend-ingestion service,
   fulfilment routes from the supplier connectors.
 */
+import { PHOTOS } from './photos.generated'
 
 export type Visual =
-  | 'projector' | 'ring' | 'powerbank' | 'glasses' | 'cam' | 'strip' | 'scooter' | 'earbuds'
-  | 'pin' | 'printer' | 'robovac' | 'mask' | 'screen' | 'tag' | 'hub' | 'charger' | 'case' | 'adapter'
+  | 'projector' | 'projector-can' | 'ring' | 'powerbank' | 'glasses' | 'cam' | 'strip' | 'scooter' | 'earbuds'
+  | 'pin' | 'printer' | 'robovac' | 'mask' | 'screen' | 'tag' | 'hub' | 'charger' | 'case' | 'adapter' | 'scale'
 
 export type OS = 'ios' | 'android'
 export type HomeProto = 'matter' | 'thread' | 'homekit' | 'google' | 'alexa'
 export type Region = 'AU' | 'US' | 'EU' | 'UK'
-export type PortKind = 'hdmi' | 'usb-c' | 'usb-a' | 'jack'
+export type PortKind = 'hdmi' | 'usb-c' | 'usb-a' | 'jack' | 'dc'
 export type TrackerNet = 'find-my' | 'find-hub'
 
-export const PORT_LABEL: Record<PortKind, string> = { hdmi: 'HDMI', 'usb-c': 'USB-C', 'usb-a': 'USB-A', jack: '3.5 mm audio' }
+export const PORT_LABEL: Record<PortKind, string> = { hdmi: 'HDMI', 'usb-c': 'USB-C', 'usb-a': 'USB-A', jack: '3.5 mm audio', dc: 'DC in' }
 export const PROTO_LABEL: Record<HomeProto, string> = { matter: 'Matter', thread: 'Thread', homekit: 'Apple Home', google: 'Google Home', alexa: 'Alexa' }
 export const REGION_LABEL: Record<Region, string> = { AU: 'Australia (Type I, 240 V)', US: 'United States (Type A/B, 120 V)', EU: 'Europe (Type C/F, 230 V)', UK: 'United Kingdom (Type G, 230 V)' }
 
@@ -38,17 +42,18 @@ export interface CompatFacts {
   phone?: { os: OS; magnets: boolean; trackerNet: TrackerNet }
   hubs?: HomeProto[]         // protocols a home hub provides
   region?: Region            // where the shopper lives
-  givesMagnets?: boolean     // a case that adds a magnet ring to a phone
+  givesMagnets?: boolean     // a ring or case that adds magnets to a phone
   adapterFor?: Region        // a plug adapter that outputs this region's socket
 }
 
-export interface Variant { id: string; label: string; swatch: string; hue: number }
+export interface Variant { id: string; label: string; swatch: string; hue: number; delta?: number }
 export interface Choice { id: string; label: string; sub?: string; delta: number; facts?: Partial<CompatFacts> }
 export interface OptionGroup { id: string; label: string; choices: Choice[] }
 export interface SpecRow { label: string; value: string; n?: number; better?: 'high' | 'low' }
 export interface SpecGroup { group: string; rows: SpecRow[] }
 export interface Trend { label: 'Viral' | 'Trending' | 'Rising' | 'Steady'; delta: number; series: number[]; source: string }
 export interface Fulfil { route: 'warehouse' | 'supplier'; from: string; eta: string; days: [number, number] }
+export interface Rating { value: number; count: number; at: string }
 
 export interface Product {
   id: string
@@ -56,15 +61,18 @@ export interface Product {
   brand: string
   category: string
   tagline: string
-  price: number
-  compareAt?: number
-  rating: number
-  reviews: number
+  price: number               // AUD, GST inclusive, cheapest verified retailer on priceCheckedAt
+  compareAt?: number          // maker's RRP when higher
+  priceCheckedAt: string      // ISO date
+  sources: string[]           // where the price and specs were checked
+  notes?: string              // things we could not verify, shown as a note, never as a fact
+  rating: Rating | null       // only where a value and a count were both visible
   stock: 'in' | 'low' | 'out'
   stockCount?: number
   fulfil: Fulfil
   visual: Visual
   hue: number
+  photos?: string[]           // data URIs, filled by scripts/embed-photos.mjs from photos/<id>-N.jpg
   variants: Variant[]
   options?: OptionGroup[]
   badges?: string[]
@@ -82,9 +90,12 @@ export interface GearItem {
   defaultOn: boolean
 }
 
+export const PRICE_CHECKED = '2026-10-02'
+export const priceCheckedText = (iso: string) => new Date(`${iso}T00:00:00`).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })
+
 const WAREHOUSE: Fulfil = { route: 'warehouse', from: 'Sydney warehouse', eta: '2–4 days', days: [2, 4] }
 const SUPPLIER: Fulfil = { route: 'supplier', from: 'partner supplier', eta: '8–12 days', days: [8, 12] }
-const SUPPLIER_SLOW: Fulfil = { route: 'supplier', from: 'partner supplier', eta: '10–15 days', days: [10, 15] }
+const SAMPLE = 'Sample data until the trend worker runs'
 
 const PLUG_OPTIONS: OptionGroup = {
   id: 'plug',
@@ -97,527 +108,760 @@ const PLUG_OPTIONS: OptionGroup = {
   ],
 }
 
-export const products: Product[] = [
+const sizes = (from: number, to: number): OptionGroup => ({
+  id: 'size',
+  label: 'Size (free sizing kit ships first)',
+  choices: Array.from({ length: to - from + 1 }, (_, i) => ({ id: String(from + i), label: `US ${from + i}`, delta: 0 })),
+})
+
+const BLACK = { id: 'black', label: 'Black', swatch: '#1b1b1f' }
+const WHITE = { id: 'white', label: 'White', swatch: '#e8e8ec' }
+
+const catalogue: Omit<Product, 'photos'>[] = [
+  /* ---------------- Home cinema ---------------- */
   {
-    id: 'beam-4k',
-    name: 'Beam 4K',
-    brand: 'Halo',
+    id: 'xgimi-mogo-4-laser',
+    name: 'MoGo 4 Laser',
+    brand: 'XGIMI',
     category: 'Home cinema',
-    tagline: 'A portable triple-laser 4K projector that throws a 100-inch picture from 2.6 m and runs 2.5 hours on battery.',
-    price: 699,
-    compareAt: 849,
-    rating: 4.8,
-    reviews: 2184,
+    tagline: 'A can-sized triple-laser 1080p projector with Google TV, a 2.5-hour battery and a stand that swivels 360°.',
+    price: 1229,
+    compareAt: 1995,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['au.xgimi.com', 'jbhifi.com.au'],
+    notes: 'HDMI version is not stated on the AU listing. No AirPlay; use Google Cast or HDMI from an iPhone.',
+    rating: { value: 4.47, count: 17, at: 'au.xgimi.com' },
     stock: 'in',
     fulfil: WAREHOUSE,
-    visual: 'projector',
+    visual: 'projector-can',
     hue: 24,
     badges: ['Trending'],
-    trend: { label: 'Trending', delta: 140, series: [12, 14, 13, 18, 24, 31, 40, 52], source: 'Search + social, 7 days' },
-    variants: [
-      { id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 24 },
-      { id: 'lunar', label: 'Lunar', swatch: '#c9ccd3', hue: 200 },
-    ],
-    options: [
-      {
-        id: 'edition',
-        label: 'Edition',
-        choices: [
-          { id: 'std', label: 'Beam 4K', sub: '1,200 ISO lumens, 65 W', delta: 0, facts: { pdInMin: 65 } },
-          { id: 'pro', label: 'Beam 4K Pro', sub: '2,000 ISO lumens, Dolby Vision, 100 W', delta: 200, facts: { pdInMin: 100 } },
-        ],
-      },
-      PLUG_OPTIONS,
-      {
-        id: 'bundle',
-        label: 'Bundle',
-        choices: [
-          { id: 'none', label: 'Projector only', delta: 0 },
-          { id: 'screen', label: '+ Halo Screen 100″', sub: 'ALR screen, save $50', delta: 199 },
-          { id: 'travel', label: '+ Travel case & Cube 100 W', sub: 'save $30', delta: 89 },
-        ],
-      },
-    ],
+    trend: { label: 'Trending', delta: 140, series: [12, 14, 13, 18, 24, 31, 40, 52], source: SAMPLE },
+    variants: [{ id: 'silver', label: 'Silver', swatch: '#c9ccd3', hue: 24 }],
+    options: [PLUG_OPTIONS],
     facts: {
       app: ['ios', 'android'],
-      provides: [{ kind: 'hdmi', count: 1 }, { kind: 'usb-c', count: 1 }, { kind: 'jack', count: 1 }],
+      provides: [{ kind: 'hdmi', count: 1 }, { kind: 'usb-a', count: 1 }, { kind: 'usb-c', count: 1 }],
       pdInMin: 65,
       plug: 'AU',
       voltage: '100-240',
     },
-    inBox: ['Beam 4K', '65 W USB-C power adapter (plug type as selected)', 'Remote with voice', 'Lens cloth'],
+    inBox: ['MoGo 4 Laser', 'Remote with voice control', '65 W USB-C power adapter (plug type as selected)', 'Quick-start guide'],
     specs: [
       { group: 'Picture', rows: [
-        { label: 'Light source', value: 'Triple-laser DLP, 25,000 h' },
-        { label: 'Resolution', value: '4K UHD (3840 × 2160)', n: 3840 * 2160, better: 'high' },
-        { label: 'Brightness', value: '1,200 ISO lumens (Pro: 2,000)', n: 1200, better: 'high' },
-        { label: 'Throw', value: '1.2:1, 100″ at 2.6 m', n: 1.2, better: 'low' },
+        { label: 'Light source', value: 'Triple laser (red, green, blue), DLP' },
+        { label: 'Resolution', value: '1080p (1920 × 1080)', n: 1920 * 1080, better: 'high' },
+        { label: 'Brightness', value: '550 ISO lumens claimed', n: 550, better: 'high' },
         { label: 'Focus', value: 'ToF autofocus, auto keystone, obstacle avoidance' },
       ] },
-      { group: 'Sound & smart', rows: [
-        { label: 'Speakers', value: '2 × 8 W, Dolby Audio', n: 16, better: 'high' },
-        { label: 'Streaming', value: 'Netflix, AirPlay, Google Cast, Halo OS' },
-        { label: 'Wireless', value: 'Wi-Fi 6, Bluetooth 5.3' },
-        { label: 'Inputs', value: 'HDMI 2.1 (eARC), USB-C, 3.5 mm' },
+      { group: 'Sound and smart', rows: [
+        { label: 'Speakers', value: '2 × 6 W, Harman Kardon', n: 12, better: 'high' },
+        { label: 'Streaming', value: 'Google TV, Netflix native, Google Cast; no AirPlay' },
+        { label: 'Wireless', value: 'Wi-Fi 5, Bluetooth 5.1' },
+        { label: 'Inputs', value: 'HDMI (ARC), USB-A, USB-C power in' },
       ] },
-      { group: 'Power & body', rows: [
-        { label: 'Battery', value: '65 Wh, 2.5 h', n: 2.5, better: 'high' },
-        { label: 'Charging', value: '65 W USB-C PD (Pro: 100 W)', n: 65, better: 'high' },
-        { label: 'Weight', value: '1.1 kg', n: 1.1, better: 'low' },
-        { label: 'Noise', value: '26 dB', n: 26, better: 'low' },
+      { group: 'Power and body', rows: [
+        { label: 'Battery', value: '71.28 Wh, up to 2.5 h in Eco', n: 2.5, better: 'high' },
+        { label: 'Charging', value: '65 W USB-C PD (accepts 65 to 150 W)', n: 65, better: 'high' },
+        { label: 'Weight', value: '1.32 kg', n: 1.32, better: 'low' },
+        { label: 'Size', value: '207.6 × 96.5 × 96.5 mm' },
+        { label: 'Noise', value: '≤ 28 dB at 1 m claimed', n: 28, better: 'low' },
       ] },
     ],
   },
   {
-    id: 'beam-mini',
-    name: 'Beam Mini',
-    brand: 'Halo',
+    id: 'xgimi-vibe-one',
+    name: 'Vibe One',
+    brand: 'XGIMI',
     category: 'Home cinema',
-    tagline: '1080p LED pocket projector for the bedroom wall. Runs 4 hours, weighs 480 g.',
-    price: 249,
-    rating: 4.5,
-    reviews: 3310,
+    tagline: 'A 1080p LCD battery projector with Google TV for the bedroom wall, in Cloud Ash or Blue Spark.',
+    price: 595,
+    compareAt: 599,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['jbhifi.com.au', 'au.xgimi.com'],
+    notes: 'HDMI version and the full port list are not stated on the AU listing.',
+    rating: null,
     stock: 'in',
-    fulfil: SUPPLIER,
+    fulfil: WAREHOUSE,
     visual: 'projector',
     hue: 200,
-    trend: { label: 'Steady', delta: 12, series: [20, 21, 19, 22, 23, 22, 24, 23], source: 'Search + social, 7 days' },
-    variants: [{ id: 'lunar', label: 'Lunar', swatch: '#c9ccd3', hue: 200 }],
+    trend: { label: 'Steady', delta: 12, series: [20, 21, 19, 22, 23, 22, 24, 23], source: SAMPLE },
+    variants: [
+      { id: 'cloud-ash', label: 'Cloud Ash', swatch: '#b9bcc3', hue: 200 },
+      { id: 'blue-spark', label: 'Blue Spark', swatch: '#3b5fa8', hue: 215 },
+    ],
     options: [PLUG_OPTIONS],
-    facts: { app: ['ios', 'android'], provides: [{ kind: 'hdmi', count: 1 }, { kind: 'usb-c', count: 1 }], pdInMin: 30, plug: 'AU', voltage: '100-240' },
+    facts: { app: ['ios', 'android'], provides: [{ kind: 'hdmi', count: 1 }, { kind: 'dc', count: 1 }], plug: 'AU', voltage: '100-240' },
+    inBox: ['Vibe One', 'Remote', '65 W DC power adapter (plug type as selected)', 'Quick-start guide'],
     specs: [
       { group: 'Picture', rows: [
-        { label: 'Light source', value: 'LED, 30,000 h' },
+        { label: 'Light source', value: 'LED, LCD' },
         { label: 'Resolution', value: '1080p (1920 × 1080)', n: 1920 * 1080, better: 'high' },
-        { label: 'Brightness', value: '400 ISO lumens', n: 400, better: 'high' },
-        { label: 'Throw', value: '1.2:1, 80″ at 2.1 m', n: 1.2, better: 'low' },
+        { label: 'Brightness', value: '250 ISO lumens claimed', n: 250, better: 'high' },
         { label: 'Focus', value: 'Autofocus, auto keystone' },
       ] },
-      { group: 'Sound & smart', rows: [
-        { label: 'Speakers', value: '1 × 5 W', n: 5, better: 'high' },
-        { label: 'Streaming', value: 'AirPlay, Google Cast' },
-        { label: 'Wireless', value: 'Wi-Fi 5, Bluetooth 5.0' },
-        { label: 'Inputs', value: 'HDMI 2.0, USB-C' },
+      { group: 'Sound and smart', rows: [
+        { label: 'Speakers', value: '2 × 3 W, JBL', n: 6, better: 'high' },
+        { label: 'Streaming', value: 'Google TV, Netflix native, Google Cast' },
+        { label: 'Inputs', value: 'HDMI, DC in' },
       ] },
-      { group: 'Power & body', rows: [
-        { label: 'Battery', value: '30 Wh, 4 h', n: 4, better: 'high' },
-        { label: 'Charging', value: '30 W USB-C PD', n: 30, better: 'high' },
-        { label: 'Weight', value: '0.48 kg', n: 0.48, better: 'low' },
-        { label: 'Noise', value: '30 dB', n: 30, better: 'low' },
+      { group: 'Power and body', rows: [
+        { label: 'Battery', value: '38.48 Wh, about 1.2 h', n: 1.2, better: 'high' },
+        { label: 'Charging', value: '65 W DC adapter, no USB-C PD', n: 0, better: 'high' },
+        { label: 'Weight', value: '1.4 kg', n: 1.4, better: 'low' },
       ] },
     ],
   },
   {
-    id: 'loop-ring',
-    name: 'Ring 2',
-    brand: 'Loop',
+    id: 'elite-yard-master-2-100',
+    name: 'Yard Master 2, 100″',
+    brand: 'Elite Screens',
+    category: 'Home cinema',
+    tagline: 'A 100-inch 16:9 outdoor frame screen in matte white that folds into its bag at 9.2 kg.',
+    price: 620,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['jbhifi.com.au', 'elitescreens.com'],
+    rating: null,
+    stock: 'in',
+    fulfil: WAREHOUSE,
+    visual: 'screen',
+    hue: 24,
+    trend: { label: 'Steady', delta: 18, series: [18, 19, 18, 20, 21, 20, 22, 22], source: SAMPLE },
+    variants: [{ id: 'matte-white', label: 'Matte white', swatch: '#e8e8ec', hue: 24 }],
+    facts: {},
+    inBox: ['Frame, legs and ground stakes', 'CineWhite screen material', 'Carry bag'],
+    specs: [
+      { group: 'Screen', rows: [
+        { label: 'Size', value: '100″ 16:9, 221 × 124.5 cm viewing area', n: 100, better: 'high' },
+        { label: 'Material', value: 'CineWhite matte white, 1.1 gain; not ALR, so dim the lights' },
+        { label: 'Weight', value: '9.2 kg', n: 9.2, better: 'low' },
+        { label: 'Packed', value: '102 × 20 × 28 cm' },
+        { label: 'Model', value: 'OMS100H2' },
+      ] },
+    ],
+  },
+
+  /* ---------------- Wearables ---------------- */
+  {
+    id: 'ringconn-gen-3',
+    name: 'Gen 3 smart ring',
+    brand: 'RingConn',
     category: 'Wearables',
-    tagline: 'Titanium smart ring: sleep staging, HRV, skin temperature and a 7-day battery. No subscription.',
-    price: 299,
-    rating: 4.7,
-    reviews: 5120,
+    tagline: 'A 2.3 mm titanium ring that tracks sleep, heart rate and HRV for up to 14 days a charge, with no subscription.',
+    price: 569,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['jbhifi.com.au', 'ringconn.com'],
+    rating: null,
     stock: 'in',
     fulfil: WAREHOUSE,
     visual: 'ring',
     hue: 40,
     badges: ['Viral'],
-    trend: { label: 'Viral', delta: 212, series: [8, 9, 12, 15, 22, 30, 38, 61], source: 'TikTok + search, 7 days' },
+    trend: { label: 'Viral', delta: 212, series: [8, 9, 12, 15, 22, 30, 38, 61], source: SAMPLE },
     variants: [
-      { id: 'titanium', label: 'Titanium', swatch: '#c9ccd3', hue: 40 },
-      { id: 'black', label: 'Black', swatch: '#1b1b1f', hue: 40 },
-      { id: 'gold', label: 'Gold', swatch: '#d8b25c', hue: 40 },
+      { id: 'matte-black', label: 'Matte Black', swatch: '#1b1b1f', hue: 40 },
+      { id: 'future-silver', label: 'Future Silver', swatch: '#c9ccd3', hue: 40 },
+      { id: 'royal-gold', label: 'Royal Gold', swatch: '#d8b25c', hue: 40 },
+      { id: 'brushed-silver', label: 'Brushed Silver', swatch: '#b8bcc4', hue: 40, delta: 30 },
+      { id: 'brushed-rose-gold', label: 'Brushed Rose Gold', swatch: '#d9a79a', hue: 40, delta: 30 },
     ],
-    options: [{ id: 'size', label: 'Size (free sizing kit ships first)', choices: [7, 8, 9, 10, 11, 12, 13].map((n) => ({ id: String(n), label: `US ${n}`, delta: 0 })) }],
+    options: [sizes(6, 15)],
     facts: { app: ['ios', 'android'] },
-    specs: [{ group: 'Sensors', rows: [
-      { label: 'Sensors', value: 'PPG, skin temp, 3-axis accelerometer' },
-      { label: 'Battery', value: '7 days', n: 7, better: 'high' },
-      { label: 'Water resistance', value: '100 m', n: 100, better: 'high' },
-    ] }],
+    inBox: ['Ring', 'Charging case', 'USB-C cable', 'Sizing kit (ships first)'],
+    specs: [
+      { group: 'Ring', rows: [
+        { label: 'Battery', value: 'Up to 14 days', n: 14, better: 'high' },
+        { label: 'Thickness', value: '2.3 mm', n: 2.3, better: 'low' },
+        { label: 'Water resistance', value: 'IP68, 10 ATM (100 m)', n: 100, better: 'high' },
+        { label: 'Subscription', value: 'None' },
+        { label: 'App', value: 'iOS 17+, Android 10+' },
+        { label: 'Sizes', value: 'US 6 to 15' },
+      ] },
+    ],
   },
   {
-    id: 'aether-magpack',
-    name: 'MagPack Solar 10K',
-    brand: 'Aether',
+    id: 'oura-ring-5',
+    name: 'Ring 5',
+    brand: 'Oura',
+    category: 'Wearables',
+    tagline: 'The best-known smart ring: 6 to 9 days a charge, 2.28 mm thin, with a membership for the full readouts.',
+    price: 649,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['jbhifi.com.au', 'ouraring.com'],
+    notes: 'Oura shows a 4.93 rating with no visible review count, so no rating is shown here.',
+    rating: null,
+    stock: 'in',
+    fulfil: WAREHOUSE,
+    visual: 'ring',
+    hue: 40,
+    trend: { label: 'Trending', delta: 105, series: [14, 15, 17, 19, 22, 26, 31, 38], source: SAMPLE },
+    variants: [
+      { id: 'silver', label: 'Silver', swatch: '#c9ccd3', hue: 40 },
+      { id: 'black', label: 'Black', swatch: '#1b1b1f', hue: 40 },
+      { id: 'gold', label: 'Gold', swatch: '#d8b25c', hue: 40, delta: 150 },
+      { id: 'stealth', label: 'Stealth', swatch: '#3a3a40', hue: 40, delta: 150 },
+      { id: 'brushed-silver', label: 'Brushed Silver', swatch: '#b8bcc4', hue: 40, delta: 150 },
+      { id: 'deep-rose', label: 'Deep Rose', swatch: '#c9897a', hue: 40, delta: 150 },
+    ],
+    options: [sizes(6, 13)],
+    facts: { app: ['ios', 'android'] },
+    inBox: ['Ring', 'Charger', 'USB-C cable', 'Sizing kit (ships first)'],
+    specs: [
+      { group: 'Ring', rows: [
+        { label: 'Battery', value: '6 to 9 days', n: 9, better: 'high' },
+        { label: 'Thickness', value: '2.28 mm', n: 2.28, better: 'low' },
+        { label: 'Water resistance', value: '100 m', n: 100, better: 'high' },
+        { label: 'Subscription', value: 'Membership, A$9.99 a month or A$109.99 a year, billed by Oura' },
+        { label: 'App', value: 'iOS and Android' },
+        { label: 'Sizes', value: 'US 6 to 13' },
+      ] },
+    ],
+  },
+  {
+    id: 'rayban-meta-gen-3',
+    name: 'Meta Gen 3',
+    brand: 'Ray-Ban',
+    category: 'Wearables',
+    tagline: 'Glasses with a 12 MP camera, 3K video, open-ear audio and Meta AI, released 23 September 2026.',
+    price: 679,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['jbhifi.com.au', 'opsm.com.au', 'meta.com'],
+    notes: 'Water rating for Gen 3 not published at listing time. Frame price differences are unverified, so every frame is shown at the Wayfarer price.',
+    rating: null,
+    stock: 'in',
+    fulfil: WAREHOUSE,
+    visual: 'glasses',
+    hue: 200,
+    badges: ['New'],
+    trend: { label: 'Trending', delta: 180, series: [10, 12, 15, 14, 20, 28, 36, 44], source: SAMPLE },
+    variants: [
+      { id: 'shiny-black', label: 'Shiny Black', swatch: '#1b1b1f', hue: 200 },
+      { id: 'matte-black', label: 'Matte Black', swatch: '#2b2b30', hue: 200 },
+    ],
+    options: [
+      { id: 'frame', label: 'Frame', choices: [
+        { id: 'wayfarer', label: 'Wayfarer', delta: 0 },
+        { id: 'aviator', label: 'Aviator', delta: 0 },
+        { id: 'zena', label: 'Zena', delta: 0 },
+      ] },
+      { id: 'lens', label: 'Lens', choices: [
+        { id: 'standard', label: 'Standard', sub: 'Clear or tinted', delta: 0 },
+        { id: 'transitions', label: 'Transitions', sub: 'Darkens outdoors', delta: 90 },
+      ] },
+    ],
+    facts: { app: ['ios', 'android'] },
+    inBox: ['Glasses', 'Charging case', 'USB-C cable', 'Cleaning cloth'],
+    specs: [
+      { group: 'Glasses', rows: [
+        { label: 'Camera', value: '12 MP ultra-wide, 3K video' },
+        { label: 'Audio', value: 'Open-ear speakers, 6 microphones' },
+        { label: 'Storage', value: '32 GB', n: 32, better: 'high' },
+        { label: 'Battery', value: 'Up to 9 h, 50 h with the case', n: 9, better: 'high' },
+        { label: 'Weight', value: '51.5 g', n: 51.5, better: 'low' },
+        { label: 'Wireless', value: 'Bluetooth 5.3, Wi-Fi 6' },
+        { label: 'App', value: 'Meta AI app, iOS 17+, Android 10+' },
+      ] },
+    ],
+  },
+
+  /* ---------------- Audio ---------------- */
+  {
+    id: 'bose-ultra-open-2',
+    name: 'Ultra Open Earbuds (2nd Gen)',
+    brand: 'Bose',
+    category: 'Audio',
+    tagline: 'Clip-on open earbuds: 9 hours a charge, multipoint Bluetooth 5.4, IPX4, and your ears stay open to the street.',
+    price: 449,
+    compareAt: 449.95,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['bose.com.au'],
+    rating: null,
+    stock: 'in',
+    fulfil: WAREHOUSE,
+    visual: 'earbuds',
+    hue: 330,
+    trend: { label: 'Trending', delta: 120, series: [11, 12, 14, 17, 21, 26, 32, 39], source: SAMPLE },
+    variants: [
+      { ...BLACK, hue: 330 },
+      { id: 'white-smoke', label: 'White Smoke', swatch: '#e8e8ec', hue: 330 },
+      { id: 'sky-pink', label: 'Sky Pink', swatch: '#e6b7c4', hue: 330 },
+      { id: 'cherry-chocolate', label: 'Cherry Chocolate', swatch: '#4a2a2c', hue: 330 },
+      { id: 'olive-green', label: 'Olive Green', swatch: '#6b7b4a', hue: 330 },
+    ],
+    facts: { app: ['ios', 'android'] },
+    inBox: ['Earbuds', 'Charging case', 'USB-C cable'],
+    specs: [
+      { group: 'Earbuds', rows: [
+        { label: 'Battery', value: '9 h, 28.5 h with the case', n: 9, better: 'high' },
+        { label: 'Bluetooth', value: '5.4, multipoint' },
+        { label: 'Water resistance', value: 'IPX4' },
+        { label: 'Fit', value: 'Clip-on cuff, open ear' },
+      ] },
+    ],
+  },
+
+  /* ---------------- Work ---------------- */
+  {
+    id: 'plaud-notepin-s',
+    name: 'NotePin S',
+    brand: 'Plaud',
+    category: 'Work',
+    tagline: 'A 17 g wearable recorder that transcribes 20 hours of meetings in 112 languages and sits on Apple Find My.',
+    price: 239,
+    compareAt: 299,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['au.plaud.ai'],
+    rating: { value: 4.86, count: 7, at: 'au.plaud.ai' },
+    stock: 'in',
+    fulfil: SUPPLIER,
+    visual: 'pin',
+    hue: 78,
+    badges: ['Viral'],
+    trend: { label: 'Viral', delta: 260, series: [6, 8, 10, 16, 24, 30, 44, 58], source: SAMPLE },
+    variants: [{ id: 'cosmic-gray', label: 'Cosmic Gray', swatch: '#5a5a62', hue: 78 }],
+    options: [
+      { id: 'plan', label: 'Plaud plan', choices: [
+        { id: 'starter', label: 'Starter', sub: 'Free plan', delta: 0 },
+        { id: 'pro', label: 'Pro', sub: 'A$39.99 a month, billed by Plaud', delta: 0 },
+      ] },
+    ],
+    facts: { app: ['ios', 'android'] },
+    inBox: ['NotePin S', 'Magnetic pin', 'Clip', 'USB-C charging dock'],
+    specs: [
+      { group: 'Recorder', rows: [
+        { label: 'Recording', value: '20 h a charge, 64 GB', n: 20, better: 'high' },
+        { label: 'Transcription', value: '112 languages, speaker labels, summaries in the Plaud app' },
+        { label: 'Weight', value: '17.4 g', n: 17.4, better: 'low' },
+        { label: 'Finder', value: 'Apple Find My (iPhone only for finding)' },
+        { label: 'App', value: 'iOS and Android' },
+      ] },
+    ],
+  },
+
+  /* ---------------- Power ---------------- */
+  {
+    id: 'anker-maggo-10k',
+    name: 'MagGo Power Bank 10K (Qi2)',
+    brand: 'Anker',
     category: 'Power',
-    tagline: 'Magnetic 10,000 mAh Qi2 power bank with a fold-out solar panel for the days you forget to charge it.',
-    price: 89,
-    rating: 4.6,
-    reviews: 2744,
+    tagline: 'A 10,000 mAh Qi2 magnetic bank with a kickstand and a display: 15 W wireless to the phone, 27 W over USB-C.',
+    price: 119.96,
+    compareAt: 149.95,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['anker.com/au'],
+    rating: { value: 4.7, count: 532, at: 'anker.com/au' },
     stock: 'in',
     fulfil: SUPPLIER,
     visual: 'powerbank',
     hue: 78,
-    trend: { label: 'Rising', delta: 96, series: [10, 11, 13, 14, 16, 19, 22, 26], source: 'Search + social, 7 days' },
+    trend: { label: 'Rising', delta: 96, series: [10, 11, 13, 14, 16, 19, 22, 26], source: SAMPLE },
     variants: [
-      { id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 78 },
-      { id: 'lunar', label: 'Lunar', swatch: '#c9ccd3', hue: 200 },
+      { id: 'black-stone', label: 'Black Stone', swatch: '#2b2b30', hue: 78 },
+      { id: 'shell-white', label: 'Shell White', swatch: '#e8e8ec', hue: 78 },
+      { id: 'ice-lake-blue', label: 'Ice Lake Blue', swatch: '#9fc4e8', hue: 200 },
+      { id: 'buds-green', label: 'Buds Green', swatch: '#b7d39a', hue: 100 },
     ],
-    facts: { magnetic: true, pdOut: 20 },
-    specs: [{ group: 'Power', rows: [
-      { label: 'Capacity', value: '10,000 mAh', n: 10000, better: 'high' },
-      { label: 'Wireless', value: 'Qi2, 15 W magnetic', n: 15, better: 'high' },
-      { label: 'Solar', value: '5 W fold-out panel, 2 h sun = 15 % charge' },
-    ] }],
-  },
-  {
-    id: 'specs-air',
-    name: 'Specs Air',
-    brand: 'Specs',
-    category: 'Wearables',
-    tagline: 'Smart glasses with a 12 MP camera, open-ear audio and an on-device assistant. Prescription lenses available.',
-    price: 349,
-    rating: 4.4,
-    reviews: 1180,
-    stock: 'low',
-    stockCount: 6,
-    fulfil: SUPPLIER,
-    visual: 'glasses',
-    hue: 220,
-    badges: ['Rising'],
-    trend: { label: 'Rising', delta: 180, series: [6, 7, 7, 9, 12, 15, 18, 22], source: 'Search + social, 7 days' },
-    variants: [
-      { id: 'black', label: 'Black', swatch: '#1b1b1f', hue: 220 },
-      { id: 'tortoise', label: 'Tortoise', swatch: '#6b4a2a', hue: 30 },
+    facts: { magnetic: true, pdOut: 27 },
+    inBox: ['Power bank', 'USB-C to USB-C cable'],
+    specs: [
+      { group: 'Power', rows: [
+        { label: 'Capacity', value: '10,000 mAh, 38.5 Wh', n: 10000, better: 'high' },
+        { label: 'Wireless', value: 'Qi2, 15 W magnetic', n: 15, better: 'high' },
+        { label: 'Wired', value: '27 W USB-C out, 20 W in', n: 27, better: 'high' },
+        { label: 'Weight', value: '250 g', n: 250, better: 'low' },
+        { label: 'Extras', value: 'Kickstand, status display' },
+        { label: 'Model', value: 'A1654' },
+      ] },
     ],
-    facts: { app: ['ios', 'android'] },
-    specs: [{ group: 'Glasses', rows: [
-      { label: 'Camera', value: '12 MP, 1080p 60 video' },
-      { label: 'Battery', value: '6 h, 36 h with case', n: 6, better: 'high' },
-      { label: 'Weight', value: '49 g', n: 49, better: 'low' },
-    ] }],
   },
   {
-    id: 'nimbus-orbit',
-    name: 'Orbit 2K',
-    brand: 'Nimbus',
-    category: 'Smart home',
-    tagline: 'Pan-tilt indoor camera with on-device person detection, Matter and local storage. No cloud fee.',
-    price: 129,
-    rating: 4.6,
-    reviews: 2032,
-    stock: 'in',
-    fulfil: WAREHOUSE,
-    visual: 'cam',
-    hue: 200,
-    trend: { label: 'Steady', delta: 18, series: [18, 19, 18, 20, 21, 21, 22, 22], source: 'Search + social, 7 days' },
-    variants: [{ id: 'white', label: 'White', swatch: '#e8e8ec', hue: 200 }],
-    facts: { app: ['ios', 'android'], home: ['matter', 'homekit', 'google', 'alexa'], plug: 'AU', voltage: '100-240' },
-    options: [PLUG_OPTIONS],
-    specs: [{ group: 'Camera', rows: [
-      { label: 'Resolution', value: '2K, 360° pan, 90° tilt' },
-      { label: 'Smart home', value: 'Matter, Apple Home, Google Home, Alexa' },
-      { label: 'Storage', value: 'microSD up to 512 GB', n: 512, better: 'high' },
-    ] }],
-  },
-  {
-    id: 'nimbus-glow',
-    name: 'Glow Strip 5 m',
-    brand: 'Nimbus',
-    category: 'Smart home',
-    tagline: 'Addressable RGBIC light strip over Matter and Thread. Music sync, 16 million colours, no hub bundled.',
-    price: 59,
-    rating: 4.5,
-    reviews: 4410,
-    stock: 'in',
-    fulfil: SUPPLIER,
-    visual: 'strip',
-    hue: 290,
-    trend: { label: 'Rising', delta: 74, series: [14, 15, 15, 17, 19, 21, 23, 25], source: 'Search + social, 7 days' },
-    variants: [{ id: 'white', label: 'White', swatch: '#e8e8ec', hue: 290 }],
-    facts: { app: ['ios', 'android'], home: ['matter', 'thread'], needsThread: true, plug: 'AU', voltage: '100-240' },
-    options: [PLUG_OPTIONS],
-    specs: [{ group: 'Light', rows: [
-      { label: 'Length', value: '5 m, cuttable', n: 5, better: 'high' },
-      { label: 'Protocol', value: 'Matter over Thread' },
-      { label: 'Brightness', value: '1,800 lm', n: 1800, better: 'high' },
-    ] }],
-  },
-  {
-    id: 'drift-one',
-    name: 'Drift One',
-    brand: 'Drift',
-    category: 'Mobility',
-    tagline: 'Folding e-scooter with a 45 km range, 10-inch tubeless tyres and an app lock. Stocked locally.',
-    price: 649,
-    compareAt: 799,
-    rating: 4.5,
-    reviews: 866,
-    stock: 'low',
-    stockCount: 3,
-    fulfil: WAREHOUSE,
-    visual: 'scooter',
-    hue: 150,
-    badges: ['AU stock'],
-    trend: { label: 'Rising', delta: 64, series: [12, 13, 12, 14, 16, 17, 19, 20], source: 'Search + social, 7 days' },
-    variants: [{ id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 150 }],
-    facts: { app: ['ios', 'android'], plug: 'AU', voltage: '100-240' },
-    specs: [{ group: 'Ride', rows: [
-      { label: 'Range', value: '45 km', n: 45, better: 'high' },
-      { label: 'Motor', value: '500 W, 25 km/h', n: 500, better: 'high' },
-      { label: 'Weight', value: '17 kg', n: 17, better: 'low' },
-    ] }],
-  },
-  {
-    id: 'pulse-open',
-    name: 'Open Buds',
-    brand: 'Pulse',
-    category: 'Audio',
-    tagline: 'Clip-on open-ear earbuds you can wear all day. 8 hours, IPX5, multipoint.',
-    price: 129,
-    rating: 4.6,
-    reviews: 6210,
-    stock: 'in',
-    fulfil: SUPPLIER,
-    visual: 'earbuds',
-    hue: 20,
-    badges: ['Best seller'],
-    trend: { label: 'Trending', delta: 120, series: [15, 16, 18, 21, 24, 28, 31, 33], source: 'TikTok + search, 7 days' },
-    variants: [
-      { id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 20 },
-      { id: 'sand', label: 'Sand', swatch: '#d8c9a6', hue: 40 },
-    ],
-    facts: { app: ['ios', 'android'] },
-    specs: [{ group: 'Audio', rows: [
-      { label: 'Drivers', value: '12 mm, open-ear' },
-      { label: 'Battery', value: '8 h, 32 h with case', n: 8, better: 'high' },
-      { label: 'Water resistance', value: 'IPX5' },
-    ] }],
-  },
-  {
-    id: 'echo-pin',
-    name: 'Echo Pin',
-    brand: 'Echo',
-    category: 'Work & creator',
-    tagline: 'Magnetic AI voice recorder: 30 hours of audio, transcripts and summaries on your phone. iPhone app only, for now.',
-    price: 149,
-    rating: 4.3,
-    reviews: 980,
-    stock: 'in',
-    fulfil: SUPPLIER,
-    visual: 'pin',
-    hue: 320,
-    badges: ['Viral'],
-    trend: { label: 'Viral', delta: 260, series: [5, 6, 8, 10, 14, 19, 27, 36], source: 'TikTok + search, 7 days' },
-    variants: [{ id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 320 }],
-    facts: { app: ['ios'], magnetic: true },
-    specs: [{ group: 'Recorder', rows: [
-      { label: 'Recording', value: '30 h continuous', n: 30, better: 'high' },
-      { label: 'Transcription', value: 'On-phone, 40 languages' },
-      { label: 'Weight', value: '14 g', n: 14, better: 'low' },
-    ] }],
-  },
-  {
-    id: 'flux-mini',
-    name: 'Flux Mini',
-    brand: 'Flux',
-    category: 'Maker',
-    tagline: 'A desk-sized 3D printer that prints a phone stand in 40 minutes. Auto-levelling, app slicing, 160 mm bed.',
-    price: 399,
-    rating: 4.4,
-    reviews: 712,
-    stock: 'in',
-    fulfil: SUPPLIER_SLOW,
-    visual: 'printer',
-    hue: 120,
-    trend: { label: 'Rising', delta: 88, series: [9, 10, 10, 12, 13, 15, 17, 19], source: 'Search + social, 7 days' },
-    variants: [{ id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 120 }],
-    facts: { app: ['ios', 'android'], plug: 'US', voltage: '100-240' },
-    options: [{ ...PLUG_OPTIONS, choices: [PLUG_OPTIONS.choices[1], PLUG_OPTIONS.choices[2]] }],
-    specs: [{ group: 'Printer', rows: [
-      { label: 'Build volume', value: '160 × 160 × 160 mm', n: 160, better: 'high' },
-      { label: 'Speed', value: 'Up to 300 mm/s', n: 300, better: 'high' },
-      { label: 'Noise', value: '38 dB', n: 38, better: 'low' },
-    ] }],
-  },
-  {
-    id: 'nimbus-robo',
-    name: 'Robo Mop',
-    brand: 'Nimbus',
-    category: 'Smart home',
-    tagline: 'Robot vacuum and mop with a self-emptying dock and LiDAR mapping. Google Home and Alexa.',
-    price: 499,
-    compareAt: 599,
-    rating: 4.5,
-    reviews: 1540,
-    stock: 'in',
-    fulfil: WAREHOUSE,
-    visual: 'robovac',
-    hue: 200,
-    badges: ['−17%'],
-    trend: { label: 'Steady', delta: 22, series: [16, 17, 17, 18, 19, 19, 20, 20], source: 'Search + social, 7 days' },
-    variants: [{ id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 200 }],
-    facts: { app: ['ios', 'android'], home: ['google', 'alexa'], plug: 'AU', voltage: '100-240' },
-    options: [PLUG_OPTIONS],
-    specs: [{ group: 'Cleaning', rows: [
-      { label: 'Suction', value: '8,000 Pa', n: 8000, better: 'high' },
-      { label: 'Runtime', value: '180 min', n: 180, better: 'high' },
-      { label: 'Dock', value: 'Self-empty, 60-day bag' },
-    ] }],
-  },
-  {
-    id: 'luma-mask',
-    name: 'Luma Mask',
-    brand: 'Luma',
-    category: 'Health & beauty',
-    tagline: 'Flexible LED light-therapy mask with red and near-infrared modes. 10 minutes a day, app-timed.',
-    price: 179,
-    rating: 4.6,
-    reviews: 8930,
-    stock: 'in',
-    fulfil: SUPPLIER,
-    visual: 'mask',
-    hue: 350,
-    badges: ['Viral'],
-    trend: { label: 'Viral', delta: 310, series: [4, 5, 6, 9, 13, 20, 29, 41], source: 'TikTok + search, 7 days' },
-    variants: [{ id: 'lunar', label: 'Lunar', swatch: '#c9ccd3', hue: 350 }],
-    facts: { app: ['ios', 'android'] },
-    specs: [{ group: 'Therapy', rows: [
-      { label: 'LEDs', value: '240, 630 nm red, 830 nm NIR', n: 240, better: 'high' },
-      { label: 'Session', value: '10 min, auto-off' },
-      { label: 'Battery', value: '12 sessions', n: 12, better: 'high' },
-    ] }],
-  },
-  {
-    id: 'halo-screen',
-    name: 'Screen 100″ ALR',
-    brand: 'Halo',
-    category: 'Home cinema',
-    tagline: 'Ambient-light-rejecting screen that keeps blacks black with the lights on. Folds into a 60 cm tube.',
-    price: 249,
-    rating: 4.7,
-    reviews: 1105,
-    stock: 'in',
-    fulfil: WAREHOUSE,
-    visual: 'screen',
-    hue: 78,
-    trend: { label: 'Steady', delta: 30, series: [10, 10, 11, 12, 12, 13, 14, 15], source: 'Search + social, 7 days' },
-    variants: [{ id: 'black', label: 'Black frame', swatch: '#1b1b1f', hue: 78 }],
-    facts: {},
-    specs: [{ group: 'Screen', rows: [
-      { label: 'Size', value: '100″, 16:9', n: 100, better: 'high' },
-      { label: 'Gain', value: '0.6 ALR', n: 0.6, better: 'high' },
-      { label: 'Packed', value: '60 cm tube, 2.4 kg', n: 2.4, better: 'low' },
-    ] }],
-  },
-  {
-    id: 'aether-cube-100',
-    name: 'Cube 100 W',
-    brand: 'Aether',
+    id: 'anker-prime-100w',
+    name: 'Prime Charger 100 W (GaN)',
+    brand: 'Anker',
     category: 'Power',
-    tagline: 'Pocket GaN charger: 100 W on one port, 65 + 30 on two. Swappable plug heads.',
-    price: 59,
-    rating: 4.8,
-    reviews: 7210,
+    tagline: 'A 170 g 100 W GaN charger with two USB-C and one USB-A: 100 W to one device or 65 + 35 W to two.',
+    price: 89.95,
+    compareAt: 129.95,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['anker.com/au'],
+    notes: 'Plug style on the AU unit (fixed or folding pins) not confirmed.',
+    rating: { value: 4.8, count: 329, at: 'anker.com/au' },
     stock: 'in',
     fulfil: WAREHOUSE,
     visual: 'charger',
     hue: 78,
-    trend: { label: 'Steady', delta: 8, series: [22, 22, 23, 22, 23, 24, 23, 24], source: 'Search + social, 7 days' },
-    variants: [
-      { id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 78 },
-      { id: 'lunar', label: 'Lunar', swatch: '#c9ccd3', hue: 200 },
-    ],
-    options: [PLUG_OPTIONS],
+    trend: { label: 'Steady', delta: 22, series: [22, 23, 22, 24, 25, 25, 26, 27], source: SAMPLE },
+    variants: [{ ...BLACK, hue: 78 }],
     facts: { pdOut: 100, plug: 'AU', voltage: '100-240' },
-    specs: [{ group: 'Output', rows: [
-      { label: 'Max output', value: '100 W USB-C PD 3.1', n: 100, better: 'high' },
-      { label: 'Ports', value: '2 × USB-C, 1 × USB-A' },
-    ] }],
+    inBox: ['Charger'],
+    specs: [
+      { group: 'Charger', rows: [
+        { label: 'Output', value: '100 W to one port; 65 + 35 W or 65 + 24 W shared', n: 100, better: 'high' },
+        { label: 'Ports', value: '2 × USB-C, 1 × USB-A' },
+        { label: 'Weight', value: '170 g', n: 170, better: 'low' },
+        { label: 'Model', value: 'A2688' },
+      ] },
+    ],
   },
+
+  /* ---------------- Smart home ---------------- */
   {
-    id: 'snap-tag',
-    name: 'Snap Tag 4-pack',
-    brand: 'Snap',
-    category: 'Everyday carry',
-    tagline: 'Coin-sized trackers for keys, bags and luggage. Choose the network your phone uses.',
-    price: 39,
-    rating: 4.5,
-    reviews: 11200,
+    id: 'aqara-camera-e1',
+    name: 'Camera E1',
+    brand: 'Aqara',
+    category: 'Smart home',
+    tagline: 'A 2K pan-and-tilt indoor camera that records to Apple Home, Google Home or Alexa, with a microSD slot and no cloud fee.',
+    price: 89,
+    compareAt: 119,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['aqarastore.com.au'],
+    rating: null,
     stock: 'in',
     fulfil: SUPPLIER,
-    visual: 'tag',
+    visual: 'cam',
     hue: 200,
-    trend: { label: 'Trending', delta: 110, series: [20, 22, 24, 27, 31, 36, 40, 44], source: 'Search + social, 7 days' },
-    variants: [
-      { id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 200 },
-      { id: 'lunar', label: 'Lunar', swatch: '#c9ccd3', hue: 200 },
+    trend: { label: 'Rising', delta: 62, series: [15, 16, 17, 19, 20, 22, 24, 27], source: SAMPLE },
+    variants: [{ ...WHITE, hue: 200 }],
+    facts: { app: ['ios', 'android'], home: ['homekit', 'google', 'alexa'] },
+    inBox: ['Camera E1', 'USB-C cable (no wall adapter)', 'Mounting kit', 'Quick-start guide'],
+    specs: [
+      { group: 'Camera', rows: [
+        { label: 'Resolution', value: '2K (2304 × 1296)', n: 2304 * 1296, better: 'high' },
+        { label: 'View', value: '360° pan, 101° field of view' },
+        { label: 'Storage', value: 'microSD up to 512 GB; HomeKit Secure Video with an iCloud plan' },
+        { label: 'Wireless', value: 'Wi-Fi 6, 2.4 GHz only' },
+        { label: 'Power', value: '5 V 2 A USB-C, adapter not included' },
+        { label: 'Platforms', value: 'Apple Home, Google Home, Alexa; no Matter' },
+      ] },
     ],
-    options: [{
-      id: 'network',
-      label: 'Finder network',
-      choices: [
-        { id: 'find-my', label: 'Apple Find My', sub: 'iPhone', delta: 0, facts: { tracker: 'find-my', app: ['ios'] } },
-        { id: 'find-hub', label: 'Google Find Hub', sub: 'Android', delta: 0, facts: { tracker: 'find-hub', app: ['android'] } },
-      ],
-    }],
-    facts: { tracker: 'find-my', app: ['ios'] },
-    specs: [{ group: 'Tracker', rows: [
-      { label: 'Battery', value: 'CR2032, 1 year', n: 12, better: 'high' },
-      { label: 'Range', value: 'Bluetooth 5.3, 120 m', n: 120, better: 'high' },
-    ] }],
   },
   {
-    id: 'nimbus-hub',
-    name: 'Hub',
-    brand: 'Nimbus',
+    id: 'nanoleaf-matter-strip-5m',
+    name: 'Essentials Matter Lightstrip, 5 m',
+    brand: 'Nanoleaf',
     category: 'Smart home',
-    tagline: 'Matter controller and Thread border router that bridges to Apple Home, Google Home and Alexa.',
-    price: 69,
-    rating: 4.4,
-    reviews: 1320,
+    tagline: 'A 5 m Thread light strip, 2,200 lumens peak, 2,700 to 6,500 K and full colour, that joins your home app through Matter.',
+    price: 129,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['nanoleaf.me/en-AU', 'jbhifi.com.au'],
+    notes: 'Looks end-of-line: gone from Nanoleaf AU, still stocked by AU retailers. The Matter-over-Wi-Fi strip is the runner-up.',
+    rating: null,
+    stock: 'low',
+    stockCount: 6,
+    fulfil: SUPPLIER,
+    visual: 'strip',
+    hue: 300,
+    badges: ['Limited stock'],
+    trend: { label: 'Rising', delta: 74, series: [14, 15, 16, 18, 20, 22, 25, 28], source: SAMPLE },
+    variants: [{ ...WHITE, hue: 300 }],
+    facts: { app: ['ios', 'android'], home: ['matter', 'thread'], needsThread: true, plug: 'AU', voltage: '100-240' },
+    inBox: ['5 m light strip', 'Controller', 'Power adapter', 'Mounting clips'],
+    specs: [
+      { group: 'Light strip', rows: [
+        { label: 'Brightness', value: '2,000 lm (2,200 lm peak)', n: 2000, better: 'high' },
+        { label: 'Colour', value: '2,700 to 6,500 K white, full RGB' },
+        { label: 'Length', value: '5 m, cuttable', n: 5, better: 'high' },
+        { label: 'Lifetime', value: '25,000 h' },
+        { label: 'Connectivity', value: 'Matter over Thread, Bluetooth fallback; needs a Thread border router' },
+      ] },
+    ],
+  },
+  {
+    id: 'aqara-hub-m3',
+    name: 'Hub M3',
+    brand: 'Aqara',
+    category: 'Smart home',
+    tagline: 'A Matter controller and Thread border router with Zigbee, Wi-Fi, PoE and an IR blaster, for Apple Home, Google Home and Alexa.',
+    price: 297,
+    compareAt: 299,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['officeworks.com.au', 'aqara.com'],
+    rating: null,
     stock: 'in',
     fulfil: WAREHOUSE,
     visual: 'hub',
     hue: 200,
-    trend: { label: 'Steady', delta: 15, series: [9, 9, 10, 10, 11, 11, 12, 12], source: 'Search + social, 7 days' },
-    variants: [{ id: 'white', label: 'White', swatch: '#e8e8ec', hue: 200 }],
-    facts: { app: ['ios', 'android'], hubs: ['matter', 'thread', 'homekit', 'google', 'alexa'], plug: 'AU', voltage: '100-240' },
-    options: [PLUG_OPTIONS],
-    specs: [{ group: 'Hub', rows: [
-      { label: 'Radios', value: 'Thread, Zigbee, Bluetooth, Wi-Fi 6' },
-      { label: 'Bridges to', value: 'Apple Home, Google Home, Alexa' },
-    ] }],
+    trend: { label: 'Rising', delta: 66, series: [16, 17, 18, 19, 21, 23, 26, 29], source: SAMPLE },
+    variants: [{ ...BLACK, hue: 200 }],
+    facts: { app: ['ios', 'android'], home: ['matter', 'homekit', 'google', 'alexa'], hubs: ['matter', 'thread', 'homekit', 'google', 'alexa'] },
+    inBox: ['Hub M3', 'USB-C cable', 'Power adapter', 'Mounting plate'],
+    specs: [
+      { group: 'Hub', rows: [
+        { label: 'Radios', value: 'Thread, Zigbee 3.0 (up to 127 devices), dual-band Wi-Fi, Bluetooth 5.1' },
+        { label: 'Wired', value: 'Ethernet with PoE' },
+        { label: 'Storage', value: '8 GB eMMC, local automations', n: 8, better: 'high' },
+        { label: 'Extras', value: 'IR blaster, 95 dB siren' },
+        { label: 'Platforms', value: 'Matter, Apple Home, Google Home, Alexa' },
+      ] },
+    ],
   },
   {
-    id: 'snap-case',
-    name: 'Snap Case (magnet ring)',
-    brand: 'Snap',
-    category: 'Everyday carry',
-    tagline: 'Adds a Qi2-aligned magnet ring to Android phones so magnetic accessories snap on.',
-    price: 25,
-    rating: 4.3,
-    reviews: 2210,
+    id: 'eufy-x10-pro-omni',
+    name: 'X10 Pro Omni',
+    brand: 'eufy',
+    category: 'Smart home',
+    tagline: 'A robot vacuum and mop with 8,000 Pa suction, a self-emptying, mop-washing base and Google Home or Alexa control.',
+    price: 1299,
+    compareAt: 1699.95,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['eufy.com/au'],
+    rating: null,
+    stock: 'in',
+    fulfil: WAREHOUSE,
+    visual: 'robovac',
+    hue: 200,
+    trend: { label: 'Rising', delta: 52, series: [18, 18, 19, 20, 22, 23, 25, 27], source: SAMPLE },
+    variants: [{ ...BLACK, hue: 200 }, { ...WHITE, hue: 200 }],
+    facts: { app: ['ios', 'android'], home: ['google', 'alexa'], plug: 'AU', voltage: '100-240' },
+    inBox: ['X10 Pro Omni', 'Omni station', 'Dust bag', 'Cleaning solution'],
+    specs: [
+      { group: 'Robot', rows: [
+        { label: 'Suction', value: '8,000 Pa', n: 8000, better: 'high' },
+        { label: 'Runtime', value: 'Up to 173 min (136 min mopping)', n: 173, better: 'high' },
+        { label: 'Base', value: 'Auto-empty 2.5 L bag, mop wash, 45 °C drying' },
+        { label: 'Water tank', value: '3 L', n: 3, better: 'high' },
+        { label: 'Platforms', value: 'Google Home, Alexa; no Apple Home or Matter' },
+      ] },
+    ],
+  },
+
+  /* ---------------- Mobility ---------------- */
+  {
+    id: 'segway-e3-pro',
+    name: 'KickScooter E3 Pro',
+    brand: 'Segway-Ninebot',
+    category: 'Mobility',
+    tagline: 'A 25 km/h commuter scooter with a 368 Wh battery, up to 55 km of range in Eco and 10-inch tubeless tyres.',
+    price: 999,
+    compareAt: 1199,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['jbhifi.com.au', 'segway.com.au'],
+    notes: 'E-scooter road rules differ by state and territory; check yours before riding on public roads.',
+    rating: { value: 5.0, count: 28, at: 'jbhifi.com.au' },
+    stock: 'in',
+    fulfil: WAREHOUSE,
+    visual: 'scooter',
+    hue: 78,
+    trend: { label: 'Rising', delta: 58, series: [16, 17, 18, 20, 21, 23, 25, 27], source: SAMPLE },
+    variants: [{ id: 'dark-grey', label: 'Dark Grey', swatch: '#2b2b30', hue: 78 }],
+    facts: { app: ['ios', 'android'], plug: 'AU', voltage: '100-240' },
+    inBox: ['Scooter', 'Charger', 'Tool kit', 'Quick-start guide'],
+    specs: [
+      { group: 'Scooter', rows: [
+        { label: 'Motor', value: '400 W nominal, 800 W peak', n: 800, better: 'high' },
+        { label: 'Battery', value: '368 Wh, about 7 h to charge', n: 368, better: 'high' },
+        { label: 'Range', value: 'Up to 55 km Eco, 40 km Sport', n: 55, better: 'high' },
+        { label: 'Top speed', value: '25 km/h', n: 25, better: 'high' },
+        { label: 'Weight', value: '17.9 kg', n: 17.9, better: 'low' },
+        { label: 'Tyres', value: '10″ tubeless' },
+        { label: 'Water resistance', value: 'IPX5' },
+        { label: 'Max load', value: '100 kg', n: 100, better: 'high' },
+      ] },
+    ],
+  },
+
+  /* ---------------- Maker ---------------- */
+  {
+    id: 'bambu-a1-mini',
+    name: 'A1 mini',
+    brand: 'Bambu Lab',
+    category: 'Maker',
+    tagline: 'A 180 mm desk 3D printer that calibrates itself, prints at up to 500 mm/s and stays under 48 dB.',
+    price: 319,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['jbhifi.com.au', 'bambulab.com'],
+    notes: 'Retailer shows a 5.0 rating with no visible review count, so no rating is shown here.',
+    rating: null,
+    stock: 'in',
+    fulfil: WAREHOUSE,
+    visual: 'printer',
+    hue: 78,
+    trend: { label: 'Rising', delta: 88, series: [12, 13, 14, 16, 18, 20, 23, 26], source: SAMPLE },
+    variants: [{ ...WHITE, hue: 78 }],
+    options: [
+      { id: 'kit', label: 'Kit', choices: [
+        { id: 'printer', label: 'A1 mini', sub: 'Printer only', delta: 0 },
+        { id: 'combo', label: 'A1 mini Combo', sub: 'With AMS lite, 4-colour', delta: 210 },
+      ] },
+    ],
+    facts: { app: ['ios', 'android'], plug: 'AU', voltage: '100-240' },
+    inBox: ['A1 mini', 'Spool holder', 'Sample filament', 'Tool kit'],
+    specs: [
+      { group: 'Printer', rows: [
+        { label: 'Build volume', value: '180 × 180 × 180 mm', n: 180, better: 'high' },
+        { label: 'Speed', value: 'Up to 500 mm/s', n: 500, better: 'high' },
+        { label: 'Noise', value: 'Under 48 dB', n: 48, better: 'low' },
+        { label: 'Weight', value: '5.5 kg', n: 5.5, better: 'low' },
+        { label: 'Software', value: 'Bambu Studio (Windows, macOS); Bambu Handy (iOS 13+, Android 6+)' },
+      ] },
+    ],
+  },
+
+  /* ---------------- Health ---------------- */
+  {
+    id: 'omnilux-contour-face',
+    name: 'Contour Face',
+    brand: 'Omnilux',
+    category: 'Health',
+    tagline: 'A flexible 132-LED red and near-infrared face mask: 10-minute sessions, a corded controller and no app.',
+    price: 605,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['omniluxled.com', 'AU stockists'],
+    notes: 'ARTG listing number not confirmed.',
+    rating: { value: 4.5, count: 2243, at: 'omniluxled.com' },
+    stock: 'in',
+    fulfil: SUPPLIER,
+    visual: 'mask',
+    hue: 0,
+    badges: ['Viral'],
+    trend: { label: 'Viral', delta: 310, series: [5, 6, 9, 14, 20, 30, 44, 60], source: SAMPLE },
+    variants: [{ ...WHITE, hue: 0 }],
+    facts: {},
+    inBox: ['Mask', 'Controller', 'USB cable', 'Head straps', 'Carry bag'],
+    specs: [
+      { group: 'Mask', rows: [
+        { label: 'LEDs', value: '132, red 633 nm and near-infrared 830 nm', n: 132, better: 'high' },
+        { label: 'Session', value: '10 min', n: 10, better: 'low' },
+        { label: 'Control', value: 'Corded controller, no app' },
+        { label: 'Warranty', value: '2 years' },
+        { label: 'Clearance', value: 'FDA-cleared; TGA-listed per AU stockists' },
+      ] },
+    ],
+  },
+  {
+    id: 'withings-body-smart',
+    name: 'Body Smart',
+    brand: 'Withings',
+    category: 'Health',
+    tagline: 'A Wi-Fi scale that reads weight, body fat, muscle and heart rate for up to 8 people and syncs to Apple Health or Health Connect.',
+    price: 199,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['jbhifi.com.au', 'withings.com'],
+    notes: 'Retailer shows a 4.4 rating with no visible review count, so no rating is shown here.',
+    rating: null,
+    stock: 'in',
+    fulfil: SUPPLIER,
+    visual: 'scale',
+    hue: 200,
+    trend: { label: 'Rising', delta: 54, series: [17, 18, 18, 20, 21, 23, 25, 27], source: SAMPLE },
+    variants: [{ ...BLACK, hue: 200 }, { ...WHITE, hue: 200 }],
+    facts: { app: ['ios', 'android'] },
+    inBox: ['Scale', '4 × AAA batteries', 'Quick-start guide'],
+    specs: [
+      { group: 'Scale', rows: [
+        { label: 'Metrics', value: '8, including body fat, muscle, visceral fat and heart rate', n: 8, better: 'high' },
+        { label: 'Users', value: 'Up to 8', n: 8, better: 'high' },
+        { label: 'Battery', value: '4 × AAA, about 15 months' },
+        { label: 'Sync', value: 'Wi-Fi and Bluetooth; Apple Health, Health Connect' },
+        { label: 'App', value: 'Withings, iOS 14+, Android 10+' },
+      ] },
+    ],
+  },
+
+  /* ---------------- Accessories ---------------- */
+  {
+    id: 'chipolo-pop',
+    name: 'POP',
+    brand: 'Chipolo',
+    category: 'Accessories',
+    tagline: 'A finder tag that joins Apple Find My or Google Find Hub, chosen at setup, with a 120 dB ring and a replaceable CR2032.',
+    price: 50,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['chipolo.net', 'theaureview.com'],
+    notes: 'Sold as singles; the 4-pack AUD price is unverified.',
+    rating: null,
+    stock: 'in',
+    fulfil: SUPPLIER,
+    visual: 'tag',
+    hue: 78,
+    trend: { label: 'Trending', delta: 110, series: [12, 13, 15, 18, 21, 25, 30, 36], source: SAMPLE },
+    variants: [
+      { ...BLACK, hue: 78 },
+      { ...WHITE, hue: 78 },
+      { id: 'blue', label: 'Blue', swatch: '#3b7dd8', hue: 215 },
+      { id: 'green', label: 'Green', swatch: '#58b36b', hue: 130 },
+      { id: 'red', label: 'Red', swatch: '#d8403b', hue: 0 },
+      { id: 'yellow', label: 'Yellow', swatch: '#f0c23b', hue: 45 },
+    ],
+    options: [
+      { id: 'network', label: 'Finder network (set once at setup)', choices: [
+        { id: 'find-my', label: 'Apple Find My', sub: 'iPhone', delta: 0, facts: { tracker: 'find-my' } },
+        { id: 'find-hub', label: 'Google Find Hub', sub: 'Android', delta: 0, facts: { tracker: 'find-hub' } },
+      ] },
+    ],
+    facts: {},
+    inBox: ['POP tag', 'CR2032 battery (fitted)'],
+    specs: [
+      { group: 'Tag', rows: [
+        { label: 'Range', value: 'Up to 90 m, Bluetooth 6.0', n: 90, better: 'high' },
+        { label: 'Ring', value: '120 dB', n: 120, better: 'high' },
+        { label: 'Battery', value: 'CR2032, about 12 months, replaceable' },
+        { label: 'Water resistance', value: 'IP55' },
+        { label: 'Size', value: '38.8 × 6.6 mm' },
+        { label: 'Network', value: 'Apple Find My or Google Find Hub, chosen once' },
+      ] },
+    ],
+  },
+  {
+    id: 'esr-halolock-ring',
+    name: 'HaloLock Universal Ring 360 (2-pack)',
+    brand: 'ESR',
+    category: 'Accessories',
+    tagline: 'A 1 mm steel ring that sticks to any phone or case so Qi2 and MagSafe accessories snap on. Two in the pack.',
+    price: 26.38,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['au.esrtech.com'],
+    rating: null,
     stock: 'in',
     fulfil: SUPPLIER,
     visual: 'case',
-    hue: 200,
-    trend: { label: 'Steady', delta: 20, series: [8, 8, 9, 9, 10, 10, 11, 11], source: 'Search + social, 7 days' },
-    variants: [{ id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 200 }],
+    hue: 78,
+    trend: { label: 'Steady', delta: 30, series: [20, 21, 21, 22, 23, 24, 25, 26], source: SAMPLE },
+    variants: [{ ...BLACK, hue: 78 }, { ...WHITE, hue: 78 }, { id: 'blue', label: 'Blue', swatch: '#3b7dd8', hue: 215 }],
     facts: { givesMagnets: true },
-    specs: [{ group: 'Case', rows: [{ label: 'Fits', value: 'Pixel 8/9, Galaxy S24/S25' }] }],
+    inBox: ['2 rings', 'Alignment guide', 'Cleaning wipe'],
+    specs: [
+      { group: 'Ring', rows: [
+        { label: 'Ring', value: '57 mm, about 1 mm steel' },
+        { label: 'Pack', value: '2 rings with an alignment guide' },
+        { label: 'Works with', value: 'Qi2 and MagSafe accessories on any phone or case' },
+      ] },
+    ],
   },
   {
-    id: 'plug-adapter',
-    name: 'Travel plug adapter',
-    brand: 'Aether',
-    category: 'Power',
-    tagline: 'Grounded adapter for devices that ship with a US, EU or UK plug.',
-    price: 9,
-    rating: 4.6,
-    reviews: 15400,
+    id: 'sansai-au-travel-adapter',
+    name: 'STV-017 inbound travel adapter',
+    brand: 'Sansai',
+    category: 'Accessories',
+    tagline: 'Turns a UK, US or EU plug into an Australian one. 10 A, no USB ports, no voltage conversion.',
+    price: 12.05,
+    priceCheckedAt: PRICE_CHECKED,
+    sources: ['jbhifi.com.au'],
+    rating: null,
     stock: 'in',
     fulfil: WAREHOUSE,
     visual: 'adapter',
     hue: 78,
-    trend: { label: 'Steady', delta: 5, series: [30, 30, 31, 30, 31, 31, 32, 31], source: 'Search + social, 7 days' },
-    variants: [{ id: 'graphite', label: 'Graphite', swatch: '#2b2b30', hue: 78 }],
+    trend: { label: 'Steady', delta: 5, series: [30, 30, 31, 30, 31, 31, 32, 31], source: SAMPLE },
+    variants: [{ ...WHITE, hue: 78 }],
     facts: { adapterFor: 'AU' },
-    specs: [{ group: 'Adapter', rows: [{ label: 'Output', value: 'Type I (AU/NZ), 10 A' }] }],
+    specs: [
+      { group: 'Adapter', rows: [
+        { label: 'Output', value: 'Type I (AU/NZ), 10 A' },
+        { label: 'Input', value: 'UK, US and EU plugs' },
+        { label: 'Conversion', value: 'None: a 110 V device still needs a transformer' },
+      ] },
+    ],
   },
 ]
 
-export const byId = (id: string) => products.find((p) => p.id === id)!
+export const products: Product[] = catalogue.map((p) => ({ ...p, photos: PHOTOS[p.id] }))
+
+export const byId = (id: string) => {
+  const p = products.find((x) => x.id === id)
+  if (!p) throw new Error(`Unknown product ${id}`)
+  return p
+}
 
 /** "My setup": what the shopper already owns. Checked live on every PDP and in the cart. */
 export const gear: GearItem[] = [
@@ -627,13 +871,13 @@ export const gear: GearItem[] = [
     facts: { phone: { os: 'android', magnets: false, trackerNet: 'find-hub' } } },
   { id: 'g-apple-home', name: 'Apple Home (Apple TV 4K)', detail: 'Apple Home, Matter, Thread border router', defaultOn: true,
     facts: { hubs: ['homekit', 'matter', 'thread'] } },
-  { id: 'g-google-home', name: 'Google Home (Nest Hub)', detail: 'Google Home, Matter, no Thread', defaultOn: false,
+  { id: 'g-google-home', name: 'Google Home (Nest Mini)', detail: 'Google Home, Matter, no Thread', defaultOn: false,
     facts: { hubs: ['google', 'matter'] } },
   { id: 'g-switch', name: 'Nintendo Switch', detail: 'HDMI source', defaultOn: true,
     facts: { requires: [{ anyOf: ['hdmi'], label: 'an HDMI input' }] } },
   { id: 'g-region', name: 'Australia, 240 V, Type I', detail: 'Plug and voltage check', defaultOn: true,
     facts: { region: 'AU' } },
-  { id: 'g-charger', name: 'Aether Cube 65 W', detail: 'USB-C PD charger you already own', defaultOn: true,
+  { id: 'g-charger', name: 'Anker 65 W charger', detail: 'USB-C PD charger you already own', defaultOn: true,
     facts: { pdOut: 65 } },
 ]
 
@@ -641,46 +885,46 @@ export interface NavColumn { title: string; items: string[] }
 export interface NavSection { id: string; label: string; columns: NavColumn[]; featured: string }
 
 export const nav: NavSection[] = [
-  { id: 'trending', label: 'Trending', featured: 'loop-ring', columns: [
+  { id: 'trending', label: 'Trending', featured: 'ringconn-gen-3', columns: [
     { title: 'This week', items: ['Viral right now', 'Rising fast', 'New arrivals', 'Back in stock'] },
     { title: 'By signal', items: ['Hot on TikTok', 'Search spikes', 'Creator picks', 'Most wishlisted'] },
     { title: 'Collections', items: ['Under $100', 'Gifts that ship in 48 h', 'Travel tech', 'Desk upgrades'] },
   ] },
-  { id: 'wearables', label: 'Wearables', featured: 'specs-air', columns: [
+  { id: 'wearables', label: 'Wearables', featured: 'rayban-meta-gen-3', columns: [
     { title: 'Body', items: ['Smart rings', 'Smart glasses', 'Fitness bands', 'Sleep tech'] },
     { title: 'Audio on you', items: ['Open-ear buds', 'Bone conduction', 'Sleep buds', 'Hearing assist'] },
     { title: 'Guides', items: ['Ring sizing', 'Which smart glasses?', 'Works with iPhone', 'Works with Android'] },
   ] },
-  { id: 'smart-home', label: 'Smart home', featured: 'nimbus-orbit', columns: [
-    { title: 'Devices', items: ['Cameras', 'Lighting', 'Robot vacuums', 'Air & climate'] },
-    { title: 'Platforms', items: ['Apple Home', 'Google Home', 'Alexa', 'Matter & Thread hubs'] },
+  { id: 'smart-home', label: 'Smart home', featured: 'aqara-camera-e1', columns: [
+    { title: 'Devices', items: ['Cameras', 'Lighting', 'Robot vacuums', 'Hubs'] },
+    { title: 'Platforms', items: ['Apple Home', 'Google Home', 'Alexa', 'Matter and Thread'] },
     { title: 'Guides', items: ['Do I need a hub?', 'Matter explained', 'Local-only setups'] },
   ] },
-  { id: 'cinema', label: 'Cinema', featured: 'beam-4k', columns: [
-    { title: 'Picture', items: ['Laser projectors', 'Pocket projectors', 'ALR screens', 'Streaming sticks'] },
+  { id: 'cinema', label: 'Cinema', featured: 'xgimi-mogo-4-laser', columns: [
+    { title: 'Picture', items: ['Laser projectors', 'Battery projectors', 'Outdoor screens', 'Streaming sticks'] },
     { title: 'Sound', items: ['Open-ear buds', 'Soundbars', 'Party speakers', 'Turntables'] },
-    { title: 'Guides', items: ['Projector vs TV', 'Throw distance calculator', 'Movie night under $1,000'] },
+    { title: 'Guides', items: ['Projector vs TV', 'Throw distance calculator', 'Movie night under $2,000'] },
   ] },
-  { id: 'power', label: 'Power', featured: 'aether-magpack', columns: [
-    { title: 'Power', items: ['Magnetic power banks', 'Solar chargers', 'GaN chargers', 'Portable power stations'] },
-    { title: 'Mobility', items: ['E-scooters', 'E-bikes', 'Electric skateboards', 'Helmets & locks'] },
+  { id: 'power', label: 'Power', featured: 'anker-maggo-10k', columns: [
+    { title: 'Power', items: ['Magnetic power banks', 'GaN chargers', 'Travel adapters', 'Portable power stations'] },
+    { title: 'Mobility', items: ['E-scooters', 'E-bikes', 'Electric skateboards', 'Helmets and locks'] },
     { title: 'Guides', items: ['Qi2 vs MagSafe', 'Airline battery rules', 'Scooter laws by state'] },
   ] },
-  { id: 'health', label: 'Health', featured: 'luma-mask', columns: [
-    { title: 'Skin & light', items: ['LED masks', 'Red light panels', 'Microcurrent', 'Hair tools'] },
+  { id: 'health', label: 'Health', featured: 'omnilux-contour-face', columns: [
+    { title: 'Skin and light', items: ['LED masks', 'Red light panels', 'Microcurrent', 'Hair tools'] },
     { title: 'Body', items: ['Smart scales', 'Massage guns', 'Posture trainers', 'Sleep tech'] },
     { title: 'Guides', items: ['Red vs near-infrared', 'What the studies say', 'TGA-listed devices'] },
   ] },
-  { id: 'maker', label: 'Maker', featured: 'flux-mini', columns: [
+  { id: 'maker', label: 'Maker', featured: 'bambu-a1-mini', columns: [
     { title: 'Make', items: ['Desk 3D printers', 'Laser engravers', 'Dev boards', 'Soldering'] },
     { title: 'Work', items: ['AI recorders', 'Label printers', 'Portable monitors', 'Stream decks'] },
     { title: 'Guides', items: ['First 3D print', 'Record meetings legally', 'Travel-ready desk'] },
   ] },
 ]
 
-export const trendingSearches = ['smart ring', 'laser projector', 'open-ear buds', 'LED mask', 'Matter', 'AI recorder']
+export const trendingSearches = ['smart ring', 'MoGo 4 Laser', 'open-ear buds', 'LED mask', 'Matter hub', 'AI recorder']
 
-/** Trend tape shown in the hero: category momentum over 7 days. */
+/** Trend tape shown in the hero: category momentum over 7 days. Sample data until the trend worker runs. */
 export const trendTape: { label: string; delta: number }[] = [
   { label: 'LED masks', delta: 310 },
   { label: 'AI recorders', delta: 260 },
@@ -689,7 +933,7 @@ export const trendTape: { label: string; delta: number }[] = [
   { label: 'Laser projectors', delta: 140 },
   { label: 'Open-ear buds', delta: 120 },
   { label: 'Finder tags', delta: 110 },
-  { label: 'Solar power banks', delta: 96 },
+  { label: 'Magnetic power banks', delta: 96 },
   { label: 'Desk 3D printers', delta: 88 },
   { label: 'Thread lighting', delta: 74 },
 ]

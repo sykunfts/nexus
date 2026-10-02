@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { byId, NavSection } from '../lib/data'
 import { fmt } from '../lib/currency'
 import { useStore } from '../lib/store'
-import { ProductVisual } from './ProductVisual'
+import { ProductImage } from './ProductVisual'
 import { Tile } from './ui'
 
 export function MegaMenu({ section, onClose }: { section: NavSection; onClose: () => void }) {
@@ -44,7 +44,7 @@ export function MegaMenu({ section, onClose }: { section: NavSection; onClose: (
           className="group col-span-4 flex gap-5 border-l border-rule bg-paper p-6 text-left hover:bg-paper-2"
         >
           <div className="w-[46%] shrink-0 self-center">
-            <ProductVisual visual={featured.visual} hue={featured.hue} glow={false} />
+            <ProductImage product={featured} />
           </div>
           <div className="min-w-0 self-center">
             <div className="text-[12.5px] text-ink-3">This week in {section.label.toLowerCase()}</div>

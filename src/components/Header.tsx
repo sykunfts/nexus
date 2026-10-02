@@ -12,7 +12,7 @@ export function Logo({ onClick }: { onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} className="flex items-baseline gap-2" aria-label="NEXUS home">
       <span className="display text-[22px] text-ink">Nexus</span>
-      <span className="hidden text-[12px] text-ink-3 sm:inline">tested, then shipped</span>
+      <span className="hidden text-[12px] text-ink-3 sm:inline">checked, then shipped</span>
     </button>
   )
 }
@@ -87,9 +87,9 @@ export function Header() {
         </div>
 
         <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-2">
-          <span className="hidden items-center gap-1.5 whitespace-nowrap pr-2 text-[12.5px] text-ink-3 xl:flex" title="Trend index refreshed 4 minutes ago">
-            <span className="inline-block h-1.5 w-1.5 bg-pass" aria-hidden />
-            Trends refreshed 4 min ago
+          <span className="hidden items-center gap-1.5 whitespace-nowrap pr-2 text-[12.5px] text-ink-3 xl:flex" title="Trend figures are sample data until the trend worker runs">
+            <span className="inline-block h-1.5 w-1.5 bg-check" aria-hidden />
+            Trends: sample data
           </span>
 
           <div className="relative">

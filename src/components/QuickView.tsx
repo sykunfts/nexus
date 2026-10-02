@@ -4,7 +4,7 @@ import { Check, X } from 'lucide-react'
 import { byId } from '../lib/data'
 import { fmt } from '../lib/currency'
 import { useStore } from '../lib/store'
-import { ProductVisual } from './ProductVisual'
+import { ProductImage } from './ProductVisual'
 import { Button, Row, Stars, StockDot, Tile } from './ui'
 import { cn } from '../lib/cn'
 
@@ -46,12 +46,12 @@ export function QuickView() {
           >
             <button type="button" aria-label="Close quick view" onClick={close} className="absolute right-2 top-2 z-10 p-2 text-ink"><X size={18} /></button>
             <div className="aspect-[4/3] border-b border-rule bg-paper p-8 md:aspect-auto md:border-b-0 md:border-r">
-              <ProductVisual visual={product.visual} hue={variant.hue} swatch={variant.swatch} />
+              <ProductImage product={product} hue={variant.hue} swatch={variant.swatch} glow />
             </div>
             <div className="flex flex-col p-6">
               <div className="text-[13px] text-ink-2">{product.brand}, {product.category.toLowerCase()}</div>
               <h2 id="qv-title" className="display-md mt-1 text-[30px] text-ink">{product.name}</h2>
-              <div className="mt-2 flex items-center gap-3"><Stars rating={product.rating} reviews={product.reviews} /><Tile>+{product.trend.delta}%</Tile></div>
+              <div className="mt-2 flex items-center gap-3"><Stars rating={product.rating} /><Tile>+{product.trend.delta}%</Tile></div>
               <p className="mt-3 text-[14px] leading-relaxed text-ink-2">{product.tagline}</p>
 
               {product.variants.length > 1 && (
