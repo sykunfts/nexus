@@ -44,5 +44,5 @@ jobs:
           git add data/radar.json data/trends.json
           if git diff --cached --quiet; then echo "nothing changed"; exit 0; fi
           git commit -m "Radar: $(date -u +%F)"
-          git pull --rebase origin master
+          git pull --rebase origin main
           git push

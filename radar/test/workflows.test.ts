@@ -21,6 +21,7 @@ describe('workflows', () => {
   it('pages deploys on push, after a radar run and after a listing, and never gates on the data-dependent suite', () => {
     const w = read('pages.yml')
     expect(w.on).toHaveProperty('push')
+    expect((w.on.push as { branches: string[] }).branches).toEqual(['main'])   // GitHub's default branch for this repository
     expect(w.on).toHaveProperty('workflow_dispatch')
     expect((w.on.workflow_run as { workflows: string[] }).workflows).toEqual(expect.arrayContaining(['Trend Radar', 'Add a Radar listing']))
     expect(w.jobs.build.if).toContain("github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'")

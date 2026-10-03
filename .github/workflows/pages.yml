@@ -1,10 +1,10 @@
-# Builds the shop and the Radar page and publishes dist/ to GitHub Pages: on every push to master,
+# Builds the shop and the Radar page and publishes dist/ to GitHub Pages: on every push to main,
 # and after each Radar run so the new data is live without anyone touching it.
 name: Publish to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_run:
     workflows: ['Trend Radar', 'Add a Radar listing']
     types: [completed]
@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: master
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22

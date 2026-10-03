@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: master
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -55,7 +55,7 @@ jobs:
           git config user.email "nexus-radar[bot]@users.noreply.github.com"
           git add data/listings
           git commit -m "Listing: $PRODUCT_ID (#$ISSUE_NUMBER)"
-          git pull --rebase origin master
+          git pull --rebase origin main
           git push
           gh issue close "$ISSUE_NUMBER" --comment "Added as $LISTING_PATH. The shop rebuilds in a few minutes; the product will be at #/p/$PRODUCT_ID on the site."
       - name: Explain a refusal

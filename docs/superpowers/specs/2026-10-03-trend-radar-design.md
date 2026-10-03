@@ -65,7 +65,7 @@ nexus/
   radar.html                   second Vite entry, served at /radar/
   .github/workflows/
     radar.yml                  daily: run pipeline, commit data, then deploy
-    pages.yml                  on push to master: build, deploy dist/ to GitHub Pages
+    pages.yml                  on push to main: build, deploy dist/ to GitHub Pages
     listing.yml                on issue opened with title "list: <pid>" by the owner: write listing, commit, close
 ```
 
@@ -212,8 +212,8 @@ On `issues: opened` where `title` starts with `list:` and `issue.user.login == g
 ## Deploy
 
 - `vite.config.ts`: two inputs (`index.html`, `radar.html`); `base` is `/nexus/` when `GITHUB_PAGES=1`, `./` otherwise; the singlefile plugin only when `FRAGMENT=1` (used by `scripts/fragment.mjs` for the artifact).
-- `pages.yml`: on push to `master`, on `workflow_run` of the Radar and of the listing job (a push made with the workflow token fires no `push` event), and on manual dispatch; only after a successful run. Node 22, `npm ci`, `npm run merge` (trends + listings), `npm run typecheck`, `npm run build` (relative asset paths; no env switch), upload `dist/`, deploy with `actions/deploy-pages`. No test step: the suite is kept data-independent, but a deploy must never wait on it. Pages source: GitHub Actions.
-- `radar.yml`: `schedule: cron '0 20 * * *'` (06:00 Sydney in winter, 07:00 in summer) and `workflow_dispatch`. Runs `npm run radar`, commits `data/*.json` as "Radar: <date>" when changed, rebases on master and pushes; `pages.yml` follows. Concurrency group `data`, shared with the listing job, so the two writers never overlap. `permissions: contents: write`.
+- `pages.yml`: on push to `main`, on `workflow_run` of the Radar and of the listing job (a push made with the workflow token fires no `push` event), and on manual dispatch; only after a successful run. Node 22, `npm ci`, `npm run merge` (trends + listings), `npm run typecheck`, `npm run build` (relative asset paths; no env switch), upload `dist/`, deploy with `actions/deploy-pages`. No test step: the suite is kept data-independent, but a deploy must never wait on it. Pages source: GitHub Actions.
+- `radar.yml`: `schedule: cron '0 20 * * *'` (06:00 Sydney in winter, 07:00 in summer) and `workflow_dispatch`. Runs `npm run radar`, commits `data/*.json` as "Radar: <date>" when changed, rebases on main and pushes; `pages.yml` follows. Concurrency group `data`, shared with the listing job, so the two writers never overlap. `permissions: contents: write`.
 - `listing.yml`: `issues: [opened]`, `permissions: contents: write, issues: write`.
 - README gains a "Running it" section and the setup checklist below.
 
