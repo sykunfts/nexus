@@ -7,10 +7,12 @@
   fulfilment routes from the supplier connectors.
 */
 import { PHOTOS } from './photos.generated'
+import { EXPANSION } from './data.expansion'
 
 export type Visual =
   | 'projector' | 'projector-can' | 'ring' | 'powerbank' | 'glasses' | 'cam' | 'strip' | 'scooter' | 'earbuds'
   | 'pin' | 'printer' | 'robovac' | 'mask' | 'screen' | 'tag' | 'hub' | 'charger' | 'case' | 'adapter' | 'scale'
+  | 'speaker' | 'lock' | 'band' | 'watch' | 'device'
 
 export type OS = 'ios' | 'android'
 export type HomeProto = 'matter' | 'thread' | 'homekit' | 'google' | 'alexa'
@@ -869,7 +871,10 @@ const catalogue: Omit<Product, 'photos' | 'listedAt' | 'market'>[] = [
 ]
 
 const RELEASED_AT: Record<string, string> = { 'rayban-meta-gen-3': '2026-09-23' }
-export const products: Product[] = catalogue.map((p) => ({ ...p, photos: PHOTOS[p.id], listedAt: PRICE_CHECKED, releasedAt: RELEASED_AT[p.id], market: 'AU' as const }))
+export const products: Product[] = [
+  ...catalogue.map((p) => ({ ...p, photos: PHOTOS[p.id], listedAt: PRICE_CHECKED, releasedAt: RELEASED_AT[p.id], market: 'AU' as const })),
+  ...EXPANSION.map((p) => ({ ...p, photos: PHOTOS[p.id] })),
+]
 
 export const byId = (id: string) => {
   const p = products.find((x) => x.id === id)

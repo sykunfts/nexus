@@ -1,0 +1,444 @@
+[
+  {
+    "id": "samsung-the-freestyle-plus-2026",
+    "name": "The Freestyle+ (2026)",
+    "brand": "Samsung",
+    "category": "Home cinema",
+    "tagline": "A Full HD portable projector with 430 ISO lumens, 360-degree 5 W sound and Tizen smart TV apps.",
+    "priceSource": { "amount": 1199.99, "currency": "USD", "at": "samsung.com", "url": "https://www.samsung.com/us/projectors/the-freestyle/the-freestyle-portable-projector-sku-sp-lff3hlaxxza/" },
+    "rating": { "value": 4.6, "count": 17, "at": "samsung.com" },
+    "origin": "US",
+    "market": "US",
+    "visual": "projector",
+    "hue": 210,
+    "variants": [{ "id": "white", "label": "White", "swatch": "#f2f2f0" }],
+    "options": [],
+    "facts": {
+      "provides": [{ "kind": "hdmi", "count": 1 }, { "kind": "usb-c", "count": 1 }],
+      "plug": "US"
+    },
+    "inBox": ["Projector", "Power cable", "User manual", "Carry pouch"],
+    "specs": [
+      { "group": "Picture", "rows": [
+        { "label": "Resolution", "value": "1080p (1920 × 1080)", "n": 2073600, "better": "high" },
+        { "label": "Brightness", "value": "430 ISO lumens claimed", "n": 430, "better": "high" },
+        { "label": "Size", "value": "30–100 in projected image" }
+      ] },
+      { "group": "Sound and inputs", "rows": [
+        { "label": "Speakers", "value": "5 W, 360-degree", "n": 5, "better": "high" },
+        { "label": "Inputs", "value": "1× micro HDMI, 1× USB-C" },
+        { "label": "Streaming", "value": "Tizen smart TV platform" }
+      ] },
+      { "group": "Body", "rows": [
+        { "label": "Weight", "value": "1.0 kg with stand", "n": 1.0, "better": "low" },
+        { "label": "Size", "value": "106.7 × 177.5 × 99 mm with stand" },
+        { "label": "Power", "value": "100 W maximum consumption", "n": 100, "better": "low" }
+      ] }
+    ],
+    "sources": ["samsung.com"],
+    "notes": "Model SP-LFF3H, the 2026 successor to The Freestyle 2nd gen; Samsung markets it as The Freestyle+. Price, rating and review count are from the Samsung US listing, which also showed a zip-code delivery message (\"not available for delivery or in-store pickup in the entered zip code area\"); the Samsung UK listing (SP-LFF3HLAXXXU) was marked out of stock with inconsistent GBP pricing, so confirm purchasability before publishing. Specs and in-box list are from the UK spec page for the same model; the UK unit is rated AC 220–240 V, so US voltage is not confirmed. Battery, USB-C PD charging wattage, HDMI version and release date are not stated on the pages read. Samsung is a Korean brand; origin is set to US because the verified storefront is Samsung US.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "anker-nebula-capsule-3-laser",
+    "name": "Nebula Capsule 3 Laser",
+    "brand": "Anker",
+    "category": "Home cinema",
+    "tagline": "A 1080p laser projector with Android TV 11, 300 ANSI lumens, a 52 Wh battery and USB-C PD charging.",
+    "priceSource": { "amount": 749.99, "currency": "USD", "at": "soundcore.com", "url": "https://www.soundcore.com/products/d2426-capsule-3-laser" },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "projector-can",
+    "hue": 24,
+    "variants": [{ "id": "black", "label": "Black", "swatch": "#1b1b1f" }],
+    "options": [],
+    "facts": {
+      "provides": [{ "kind": "hdmi", "count": 1 }, { "kind": "usb-c", "count": 1 }]
+    },
+    "specs": [
+      { "group": "Picture", "rows": [
+        { "label": "Resolution", "value": "1080p FHD", "n": 2073600, "better": "high" },
+        { "label": "Brightness", "value": "300 ANSI lumens claimed", "n": 300, "better": "high" },
+        { "label": "Size", "value": "Up to 120 in projected image", "n": 120, "better": "high" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "52 Wh; 2.5 h video or 8 h music", "n": 2.5, "better": "high" },
+        { "label": "Charging", "value": "USB-C PD, power-bank compatible" }
+      ] },
+      { "group": "Sound and smarts", "rows": [
+        { "label": "Speakers", "value": "8 W Dolby Digital", "n": 8, "better": "high" },
+        { "label": "Streaming", "value": "Android TV 11.0 with Google Cast" },
+        { "label": "Inputs", "value": "HDMI, USB-C" }
+      ] },
+      { "group": "Body", "rows": [
+        { "label": "Weight", "value": "950 g (2.1 lb)", "n": 950, "better": "low" },
+        { "label": "Size", "value": "3.3 × 3.3 × 6.7 in" }
+      ] }
+    ],
+    "sources": ["soundcore.com"],
+    "notes": "Model D2426, now sold under the soundcore Nebula name; seenebula.com redirects to soundcore.com. The soundcore page lists $749.99 with an Add to Cart button and no strikethrough. The page shows 62 reviews with a star breakdown (46 five-star) but no average value, so rating is null. USB-C PD input wattage, HDMI version, noise and in-box list are not stated on the page read; weight is listed as both 900 g and 950 g on the same page. Black is the only finish seen (from the Best Buy listing title); not confirmed on the maker's page.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "dangbei-atom",
+    "name": "Atom",
+    "brand": "Dangbei",
+    "category": "Home cinema",
+    "tagline": "A slim 1080p ALPD laser projector with 1200 ISO lumens, Google TV and built-in Netflix.",
+    "priceSource": { "amount": 899.00, "currency": "USD", "at": "us.dangbei.com", "url": "https://us.dangbei.com/products/dangbei-atom-laser-projector-with-google-tv" },
+    "compareAtSource": { "amount": 999.00, "currency": "USD", "at": "us.dangbei.com" },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "projector",
+    "hue": 220,
+    "variants": [{ "id": "dark-grey", "label": "Dark Grey", "swatch": "#4a4d52" }],
+    "options": [],
+    "facts": {
+      "provides": [{ "kind": "hdmi", "count": 1 }, { "kind": "usb-a", "count": 1 }, { "kind": "jack", "count": 1 }, { "kind": "dc", "count": 1 }],
+      "plug": "US"
+    },
+    "inBox": ["Projector", "120 W power adapter", "AC cord", "Bluetooth remote", "User manual"],
+    "specs": [
+      { "group": "Picture", "rows": [
+        { "label": "Resolution", "value": "1080p (1920 × 1080), DLP", "n": 2073600, "better": "high" },
+        { "label": "Brightness", "value": "1200 ISO lumens claimed", "n": 1200, "better": "high" },
+        { "label": "Light source", "value": "ALPD laser, 30,000 h rated", "n": 30000, "better": "high" },
+        { "label": "Size", "value": "40–180 in image, 1.2:1 throw, HDR10 and HLG" }
+      ] },
+      { "group": "Sound and smarts", "rows": [
+        { "label": "Speakers", "value": "2 × 5 W, Dolby Digital Plus", "n": 10, "better": "high" },
+        { "label": "Streaming", "value": "Google TV, Netflix certified" },
+        { "label": "Wireless", "value": "Dual-band Wi-Fi 802.11ac, Bluetooth 5.1" },
+        { "label": "Inputs", "value": "1× HDMI (ARC), 1× USB 2.0, 1× 3.5 mm out, DC in" }
+      ] },
+      { "group": "Body", "rows": [
+        { "label": "Noise", "value": "Under 24 dB in standard mode", "n": 24, "better": "low" },
+        { "label": "Weight", "value": "2.82 lb", "n": 2.82, "better": "low" },
+        { "label": "Size", "value": "7.68 × 7.68 × 1.87 in" }
+      ] }
+    ],
+    "sources": ["us.dangbei.com"],
+    "notes": "Mains-powered via a 120 W (19 V / 6.32 A) adapter; no battery and no USB-C power input, so pdInMin does not apply. Input voltage range and HDMI version are not stated. The page shows 1 review without a visible average, so rating is null. Dangbei N2 was not checked because the Atom had a verifiable price.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "marshall-emberton-iii",
+    "name": "Emberton III",
+    "brand": "Marshall",
+    "category": "Audio",
+    "tagline": "A compact IP67 Bluetooth speaker with 32-plus hours of playtime and Bluetooth 5.3 LE.",
+    "priceSource": { "amount": 129.99, "currency": "USD", "at": "marshall.com", "url": "https://www.marshall.com/us/en/product/emberton-iii" },
+    "compareAtSource": { "amount": 179.99, "currency": "USD", "at": "marshall.com" },
+    "rating": null,
+    "origin": "UK",
+    "market": "US",
+    "visual": "hub",
+    "hue": 40,
+    "variants": [
+      { "id": "black-and-brass", "label": "Black and Brass", "swatch": "#1a1a1a" },
+      { "id": "cream", "label": "Cream", "swatch": "#e9e2d0" },
+      { "id": "brown", "label": "Brown", "swatch": "#5c3b2a" },
+      { "id": "sage", "label": "Sage", "swatch": "#8c9a84" },
+      { "id": "midnight-blue", "label": "Midnight Blue", "swatch": "#1e2a47" },
+      { "id": "black-and-silver", "label": "Black and Silver", "swatch": "#262626" },
+      { "id": "vintage-black", "label": "Vintage Black", "swatch": "#2b2b2b" },
+      { "id": "pitch-black", "label": "Pitch Black", "swatch": "#0b0b0b" }
+    ],
+    "options": [],
+    "facts": {
+      "app": ["ios", "android"],
+      "provides": [{ "kind": "usb-c", "count": 1 }]
+    },
+    "inBox": ["Emberton III speaker", "USB-C charging cable", "User manual and legal and safety information", "Strap (Brown finish only)"],
+    "specs": [
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "32+ hours playtime claimed", "n": 32, "better": "high" },
+        { "label": "Charging", "value": "2 h full; 20 min gives 6 h", "n": 2, "better": "low" }
+      ] },
+      { "group": "Sound", "rows": [
+        { "label": "Speakers", "value": "2 full-range drivers (10 W) and 2 passive radiators" },
+        { "label": "Frequency response", "value": "65–20,000 Hz" },
+        { "label": "Max SPL", "value": "90 dB SPL at 1 m", "n": 90, "better": "high" }
+      ] },
+      { "group": "Connectivity and body", "rows": [
+        { "label": "Wireless", "value": "Bluetooth 5.3 LE, up to 100 m, LE Audio-ready" },
+        { "label": "Water resistance", "value": "IP67 (1 m for 30 min)" },
+        { "label": "Weight", "value": "0.67 kg (1.5 lb)", "n": 0.67, "better": "low" },
+        { "label": "Size", "value": "160 × 68 × 76.9 mm" }
+      ] }
+    ],
+    "sources": ["marshall.com"],
+    "notes": "Marshall US lists the speaker at $129.99 marked down from $179.99 on the spec view, while the default product view showed $179.99 with an Add to Bag button, so the sale price may apply to selected finishes only. The spec sheet lists the amplifier as \"2X38 W Class D\" and drivers as \"2\" 10 W full range\", which is ambiguous as extracted, so no amplifier wattage row is given. Codecs and battery type are not stated. No speaker visual exists in the schema list; \"hub\" is the closest block shape. Auracast is described as a future, LE Audio-ready capability, not available at launch.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "sony-linkbuds-open",
+    "name": "LinkBuds Open",
+    "brand": "Sony",
+    "category": "Audio",
+    "tagline": "Open-ring earbuds with 8 hours per charge, 22 hours with the case and Bluetooth 5.3 with LC3.",
+    "priceSource": { "amount": 228.00, "currency": "USD", "at": "bhphotovideo.com", "url": "https://www.bhphotovideo.com/c/product/1857995-REG/sony_wfl910_b_linkbuds_open_truly_wireless.html" },
+    "rating": null,
+    "origin": "US",
+    "market": "US",
+    "visual": "earbuds",
+    "hue": 0,
+    "variants": [
+      { "id": "black", "label": "Black", "swatch": "#1b1b1f" },
+      { "id": "white", "label": "White", "swatch": "#f4f4f2" }
+    ],
+    "options": [],
+    "facts": {},
+    "inBox": ["Earbuds", "Charging case", "USB-C to USB-A cable"],
+    "specs": [
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "8 h per charge; 22 h with case", "n": 8, "better": "high" },
+        { "label": "Charging", "value": "2.5 h case; 3 min gives 1 h", "n": 2.5, "better": "low" }
+      ] },
+      { "group": "Sound and connectivity", "rows": [
+        { "label": "Drivers", "value": "11 mm", "n": 11, "better": "high" },
+        { "label": "Wireless", "value": "Bluetooth 5.3; AAC, LC3, SBC" },
+        { "label": "App", "value": "Sony Sound Connect" }
+      ] },
+      { "group": "Body", "rows": [
+        { "label": "Weight", "value": "5.1 g per bud", "n": 5.1, "better": "low" },
+        { "label": "Warranty", "value": "1 year limited", "n": 1, "better": "high" }
+      ] }
+    ],
+    "sources": ["bhphotovideo.com"],
+    "notes": "Model WF-L910. Sony's own store blocked fetching, so Sony's RRP is not recorded. B&H shows 13 reviews without a visible average, so rating is null. B&H names the Sony Sound Connect app without listing platforms, so facts.app is left out. B&H lists multipoint support as \"No\"; water rating is not stated on the page read. Sony is a Japanese brand; origin is set to US because the verified retailer is in the US.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "shokz-openfit-2-plus",
+    "name": "OpenFit 2+",
+    "brand": "Shokz",
+    "category": "Audio",
+    "tagline": "Open-ear earbuds with 11 hours per charge, 48 hours with the case, IP55 and multipoint pairing.",
+    "priceSource": { "amount": 179.00, "currency": "GBP", "at": "uk.shokz.com", "url": "https://uk.shokz.com/products/openfit2" },
+    "rating": null,
+    "origin": "CN",
+    "market": "UK",
+    "visual": "earbuds",
+    "hue": 0,
+    "variants": [
+      { "id": "black", "label": "Black", "swatch": "#1b1b1f" },
+      { "id": "grey", "label": "Grey", "swatch": "#8a8d91" }
+    ],
+    "options": [],
+    "facts": {
+      "magnetic": false
+    },
+    "inBox": ["OpenFit 2+ earbuds", "OpenFit 2+ charging case", "USB-C to C charging cable"],
+    "specs": [
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "11 h per charge; 48 h with case", "n": 11, "better": "high" },
+        { "label": "Charging", "value": "60 min buds in case; 100 min case by cable; wireless charging case", "n": 60, "better": "low" }
+      ] },
+      { "group": "Connectivity", "rows": [
+        { "label": "Wireless", "value": "Bluetooth 5.4, multipoint pairing to two devices" },
+        { "label": "App", "value": "Shokz App (EQ, multipoint, find device)" }
+      ] },
+      { "group": "Body", "rows": [
+        { "label": "Water resistance", "value": "IP55" },
+        { "label": "Weight", "value": "9.4 g per bud", "n": 9.4, "better": "low" }
+      ] }
+    ],
+    "sources": ["uk.shokz.com", "shokz.com", "jbhifi.com.au"],
+    "notes": "Substituted for the OpenFit 2: the standard OpenFit 2 is listed \"Sold out\" at $179.95 on shokz.com (US), and uk.shokz.com/products/openfit2 now resolves to the OpenFit 2+. On uk.shokz.com Black and Grey are in stock at GBP 179.00; the Grey gift-box bundle is sold out. JB Hi-Fi lists the OpenFit 2+ (Black) at AUD 339 with a 4.3 rating but no visible review count. Wireless charging of the case is stated for the 2+ only on the Shokz series page. The Shokz App platforms are not listed on the pages read, so facts.app is left out; the magnetic flag only records that this is not a Qi2 accessory.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "nothing-ear-open",
+    "name": "Ear (open)",
+    "brand": "Nothing",
+    "category": "Audio",
+    "tagline": "Open-ear earbuds with a silicone ear hook, 30 hours of total battery and IP54 water resistance.",
+    "priceSource": { "amount": 99.00, "currency": "USD", "at": "us.nothing.tech", "url": "https://us.nothing.tech/products/ear-open" },
+    "compareAtSource": { "amount": 129.00, "currency": "USD", "at": "us.nothing.tech" },
+    "rating": null,
+    "origin": "UK",
+    "market": "US",
+    "visual": "earbuds",
+    "hue": 0,
+    "variants": [
+      { "id": "white", "label": "White", "swatch": "#f4f4f2" },
+      { "id": "blue", "label": "Blue", "swatch": "#7aa6e8" }
+    ],
+    "options": [],
+    "facts": {},
+    "specs": [
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "30 h total with case claimed", "n": 30, "better": "high" }
+      ] },
+      { "group": "Body", "rows": [
+        { "label": "Water resistance", "value": "IP54" },
+        { "label": "Fit", "value": "Open-ear with ergonomic silicone ear hook, designed for movement" },
+        { "label": "Sound", "value": "Open Sound Technology, no in-ear seal" }
+      ] }
+    ],
+    "sources": ["us.nothing.tech", "nothing.tech"],
+    "notes": "The US store lists $99 marked down from $129 with an Add to bag button; the UK store (nothing.tech) lists GBP 89. Nothing's product page did not expose its tech-specs section to the fetcher, so driver size, per-bud battery split, Bluetooth version, weight, codecs, app platforms and in-box contents are not recorded; IP54 comes from the page's meta description. Treat this entry as thin on specs.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "jbl-flip-7",
+    "name": "Flip 7",
+    "brand": "JBL",
+    "category": "Audio",
+    "tagline": "An IP68 Bluetooth 5.4 speaker with 14 hours of playtime, Auracast and lossless USB-C audio.",
+    "priceSource": { "amount": 119.95, "currency": "USD", "at": "jbl.com", "url": "https://www.jbl.com/FLIP-7.html" },
+    "compareAtSource": { "amount": 149.95, "currency": "USD", "at": "jbl.com" },
+    "rating": null,
+    "origin": "US",
+    "market": "US",
+    "visual": "projector-can",
+    "hue": 18,
+    "variants": [
+      { "id": "black", "label": "Black", "swatch": "#1b1b1f" },
+      { "id": "blue", "label": "Blue", "swatch": "#2a5bd7" },
+      { "id": "red", "label": "Red", "swatch": "#d12b2b" },
+      { "id": "sand", "label": "Sand", "swatch": "#d8c7a8" },
+      { "id": "funky-black", "label": "Funky Black", "swatch": "#2a2a2a" },
+      { "id": "squad", "label": "Squad", "swatch": "#5a6b3c" },
+      { "id": "pink", "label": "Pink", "swatch": "#e58bb4" },
+      { "id": "white", "label": "White", "swatch": "#f4f4f2" },
+      { "id": "purple", "label": "Purple", "swatch": "#7a4dbf" },
+      { "id": "turquoise", "label": "Turquoise", "swatch": "#27b0b5" }
+    ],
+    "options": [],
+    "facts": {
+      "app": ["ios", "android"],
+      "provides": [{ "kind": "usb-c", "count": 1 }]
+    },
+    "inBox": ["Flip 7", "Carabiner", "Quick start guide", "Safety sheet and warranty card"],
+    "specs": [
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "14 h; up to 16 h with Playtime Boost", "n": 14, "better": "high" },
+        { "label": "Charging", "value": "2.5 h", "n": 2.5, "better": "low" }
+      ] },
+      { "group": "Sound", "rows": [
+        { "label": "Speakers", "value": "25 W RMS woofer and 10 W RMS tweeter", "n": 35, "better": "high" },
+        { "label": "Inputs", "value": "USB-C lossless audio playback" }
+      ] },
+      { "group": "Connectivity and body", "rows": [
+        { "label": "Wireless", "value": "Bluetooth 5.4, Auracast" },
+        { "label": "Water resistance", "value": "IP68" },
+        { "label": "Weight", "value": "0.826 kg (1.82 lb)", "n": 0.826, "better": "low" },
+        { "label": "Size", "value": "18.3 × 7.0 × 7.2 cm" }
+      ] }
+    ],
+    "sources": ["jbl.com"],
+    "notes": "jbl.com shows $119.95 (20% off $149.95) and \"In stock and ready to ship\"; a second price of $154.95 (from $174.95) also appears on the page and likely belongs to a bundle or special finish. The JBL Portable app is stated for iOS and Android. No rating or review count was visible. No speaker visual exists in the schema list; \"projector-can\" is used for the cylindrical shape.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "ugreen-nexode-100w-3-port",
+    "name": "Nexode 100W 3-Port GaN Charger",
+    "brand": "Ugreen",
+    "category": "Power",
+    "tagline": "A 100 W GaN wall charger with two USB-C ports, one USB-A port and a foldable plug.",
+    "priceSource": { "amount": 48.08, "currency": "USD", "at": "us.ugreen.com", "url": "https://us.ugreen.com/products/ugreen-nexode-100w-usb-c-gan-charger-3-ports" },
+    "compareAtSource": { "amount": 59.99, "currency": "USD", "at": "us.ugreen.com" },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "charger",
+    "hue": 150,
+    "variants": [],
+    "options": [],
+    "facts": {
+      "pdOut": 100,
+      "plug": "US",
+      "provides": [{ "kind": "usb-c", "count": 2 }, { "kind": "usb-a", "count": 1 }]
+    },
+    "specs": [
+      { "group": "Output", "rows": [
+        { "label": "Output", "value": "100 W max total", "n": 100, "better": "high" },
+        { "label": "Ports", "value": "2× USB-C, 1× USB-A", "n": 3, "better": "high" },
+        { "label": "Charging", "value": "27 min to 50% for a 14 in MacBook Pro claimed", "n": 27, "better": "low" }
+      ] },
+      { "group": "Body", "rows": [
+        { "label": "Plug", "value": "Foldable prongs" },
+        { "label": "Safety", "value": "6-level protection (over-current, over-voltage, overheating)" }
+      ] }
+    ],
+    "sources": ["us.ugreen.com", "eu.ugreen.com"],
+    "notes": "US store shows $48.08 (19% off $59.99) with an Add to Cart button; the EU store lists the 4-port Nexode 100W at EUR 39.99. The specification table (per-port wattages when 2 or 3 devices are connected, PD/PPS protocols, input voltage, dimensions, weight, model number) did not load on either store, and no colour finish is named, so variants is empty. Plug is recorded as US because the price was verified on the US store with a foldable plug. The page shows 2 reviews without a visible average, so rating is null.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "anker-prime-26k-300w-power-bank",
+    "name": "Prime Power Bank (26K, 300W)",
+    "brand": "Anker",
+    "category": "Power",
+    "tagline": "A 26,250 mAh power bank with 300 W total output, 140 W per USB-C port and a 13-minute charge to 50%.",
+    "priceSource": { "amount": 199.99, "currency": "USD", "at": "bhphotovideo.com", "url": "https://www.bhphotovideo.com/c/product/1909812-REG/anker_a110ah11_prime_power_bank_26_250mah.html" },
+    "compareAtSource": { "amount": 259.99, "currency": "USD", "at": "anker.com" },
+    "rating": { "value": 4.9, "count": 186, "at": "anker.com" },
+    "origin": "CN",
+    "market": "US",
+    "visual": "powerbank",
+    "hue": 210,
+    "variants": [{ "id": "black", "label": "Black", "swatch": "#1b1b1f" }],
+    "options": [],
+    "facts": {
+      "pdOut": 140,
+      "provides": [{ "kind": "usb-c", "count": 2 }, { "kind": "usb-a", "count": 1 }]
+    },
+    "inBox": ["Power bank", "USB-C charging cable (3.3 ft)", "Travel pouch"],
+    "specs": [
+      { "group": "Capacity and output", "rows": [
+        { "label": "Capacity", "value": "26,250 mAh", "n": 26250, "better": "high" },
+        { "label": "Output", "value": "300 W total; 140 W per USB-C; 22.5 W USB-A", "n": 300, "better": "high" },
+        { "label": "Ports", "value": "2× USB-C, 1× USB-A", "n": 3, "better": "high" }
+      ] },
+      { "group": "Recharging", "rows": [
+        { "label": "Charging", "value": "140 W single-port in (150 W Anker protocol), 250 W dual-port in", "n": 250, "better": "high" },
+        { "label": "Recharge time", "value": "50% in 13 min; 80% in 40 min", "n": 13, "better": "low" }
+      ] },
+      { "group": "Body", "rows": [
+        { "label": "Display", "value": "Smart display; Bluetooth app control (AnkerSense)" },
+        { "label": "Weight", "value": "600 g (1.32 lb)", "n": 600, "better": "low" },
+        { "label": "Size", "value": "159.9 × 38 × 62.7 mm" },
+        { "label": "Warranty", "value": "2 years limited", "n": 2, "better": "high" }
+      ] }
+    ],
+    "sources": ["anker.com", "bhphotovideo.com"],
+    "notes": "Model A110A (B&H SKU A110AH11). B&H lists $199.99 in stock; anker.com lists $229.99 marked down from $259.99 with the rating of 4.9 from 186 reviews, so the compare-at uses Anker's list price. Watt-hour capacity, airline-carry wording beyond \"ready to fly\" and AnkerSense app platforms are not stated on the pages read, so facts.app is left out.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "belkin-boostcharge-pro-3-in-1-qi2-pad",
+    "name": "BoostCharge Pro 3-in-1 Magnetic Charging Pad with Qi2 15W",
+    "brand": "Belkin",
+    "category": "Power",
+    "tagline": "A 3-in-1 Qi2 15 W magnetic travel pad that also charges an Apple Watch and AirPods.",
+    "priceSource": { "amount": 109.99, "currency": "USD", "at": "belkin.com", "url": "https://www.belkin.com/p/3-in-1-magnetic-wireless-charging-pad-with-qi2-15w/WIZ022ttWH.html" },
+    "rating": null,
+    "origin": "US",
+    "market": "US",
+    "visual": "charger",
+    "hue": 100,
+    "variants": [{ "id": "white", "label": "White", "swatch": "#f4f4f2" }],
+    "options": [],
+    "facts": {
+      "magnetic": true
+    },
+    "specs": [
+      { "group": "Output", "rows": [
+        { "label": "Output", "value": "15 W Qi2 magnetic phone charging", "n": 15, "better": "high" },
+        { "label": "Earbuds", "value": "5 W pad for AirPods", "n": 5, "better": "high" },
+        { "label": "Watch", "value": "Apple Watch charger included" }
+      ] },
+      { "group": "Compatibility", "rows": [
+        { "label": "Platforms", "value": "iPhone 15, iPhone 16 and future Qi2 phones; MagSafe-compatible" }
+      ] }
+    ],
+    "sources": ["belkin.com"],
+    "notes": "Model WIZ022. White (WIZ022ttWH) is in stock at $109.99; Black (WIZ022ttBK) is listed at the same price but out of stock on belkin.com, so only White is recorded. Belkin shows a star rating (4 of 5 on the White page, 3.2 on the Black page) without a visible review count, so rating is null. Included power supply wattage, cable length, dimensions, weight, Apple Watch fast-charge wattage and the in-box list did not load from the specifications tab, and plug type is not confirmed.",
+    "checkedAt": "2026-10-03"
+  }
+]

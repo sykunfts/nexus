@@ -12,7 +12,8 @@
     "photos": "node scripts/embed-photos.mjs",
     "fragment": "node scripts/fragment.mjs",
     "publish:fragment": "npm run build && npm run fragment",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "research:merge": "node scripts/merge-research.mjs"
   },
   "keywords": [],
   "author": "",
