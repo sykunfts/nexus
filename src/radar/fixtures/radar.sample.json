@@ -1,0 +1,890 @@
+{
+  "generatedAt": "2026-10-04T20:05:10.000Z",
+  "cjGeneratedAt": "2026-10-04T20:05:10.000Z",
+  "rate": {
+    "usdAud": 1.515,
+    "source": "ecb",
+    "date": "2026-10-03"
+  },
+  "sources": {
+    "wikipedia": "ok",
+    "hackernews": "ok",
+    "reddit": "failed: 403",
+    "tiwib": "ok",
+    "cj": "ok"
+  },
+  "terms": [
+    {
+      "id": "smart-ring",
+      "label": "Smart rings",
+      "section": "Wearables",
+      "delta": 212,
+      "trendLabel": "Viral",
+      "score": 1.9,
+      "confidence": "high",
+      "series": [
+        8,
+        9,
+        12,
+        15,
+        22,
+        30,
+        38,
+        100
+      ],
+      "sources": {
+        "wikipedia": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 2.12
+        },
+        "hackernews": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 2.12
+        },
+        "reddit": null,
+        "tiwib": {
+          "last7": 1,
+          "prior7": 0,
+          "growth": 1
+        }
+      }
+    },
+    {
+      "id": "laser-projector",
+      "label": "Laser projectors",
+      "section": "Home cinema",
+      "delta": 140,
+      "trendLabel": "Trending",
+      "score": 1.2,
+      "confidence": "high",
+      "series": [
+        12,
+        14,
+        13,
+        18,
+        24,
+        31,
+        40,
+        100
+      ],
+      "sources": {
+        "wikipedia": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 1.4
+        },
+        "hackernews": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 1.4
+        },
+        "reddit": null,
+        "tiwib": {
+          "last7": 1,
+          "prior7": 0,
+          "growth": 1
+        }
+      }
+    },
+    {
+      "id": "open-ear-buds",
+      "label": "Open-ear buds",
+      "section": "Audio",
+      "delta": 96,
+      "trendLabel": "Rising",
+      "score": 0.8,
+      "confidence": "high",
+      "series": [
+        10,
+        11,
+        13,
+        14,
+        16,
+        19,
+        22,
+        100
+      ],
+      "sources": {
+        "wikipedia": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 0.96
+        },
+        "hackernews": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 0.96
+        },
+        "reddit": null,
+        "tiwib": {
+          "last7": 1,
+          "prior7": 0,
+          "growth": 1
+        }
+      }
+    },
+    {
+      "id": "led-mask",
+      "label": "LED masks",
+      "section": "Health",
+      "delta": 260,
+      "trendLabel": "Viral",
+      "score": 2.1,
+      "confidence": "high",
+      "series": [
+        6,
+        8,
+        10,
+        16,
+        24,
+        30,
+        44,
+        100
+      ],
+      "sources": {
+        "wikipedia": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 2.6
+        },
+        "hackernews": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 2.6
+        },
+        "reddit": null,
+        "tiwib": {
+          "last7": 1,
+          "prior7": 0,
+          "growth": 1
+        }
+      }
+    },
+    {
+      "id": "qi2-power-bank",
+      "label": "Qi2 power banks",
+      "section": "Power",
+      "delta": 62,
+      "trendLabel": "Rising",
+      "score": 0.4,
+      "confidence": "high",
+      "series": [
+        15,
+        16,
+        17,
+        19,
+        20,
+        22,
+        24,
+        100
+      ],
+      "sources": {
+        "wikipedia": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 0.62
+        },
+        "hackernews": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 0.62
+        },
+        "reddit": null,
+        "tiwib": {
+          "last7": 1,
+          "prior7": 0,
+          "growth": 1
+        }
+      }
+    },
+    {
+      "id": "robot-vacuum",
+      "label": "Robot vacuums",
+      "section": "Smart home",
+      "delta": 18,
+      "trendLabel": "Steady",
+      "score": -0.2,
+      "confidence": "high",
+      "series": [
+        22,
+        23,
+        22,
+        24,
+        25,
+        25,
+        26,
+        100
+      ],
+      "sources": {
+        "wikipedia": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 0.18
+        },
+        "hackernews": {
+          "last7": 1,
+          "prior7": 1,
+          "growth": 0.18
+        },
+        "reddit": null,
+        "tiwib": {
+          "last7": 1,
+          "prior7": 0,
+          "growth": 1
+        }
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "pid": "DEMO-RING-1",
+      "termId": "smart-ring",
+      "section": "Wearables",
+      "name": "Titanium Smart Ring Sleep & Heart Rate Tracker, App Included",
+      "image": "",
+      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-RING-1.html",
+      "listedNum": 1532,
+      "cjScope": "category",
+      "variant": {
+        "vid": "DEMO-RING-1-v",
+        "name": "Size 9 / Black",
+        "weightG": 60,
+        "priceUsd": 23.4,
+        "auPlug": false,
+        "variantCount": 4
+      },
+      "freight": {
+        "AU": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 6.1,
+            "days": [
+              8,
+              15
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 28,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "US": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 5.2,
+            "days": [
+              7,
+              12
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 26,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "GB": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 6.8,
+            "days": [
+              9,
+              16
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 30,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        }
+      },
+      "money": {
+        "costAud": 35.45,
+        "freightAud": 9.24,
+        "landedAud": 44.69,
+        "retailAud": 95.95,
+        "marginPct": 0.45232094841063053,
+        "netAud": 39.45,
+        "at2x": 0.41791656475819894,
+        "at3x": 0.6013789922193404,
+        "sectionMedianAud": 399
+      },
+      "flags": [],
+      "score": 0.86,
+      "why": "Smart rings +212 % on Wikipedia, Hacker News and TIWIB; 1,532 dropshippers list this; 45 % margin at $95.95.",
+      "firstSeen": "2026-10-04"
+    },
+    {
+      "pid": "DEMO-MASK-1",
+      "termId": "led-mask",
+      "section": "Health",
+      "name": "LED Light Therapy Face Mask Red And Near Infrared, 7 Colours",
+      "image": "",
+      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-MASK-1.html",
+      "listedNum": 640,
+      "cjScope": "category",
+      "variant": {
+        "vid": "DEMO-MASK-1-v",
+        "name": "AU Plug",
+        "weightG": 520,
+        "priceUsd": 38.5,
+        "auPlug": true,
+        "variantCount": 4
+      },
+      "freight": {
+        "AU": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 12.3,
+            "days": [
+              8,
+              15
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 36,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "US": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 11,
+            "days": [
+              7,
+              12
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 33,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "GB": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 13,
+            "days": [
+              9,
+              16
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 38,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        }
+      },
+      "money": {
+        "costAud": 58.33,
+        "freightAud": 18.63,
+        "landedAud": 76.96,
+        "retailAud": 164.95,
+        "marginPct": 0.4528772052137011,
+        "netAud": 67.91,
+        "at2x": 0.4160636245534265,
+        "at3x": 0.6001155877895649,
+        "sectionMedianAud": 549
+      },
+      "flags": [
+        "mains",
+        "skin"
+      ],
+      "score": 0.833,
+      "why": "LED masks +260 % on Wikipedia, Hacker News and TIWIB; 640 dropshippers list this; 45 % margin at $164.95.",
+      "firstSeen": "2026-10-04"
+    },
+    {
+      "pid": "DEMO-PROJ-1",
+      "termId": "laser-projector",
+      "section": "Home cinema",
+      "name": "Mini Laser Projector 1080P Portable Home Cinema With Android TV",
+      "image": "",
+      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-PROJ-1.html",
+      "listedNum": 880,
+      "cjScope": "category",
+      "variant": {
+        "vid": "DEMO-PROJ-1-v",
+        "name": "AU Plug / Black",
+        "weightG": 1350,
+        "priceUsd": 62.4,
+        "auPlug": true,
+        "variantCount": 4
+      },
+      "freight": {
+        "AU": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 22.05,
+            "days": [
+              6,
+              10
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 48.2,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 11
+        },
+        "US": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 19.9,
+            "days": [
+              6,
+              10
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 44,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "GB": null
+      },
+      "money": {
+        "costAud": 94.54,
+        "freightAud": 33.41,
+        "landedAud": 127.95,
+        "retailAud": 272.95,
+        "marginPct": 0.4512470965378273,
+        "netAud": 111.97,
+        "at2x": 0.4169181285407305,
+        "at3x": 0.6006693449667926,
+        "sectionMedianAud": 1099
+      },
+      "flags": [
+        "mains"
+      ],
+      "score": 0.756,
+      "why": "Laser projectors +140 % on Wikipedia, Hacker News and TIWIB; 880 dropshippers list this; 45 % margin at $272.95.",
+      "firstSeen": "2026-09-28"
+    },
+    {
+      "pid": "DEMO-BUDS-1",
+      "termId": "open-ear-buds",
+      "section": "Audio",
+      "name": "Open Ear Clip Earbuds Bluetooth 5.4 With Charging Case",
+      "image": "",
+      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-BUDS-1.html",
+      "listedNum": 2210,
+      "cjScope": "category",
+      "variant": {
+        "vid": "DEMO-BUDS-1-v",
+        "name": "Black",
+        "weightG": 90,
+        "priceUsd": 11.8,
+        "auPlug": false,
+        "variantCount": 4
+      },
+      "freight": {
+        "AU": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 5.4,
+            "days": [
+              8,
+              15
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 24,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "US": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 4.9,
+            "days": [
+              7,
+              12
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 22,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "GB": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 5.9,
+            "days": [
+              9,
+              16
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 26,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        }
+      },
+      "money": {
+        "costAud": 17.88,
+        "freightAud": 8.18,
+        "landedAud": 26.06,
+        "retailAud": 56.95,
+        "marginPct": 0.4589516242317824,
+        "netAud": 23.76,
+        "at2x": 0.4204890462700661,
+        "at3x": 0.6008295756808105,
+        "sectionMedianAud": 249
+      },
+      "flags": [
+        "radio"
+      ],
+      "score": 0.756,
+      "why": "Open-ear buds +96 % on Wikipedia, Hacker News and TIWIB; 2,210 dropshippers list this; 46 % margin at $56.95.",
+      "firstSeen": "2026-10-04"
+    },
+    {
+      "pid": "DEMO-BANK-1",
+      "termId": "qi2-power-bank",
+      "section": "Power",
+      "name": "Magnetic Wireless Power Bank 10000mAh Qi2 15W",
+      "image": "",
+      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-BANK-1.html",
+      "listedNum": 3100,
+      "cjScope": "category",
+      "variant": {
+        "vid": "DEMO-BANK-1-v",
+        "name": "Blue",
+        "weightG": 210,
+        "priceUsd": 14.2,
+        "auPlug": false,
+        "variantCount": 4
+      },
+      "freight": {
+        "AU": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 7.9,
+            "days": [
+              8,
+              15
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 30,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "US": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 6.5,
+            "days": [
+              7,
+              12
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 28,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "GB": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 8.2,
+            "days": [
+              9,
+              16
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 32,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        }
+      },
+      "money": {
+        "costAud": 21.51,
+        "freightAud": 11.97,
+        "landedAud": 33.48,
+        "retailAud": 71.95,
+        "marginPct": 0.4516580264072273,
+        "netAud": 29.54,
+        "at2x": 0.4212567328918323,
+        "at3x": 0.6000167904903418,
+        "sectionMedianAud": 129
+      },
+      "flags": [
+        "battery",
+        "radio"
+      ],
+      "score": 0.721,
+      "why": "Qi2 power banks +62 % on Wikipedia, Hacker News and TIWIB; 3,100 dropshippers list this; 45 % margin at $71.95.",
+      "firstSeen": "2026-10-04"
+    },
+    {
+      "pid": "DEMO-RING-2",
+      "termId": "smart-ring",
+      "section": "Wearables",
+      "name": "Smart Ring Charging Case Only (No Ring)",
+      "image": "",
+      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-RING-2.html",
+      "listedNum": 220,
+      "cjScope": "category",
+      "variant": {
+        "vid": "DEMO-RING-2-v",
+        "name": "Black",
+        "weightG": 40,
+        "priceUsd": 2.9,
+        "auPlug": false,
+        "variantCount": 4
+      },
+      "freight": {
+        "AU": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 5,
+            "days": [
+              8,
+              15
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 20,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "US": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 4.5,
+            "days": [
+              7,
+              12
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 20,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "GB": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 5.5,
+            "days": [
+              9,
+              16
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 22,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        }
+      },
+      "money": {
+        "costAud": 4.39,
+        "freightAud": 7.57,
+        "landedAud": 11.96,
+        "retailAud": 26.95,
+        "marginPct": 0.4676918367346938,
+        "netAud": 11.46,
+        "at2x": 0.4050102296450938,
+        "at3x": 0.5929678720445062,
+        "sectionMedianAud": 399
+      },
+      "flags": [],
+      "score": 0.636,
+      "why": "Smart rings +212 % on Wikipedia, Hacker News and TIWIB; 220 dropshippers list this; 47 % margin at $26.95.",
+      "firstSeen": "2026-10-04"
+    },
+    {
+      "pid": "DEMO-VAC-1",
+      "termId": "robot-vacuum",
+      "section": "Smart home",
+      "name": "Robot Vacuum And Mop With Self-Empty Base, Wi-Fi App Control",
+      "image": "",
+      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-VAC-1.html",
+      "listedNum": 410,
+      "cjScope": "keyword",
+      "variant": {
+        "vid": "DEMO-VAC-1-v",
+        "name": "US Plug / White",
+        "weightG": 6800,
+        "priceUsd": 189,
+        "auPlug": false,
+        "variantCount": 4
+      },
+      "freight": {
+        "AU": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 61,
+            "days": [
+              10,
+              20
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 140,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "US": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 48,
+            "days": [
+              8,
+              14
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 120,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "GB": null
+      },
+      "money": {
+        "costAud": 286.33,
+        "freightAud": 92.42,
+        "landedAud": 378.75,
+        "retailAud": 804.95,
+        "marginPct": 0.4501113050500031,
+        "netAud": 329.38,
+        "at2x": 0.41799115377003765,
+        "at3x": 0.6013688332820264,
+        "sectionMedianAud": 1299
+      },
+      "flags": [
+        "mains",
+        "radio",
+        "heavy"
+      ],
+      "score": 0.165,
+      "why": "Robot vacuums +18 % on Wikipedia, Hacker News and TIWIB; 410 dropshippers list this; 45 % margin at $804.95.",
+      "firstSeen": "2026-10-04"
+    }
+  ],
+  "novelty": [
+    {
+      "title": "Smart Ring That Tracks Your Sleep",
+      "link": "https://www.thisiswhyimbroke.com/",
+      "date": "2026-10-03",
+      "termId": "smart-ring"
+    },
+    {
+      "title": "Laser Projector For Your Backyard",
+      "link": "https://www.thisiswhyimbroke.com/",
+      "date": "2026-10-02",
+      "termId": "laser-projector"
+    },
+    {
+      "title": "Levitating Plant Pot",
+      "link": "https://www.thisiswhyimbroke.com/",
+      "date": "2026-10-02",
+      "termId": null
+    },
+    {
+      "title": "Self-Stirring Mug",
+      "link": "https://www.thisiswhyimbroke.com/",
+      "date": "2026-10-01",
+      "termId": null
+    }
+  ]
+}
