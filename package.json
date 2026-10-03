@@ -13,7 +13,9 @@
     "fragment": "node scripts/fragment.mjs",
     "publish:fragment": "npm run build && npm run fragment",
     "test:watch": "vitest",
-    "research:merge": "node scripts/merge-research.mjs"
+    "research:merge": "node scripts/merge-research.mjs",
+    "radar": "tsx radar/src/index.ts run",
+    "radar:dry": "tsx radar/src/index.ts run --dry --skip-cj"
   },
   "keywords": [],
   "author": "",
@@ -32,6 +34,7 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/react": "^16.3.3",
+    "@types/node": "^22.10.2",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@types/three": "^0.169.0",
@@ -39,6 +42,7 @@
     "jsdom": "^25.0.1",
     "sharp": "^0.33.5",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3",
     "vite": "^5.4.21",
     "vite-plugin-singlefile": "^2.3.3",

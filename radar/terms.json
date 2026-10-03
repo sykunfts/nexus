@@ -1,0 +1,561 @@
+[
+  {
+    "id": "smart-ring",
+    "label": "Smart rings",
+    "section": "Wearables",
+    "wikipedia": "Smart_ring",
+    "phrases": [
+      "smart ring",
+      "sleep tracking ring"
+    ],
+    "cj": {
+      "category": "smart ring",
+      "keyword": "smart ring"
+    },
+    "products": [
+      "oura-ring-5",
+      "ringconn-gen-3",
+      "ultrahuman-ring-air",
+      "samsung-galaxy-ring"
+    ]
+  },
+  {
+    "id": "smart-glasses",
+    "label": "Smart glasses",
+    "section": "Wearables",
+    "wikipedia": "Smartglasses",
+    "phrases": [
+      "smart glasses",
+      "AI glasses"
+    ],
+    "cj": {
+      "category": "smart glasses",
+      "keyword": "smart glasses"
+    },
+    "products": [
+      "rayban-meta-gen-3",
+      "even-realities-g2",
+      "xreal-one",
+      "meta-ray-ban-display"
+    ]
+  },
+  {
+    "id": "fitness-band",
+    "label": "Fitness bands",
+    "section": "Wearables",
+    "wikipedia": "Activity_tracker",
+    "phrases": [
+      "fitness tracker band",
+      "screenless fitness tracker"
+    ],
+    "cj": {
+      "category": "fitness tracker",
+      "keyword": "fitness tracker"
+    },
+    "products": [
+      "whoop-5-0",
+      "garmin-index-sleep-monitor"
+    ]
+  },
+  {
+    "id": "smartwatch",
+    "label": "Health watches",
+    "section": "Wearables",
+    "wikipedia": "Smartwatch",
+    "phrases": [
+      "smartwatch ECG",
+      "health smartwatch"
+    ],
+    "cj": {
+      "category": "smart watch",
+      "keyword": "smart watch"
+    },
+    "products": [
+      "withings-scanwatch-2"
+    ]
+  },
+  {
+    "id": "ai-wearable",
+    "label": "AI wearables",
+    "section": "Wearables",
+    "wikipedia": "Wearable_technology",
+    "phrases": [
+      "AI wearable",
+      "AI pendant"
+    ],
+    "cj": {
+      "category": "wearable",
+      "keyword": "AI wearable"
+    },
+    "products": [
+      "bee-pioneer"
+    ]
+  },
+  {
+    "id": "open-ear-buds",
+    "label": "Open-ear buds",
+    "section": "Audio",
+    "wikipedia": "Headphones",
+    "phrases": [
+      "open ear earbuds",
+      "clip on earbuds"
+    ],
+    "cj": {
+      "category": "earphone",
+      "keyword": "open ear earbuds"
+    },
+    "products": [
+      "bose-ultra-open-2",
+      "sony-linkbuds-open",
+      "shokz-openfit-2-plus",
+      "nothing-ear-open"
+    ]
+  },
+  {
+    "id": "portable-speaker",
+    "label": "Portable speakers",
+    "section": "Audio",
+    "wikipedia": "Wireless_speaker",
+    "phrases": [
+      "portable bluetooth speaker",
+      "waterproof speaker"
+    ],
+    "cj": {
+      "category": "speaker",
+      "keyword": "portable bluetooth speaker"
+    },
+    "products": [
+      "marshall-emberton-iii",
+      "jbl-flip-7"
+    ]
+  },
+  {
+    "id": "indoor-camera",
+    "label": "Indoor cameras",
+    "section": "Smart home",
+    "wikipedia": "IP_camera",
+    "phrases": [
+      "indoor security camera",
+      "matter camera"
+    ],
+    "cj": {
+      "category": "camera",
+      "keyword": "indoor security camera"
+    },
+    "products": [
+      "aqara-camera-e1",
+      "tp-link-tapo-c120"
+    ]
+  },
+  {
+    "id": "light-strip",
+    "label": "Smart lighting",
+    "section": "Smart home",
+    "wikipedia": "LED_strip_light",
+    "phrases": [
+      "LED strip lights",
+      "smart light strip"
+    ],
+    "cj": {
+      "category": "led strip",
+      "keyword": "smart led strip"
+    },
+    "products": [
+      "nanoleaf-matter-strip-5m",
+      "govee-rgbic-neon-rope-light-2",
+      "nanoleaf-blocks-starter-kit",
+      "philips-hue-play-hdmi-sync-box-8k"
+    ]
+  },
+  {
+    "id": "robot-vacuum",
+    "label": "Robot vacuums",
+    "section": "Smart home",
+    "wikipedia": "Robotic_vacuum_cleaner",
+    "phrases": [
+      "robot vacuum",
+      "robot mop"
+    ],
+    "cj": {
+      "category": "vacuum",
+      "keyword": "robot vacuum"
+    },
+    "products": [
+      "eufy-x10-pro-omni",
+      "dreame-x50-ultra",
+      "roborock-saros-10"
+    ]
+  },
+  {
+    "id": "window-robot",
+    "label": "Window robots",
+    "section": "Smart home",
+    "wikipedia": "Window_cleaning_robot",
+    "phrases": [
+      "window cleaning robot"
+    ],
+    "cj": {
+      "category": "window cleaning",
+      "keyword": "window cleaning robot"
+    },
+    "products": [
+      "ecovacs-winbot-w2-pro-omni"
+    ]
+  },
+  {
+    "id": "smart-lock",
+    "label": "Smart locks",
+    "section": "Smart home",
+    "wikipedia": "Smart_lock",
+    "phrases": [
+      "smart lock",
+      "fingerprint door lock"
+    ],
+    "cj": {
+      "category": "smart lock",
+      "keyword": "smart lock"
+    },
+    "products": [
+      "switchbot-lock-ultra",
+      "aqara-smart-lock-u300"
+    ]
+  },
+  {
+    "id": "matter-hub",
+    "label": "Matter hubs",
+    "section": "Smart home",
+    "wikipedia": "Matter_(standard)",
+    "phrases": [
+      "matter hub",
+      "thread border router"
+    ],
+    "cj": {
+      "category": "smart home hub",
+      "keyword": "smart home hub"
+    },
+    "products": [
+      "aqara-hub-m3",
+      "switchbot-hub-3"
+    ]
+  },
+  {
+    "id": "laser-projector",
+    "label": "Laser projectors",
+    "section": "Home cinema",
+    "wikipedia": "Video_projector",
+    "phrases": [
+      "laser projector",
+      "4k projector"
+    ],
+    "cj": {
+      "category": "projector",
+      "keyword": "laser projector"
+    },
+    "products": [
+      "xgimi-mogo-4-laser",
+      "anker-nebula-capsule-3-laser",
+      "dangbei-atom"
+    ]
+  },
+  {
+    "id": "battery-projector",
+    "label": "Battery projectors",
+    "section": "Home cinema",
+    "wikipedia": "Handheld_projector",
+    "phrases": [
+      "portable projector",
+      "mini projector"
+    ],
+    "cj": {
+      "category": "projector",
+      "keyword": "portable projector"
+    },
+    "products": [
+      "xgimi-vibe-one",
+      "samsung-the-freestyle-plus-2026"
+    ]
+  },
+  {
+    "id": "projector-screen",
+    "label": "Projector screens",
+    "section": "Home cinema",
+    "wikipedia": "Projection_screen",
+    "phrases": [
+      "projector screen",
+      "outdoor projector screen"
+    ],
+    "cj": {
+      "category": "projector screen",
+      "keyword": "projector screen"
+    },
+    "products": [
+      "elite-yard-master-2-100"
+    ]
+  },
+  {
+    "id": "qi2-power-bank",
+    "label": "Qi2 power banks",
+    "section": "Power",
+    "wikipedia": "Power_bank",
+    "phrases": [
+      "magsafe power bank",
+      "qi2 power bank"
+    ],
+    "cj": {
+      "category": "power bank",
+      "keyword": "magnetic power bank"
+    },
+    "products": [
+      "anker-maggo-10k",
+      "anker-prime-26k-300w-power-bank"
+    ]
+  },
+  {
+    "id": "gan-charger",
+    "label": "GaN chargers",
+    "section": "Power",
+    "wikipedia": "Battery_charger",
+    "phrases": [
+      "gan charger",
+      "100w charger"
+    ],
+    "cj": {
+      "category": "charger",
+      "keyword": "gan charger"
+    },
+    "products": [
+      "anker-prime-100w",
+      "ugreen-nexode-100w-3-port"
+    ]
+  },
+  {
+    "id": "magnetic-charging",
+    "label": "Magnetic charging",
+    "section": "Power",
+    "wikipedia": "Qi_(standard)",
+    "phrases": [
+      "qi2 charger",
+      "magsafe charger"
+    ],
+    "cj": {
+      "category": "wireless charger",
+      "keyword": "magnetic wireless charger"
+    },
+    "products": [
+      "belkin-boostcharge-pro-3-in-1-qi2-pad",
+      "esr-halolock-ring"
+    ]
+  },
+  {
+    "id": "travel-adapter",
+    "label": "Travel adapters",
+    "section": "Accessories",
+    "wikipedia": "AC_power_plugs_and_sockets",
+    "phrases": [
+      "travel adapter",
+      "universal travel adapter"
+    ],
+    "cj": {
+      "category": "travel adapter",
+      "keyword": "travel adapter"
+    },
+    "products": [
+      "sansai-au-travel-adapter"
+    ]
+  },
+  {
+    "id": "e-scooter",
+    "label": "E-scooters",
+    "section": "Mobility",
+    "wikipedia": "Electric_kick_scooter",
+    "phrases": [
+      "electric scooter",
+      "e-scooter"
+    ],
+    "cj": {
+      "category": "electric scooter",
+      "keyword": "electric scooter"
+    },
+    "products": [
+      "segway-e3-pro",
+      "niu-kqi-300x",
+      "segway-ninebot-kickscooter-f3"
+    ]
+  },
+  {
+    "id": "led-mask",
+    "label": "LED masks",
+    "section": "Health",
+    "wikipedia": "Light_therapy",
+    "phrases": [
+      "LED face mask",
+      "red light mask"
+    ],
+    "cj": {
+      "category": "beauty device",
+      "keyword": "led face mask"
+    },
+    "products": [
+      "omnilux-contour-face",
+      "therabody-theraface-mask",
+      "currentbody-skin-led-mask-series-3",
+      "shark-cryoglow"
+    ]
+  },
+  {
+    "id": "smart-scale",
+    "label": "Smart scales",
+    "section": "Health",
+    "wikipedia": "Weighing_scale",
+    "phrases": [
+      "smart scale",
+      "body composition scale"
+    ],
+    "cj": {
+      "category": "scale",
+      "keyword": "smart scale"
+    },
+    "products": [
+      "withings-body-smart"
+    ]
+  },
+  {
+    "id": "recovery",
+    "label": "Recovery gear",
+    "section": "Health",
+    "wikipedia": "Massage",
+    "phrases": [
+      "compression boots",
+      "massage gun"
+    ],
+    "cj": {
+      "category": "massager",
+      "keyword": "massage gun"
+    },
+    "products": [
+      "hyperice-normatec-elite"
+    ]
+  },
+  {
+    "id": "desk-3d-printer",
+    "label": "Desk 3D printers",
+    "section": "Maker",
+    "wikipedia": "3D_printing",
+    "phrases": [
+      "desktop 3d printer",
+      "mini 3d printer"
+    ],
+    "cj": {
+      "category": "3d printer",
+      "keyword": "3d printer"
+    },
+    "products": [
+      "bambu-a1-mini",
+      "creality-k2"
+    ]
+  },
+  {
+    "id": "dev-board",
+    "label": "Dev boards",
+    "section": "Maker",
+    "wikipedia": "Single-board_computer",
+    "phrases": [
+      "single board computer",
+      "hacking multitool"
+    ],
+    "cj": {
+      "category": "development board",
+      "keyword": "development board"
+    },
+    "products": [
+      "flipper-zero",
+      "raspberry-pi-5-desktop-kit-8gb"
+    ]
+  },
+  {
+    "id": "ai-recorder",
+    "label": "AI recorders",
+    "section": "Work",
+    "wikipedia": "Dictation_machine",
+    "phrases": [
+      "AI voice recorder",
+      "AI note taker"
+    ],
+    "cj": {
+      "category": "voice recorder",
+      "keyword": "voice recorder"
+    },
+    "products": [
+      "plaud-notepin-s",
+      "plaud-note-pro"
+    ]
+  },
+  {
+    "id": "pocket-gimbal",
+    "label": "Pocket gimbals",
+    "section": "Work",
+    "wikipedia": "Gimbal",
+    "phrases": [
+      "pocket gimbal camera",
+      "vlog camera"
+    ],
+    "cj": {
+      "category": "gimbal",
+      "keyword": "gimbal camera"
+    },
+    "products": [
+      "dji-osmo-pocket-3"
+    ]
+  },
+  {
+    "id": "360-camera",
+    "label": "360 cameras",
+    "section": "Work",
+    "wikipedia": "Omnidirectional_camera",
+    "phrases": [
+      "360 camera",
+      "action camera"
+    ],
+    "cj": {
+      "category": "action camera",
+      "keyword": "360 camera"
+    },
+    "products": [
+      "insta360-x5"
+    ]
+  },
+  {
+    "id": "keyboard",
+    "label": "Keyboards",
+    "section": "Work",
+    "wikipedia": "Computer_keyboard",
+    "phrases": [
+      "magnetic switch keyboard",
+      "hall effect keyboard"
+    ],
+    "cj": {
+      "category": "keyboard",
+      "keyword": "mechanical keyboard"
+    },
+    "products": [
+      "keychron-k2-he"
+    ]
+  },
+  {
+    "id": "finder-tag",
+    "label": "Finder tags",
+    "section": "Accessories",
+    "wikipedia": "Bluetooth_tracker",
+    "phrases": [
+      "bluetooth tracker",
+      "item finder tag"
+    ],
+    "cj": {
+      "category": "tracker",
+      "keyword": "bluetooth tracker"
+    },
+    "products": [
+      "chipolo-pop"
+    ]
+  }
+]
