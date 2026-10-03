@@ -52,8 +52,11 @@ export interface OptionGroup { id: string; label: string; choices: Choice[] }
 export interface SpecRow { label: string; value: string; n?: number; better?: 'high' | 'low' }
 export interface SpecGroup { group: string; rows: SpecRow[] }
 export interface Trend { label: 'Viral' | 'Trending' | 'Rising' | 'Steady'; delta: number; series: number[]; source: string }
-export interface Fulfil { route: 'warehouse' | 'supplier'; from: string; eta: string; days: [number, number] }
+export type Origin = 'AU' | 'CN' | 'US' | 'EU' | 'UK'
+export interface Fulfil { route: 'warehouse' | 'supplier'; origin: Origin; from: string; eta: string; days: [number, number] }
 export interface Rating { value: number; count: number; at: string }
+export type Market = 'global' | 'AU' | 'US' | 'EU' | 'UK'
+export interface PriceSource { amount: number; currency: 'USD' | 'GBP' | 'EUR' | 'JPY' | 'AUD'; at: string }
 
 export interface Product {
   id: string
@@ -64,6 +67,10 @@ export interface Product {
   price: number               // AUD, GST inclusive, cheapest verified retailer on priceCheckedAt
   compareAt?: number          // maker's RRP when higher
   priceCheckedAt: string      // ISO date
+  priceSource?: PriceSource   // the listed price when it was verified in another currency
+  listedAt: string            // ISO date the product entered the catalogue
+  releasedAt?: string         // ISO release date when a page stated it; "newest" sorts by this, unknown last
+  market: Market              // where the listing was verified
   sources: string[]           // where the price and specs were checked
   notes?: string              // things we could not verify, shown as a note, never as a fact
   rating: Rating | null       // only where a value and a count were both visible
@@ -93,8 +100,8 @@ export interface GearItem {
 export const PRICE_CHECKED = '2026-10-02'
 export const priceCheckedText = (iso: string) => new Date(`${iso}T00:00:00`).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })
 
-const WAREHOUSE: Fulfil = { route: 'warehouse', from: 'Sydney warehouse', eta: '2–4 days', days: [2, 4] }
-const SUPPLIER: Fulfil = { route: 'supplier', from: 'partner supplier', eta: '8–12 days', days: [8, 12] }
+const WAREHOUSE: Fulfil = { route: 'warehouse', origin: 'AU', from: 'Sydney warehouse', eta: '2–4 days', days: [2, 4] }
+const SUPPLIER: Fulfil = { route: 'supplier', origin: 'CN', from: 'partner supplier', eta: '8–12 days', days: [8, 12] }
 const SAMPLE = 'Sample data until the trend worker runs'
 
 const PLUG_OPTIONS: OptionGroup = {
@@ -117,7 +124,7 @@ const sizes = (from: number, to: number): OptionGroup => ({
 const BLACK = { id: 'black', label: 'Black', swatch: '#1b1b1f' }
 const WHITE = { id: 'white', label: 'White', swatch: '#e8e8ec' }
 
-const catalogue: Omit<Product, 'photos'>[] = [
+const catalogue: Omit<Product, 'photos' | 'listedAt' | 'market'>[] = [
   /* ---------------- Home cinema ---------------- */
   {
     id: 'xgimi-mogo-4-laser',
@@ -855,7 +862,8 @@ const catalogue: Omit<Product, 'photos'>[] = [
   },
 ]
 
-export const products: Product[] = catalogue.map((p) => ({ ...p, photos: PHOTOS[p.id] }))
+const RELEASED_AT: Record<string, string> = { 'rayban-meta-gen-3': '2026-09-23' }
+export const products: Product[] = catalogue.map((p) => ({ ...p, photos: PHOTOS[p.id], listedAt: PRICE_CHECKED, releasedAt: RELEASED_AT[p.id], market: 'AU' as const }))
 
 export const byId = (id: string) => {
   const p = products.find((x) => x.id === id)
