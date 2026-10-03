@@ -8,6 +8,7 @@
 */
 import { PHOTOS } from './photos.generated'
 import { EXPANSION } from './data.expansion'
+import { LISTINGS } from './data.listings'
 
 export type Visual =
   | 'projector' | 'projector-can' | 'ring' | 'powerbank' | 'glasses' | 'cam' | 'strip' | 'scooter' | 'earbuds'
@@ -880,6 +881,7 @@ const RELEASED_AT: Record<string, string> = { 'rayban-meta-gen-3': '2026-09-23' 
 export const products: Product[] = [
   ...catalogue.map((p) => ({ ...p, photos: PHOTOS[p.id], listedAt: PRICE_CHECKED, releasedAt: RELEASED_AT[p.id], market: 'AU' as const })),
   ...EXPANSION.map((p) => ({ ...p, photos: PHOTOS[p.id] })),
+  ...LISTINGS,   // approved Radar finds, data/listings/*.json → merged at build
 ]
 
 /** Strict lookup for code that holds a known id (tests, data wiring). Render paths that dereference a route or persisted id use `productById`. */

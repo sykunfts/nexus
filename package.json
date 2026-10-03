@@ -15,7 +15,9 @@
     "test:watch": "vitest",
     "research:merge": "node scripts/merge-research.mjs",
     "radar": "tsx radar/src/index.ts run",
-    "radar:dry": "tsx radar/src/index.ts run --dry --skip-cj"
+    "radar:dry": "tsx radar/src/index.ts run --dry --skip-cj",
+    "merge": "node scripts/merge-trends.mjs && node scripts/merge-listings.mjs",
+    "listing": "tsx radar/src/listing-cli.ts"
   },
   "keywords": [],
   "author": "",
