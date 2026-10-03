@@ -207,6 +207,35 @@ async def main():
             await page.click("button:has-text('Continue to shipping')"); await page.wait_for_timeout(500)
             assert await page.locator("text=VAT 20 %").count() >= 1, "VAT line missing"
         await run("checkout-uk", 1440, 900, checkout_uk)
+        async def account_out(page):
+            await page.goto(BASE + "#/account"); await page.wait_for_timeout(1000)
+            assert await page.locator("h1:has-text('Sign in')").count() == 1
+        await run("account-signed-out", 1440, 900, account_out)
+        async def account_in(page):
+            await page.goto(BASE + "#/account"); await page.wait_for_timeout(1000)
+            await page.fill("input[type='email']", "nick@example.com"); await page.click("button:has-text('Sign in')"); await page.wait_for_timeout(500)
+            await page.click("section:has(h2:text-is('Addresses')) >> button:text-is('Add')"); await page.wait_for_timeout(300)
+            await page.fill("input[name='name']", "Nick M"); await page.fill("input[name='line1']", "1 Test Street"); await page.fill("input[name='city']", "Sydney"); await page.fill("input[name='postcode']", "2000")
+            await page.click("button:has-text('Save address')"); await page.wait_for_timeout(500)
+            assert await page.locator("text=1 Test Street").count() >= 1
+        await run("account-signed-in", 1440, 900, account_in)
+        async def orders_list(page):
+            await page.goto(BASE + "#/p/chipolo-pop"); await page.wait_for_timeout(1000)
+            await page.locator("button:has-text('Add to cart')").first.click(); await page.wait_for_timeout(500)
+            await page.click("button:has-text('Full checkout')"); await page.wait_for_timeout(800)
+            await page.fill("input[type='email']", "nick@example.com"); await page.click("button:has-text('Continue to delivery')"); await page.wait_for_timeout(400)
+            await page.fill("input[name='name']", "Nick M"); await page.fill("input[name='line1']", "1 Test Street"); await page.fill("input[name='city']", "Sydney"); await page.fill("input[name='postcode']", "2000")
+            await page.click("button:has-text('Continue to shipping')"); await page.wait_for_timeout(400)
+            await page.click("button:has-text('Continue to payment')"); await page.wait_for_timeout(300)
+            await page.fill("input[autocomplete='cc-number']", "4242424242424242"); await page.fill("input[autocomplete='cc-exp']", "12/28"); await page.fill("input[autocomplete='cc-csc']", "123"); await page.fill("input[autocomplete='cc-name']", "N")
+            await page.click("button:has-text('Review the order')"); await page.wait_for_timeout(300)
+            await page.click("button:has-text('Place order')"); await page.wait_for_timeout(1000)
+            await page.click("button:has-text('Track this order')"); await page.wait_for_timeout(800)
+            await page.screenshot(path="shots/order-detail.png")
+            assert await page.locator("text=Shipment 1").count() == 1
+            await page.goto(BASE + "#/orders"); await page.wait_for_timeout(800)
+            assert await page.locator("table tbody tr").count() >= 1
+        await run("orders-list", 1440, 900, orders_list)
         await run("home-mobile", 400, 820)
         async def pdp_m(page):
             await page.click("text=See the MoGo 4 Laser")

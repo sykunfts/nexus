@@ -9,6 +9,8 @@ import { SetupPage } from './pages/SetupPage'
 import { ComparePage } from './pages/ComparePage'
 import { CheckoutPage } from './pages/CheckoutPage'
 import { ConfirmedPage } from './pages/ConfirmedPage'
+import { AccountPage } from './pages/AccountPage'
+import { OrderPage, OrdersPage } from './pages/OrdersPage'
 import { collectionBySlug, FOOTER } from './lib/collections'
 import { cartCount, useStore } from './lib/store'
 import { Header } from './components/Header'
@@ -160,6 +162,9 @@ function Page({ route }: { route: Route }) {
     case 'compare': return <ComparePage ids={route.ids} />
     case 'checkout': return <CheckoutPage />
     case 'confirmed': return <ConfirmedPage id={route.id} />
+    case 'account': return <AccountPage />
+    case 'orders': return <OrdersPage />
+    case 'order': return <OrderPage id={route.id} />
     case 'not-found': return <NotFoundPage hash={route.hash} />
     default: return <NotFoundPage hash={formatRoute(route)} />
   }
