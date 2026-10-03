@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Home as HomeIcon, Search, ShoppingBag, TrendingUp, User, X } from 'lucide-react'
-import { byId } from './lib/data'
+import { byId, products } from './lib/data'
+import { formatRoute, parseRoute, Route } from './lib/routes'
+import { NotFoundPage } from './pages/NotFoundPage'
 import { cartCount, useStore } from './lib/store'
 import { Header } from './components/Header'
 import { Home } from './components/Home'
@@ -67,7 +69,7 @@ function CompareTray() {
               </button>
             ))}
           </div>
-          <Button size="sm" variant="primary" onClick={() => go({ name: 'pdp', id: compare[0] })}>Compare</Button>
+          <Button size="sm" variant="primary" onClick={() => go({ name: 'compare', ids: compare })}>Compare</Button>
         </motion.div>
       )}
     </AnimatePresence>
@@ -75,20 +77,20 @@ function CompareTray() {
 }
 
 function MobileTabBar() {
-  const view = useStore((s) => s.view)
+  const route = useStore((s) => s.route)
   const go = useStore((s) => s.go)
   const openCart = useStore((s) => s.openCart)
   const setAdvisor = useStore((s) => s.setAdvisor)
   const setSearchOpen = useStore((s) => s.setSearchOpen)
   const count = cartCount(useStore((s) => s.cart))
   const items = [
-    { id: 'home', label: 'Home', icon: HomeIcon, on: view.name === 'home', act: () => go({ name: 'home' }) },
+    { id: 'home', label: 'Home', icon: HomeIcon, on: route.name === 'home', act: () => go({ name: 'home' }) },
     { id: 'search', label: 'Search', icon: Search, on: false, act: () => { go({ name: 'home' }); setSearchOpen(true); window.setTimeout(() => document.getElementById('site-search')?.focus(), 50) } },
     { id: 'scout', label: 'Scout', icon: TrendingUp, on: false, act: () => setAdvisor(true) },
     { id: 'cart', label: 'Cart', icon: ShoppingBag, on: false, act: () => openCart(true), badge: count },
-    { id: 'account', label: 'Account', icon: User, on: false, act: () => undefined },
+    { id: 'account', label: 'Account', icon: User, on: route.name === 'account', act: () => go({ name: 'account' }) },
   ]
-  if (view.name === 'pdp') return null
+  if (route.name === 'product' || route.name === 'checkout') return null
   return (
     <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-ink bg-paper lg:hidden" aria-label="Mobile" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
       <ul className="grid h-16 grid-cols-5">
@@ -141,22 +143,32 @@ function Footer() {
   )
 }
 
+/* Route → page. Pages land here as the build adds them; until then a route renders the 404. */
+function Page({ route }: { route: Route }) {
+  switch (route.name) {
+    case 'home': return <Home />
+    case 'product': return products.some((p) => p.id === route.id) ? <ProductPage key={route.id} product={byId(route.id)} /> : <NotFoundPage hash={formatRoute(route)} />
+    case 'not-found': return <NotFoundPage hash={route.hash} />
+    default: return <NotFoundPage hash={formatRoute(route)} />
+  }
+}
+
 export default function App() {
-  const view = useStore((s) => s.view)
+  const route = useStore((s) => s.route)
 
   useEffect(() => {
     const fromHash = () => {
-      const h = location.hash.replace('#', '')
-      if (h && h !== 'home') { try { byId(h); useStore.getState().go({ name: 'pdp', id: h }) } catch { /* unknown */ } }
+      const next = parseRoute(location.hash)
+      if (formatRoute(next) !== formatRoute(useStore.getState().route)) useStore.getState().go(next)
     }
-    fromHash()
+    if (location.hash) fromHash()
     window.addEventListener('hashchange', fromHash)
     return () => window.removeEventListener('hashchange', fromHash)
   }, [])
   useEffect(() => {
-    const next = view.name === 'pdp' ? `#${view.id}` : '#home'
+    const next = formatRoute(route)
     try { if (location.hash !== next) history.replaceState(null, '', next) } catch { /* sandboxed frame */ }
-  }, [view])
+  }, [route])
 
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -164,8 +176,8 @@ export default function App() {
       <Header />
       <main id="main">
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div key={view.name === 'pdp' ? view.id : 'home'} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.1 } }} transition={{ duration: 0.16 }}>
-            {view.name === 'home' ? <Home /> : <ProductPage key={view.id} product={byId(view.id)} />}
+          <motion.div key={formatRoute(route)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.1 } }} transition={{ duration: 0.16 }}>
+            <Page route={route} />
           </motion.div>
         </AnimatePresence>
       </main>

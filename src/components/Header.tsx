@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Menu, Search, ShoppingBag, X } from 'lucide-react'
+import { Menu, Search, ShoppingBag, User, X } from 'lucide-react'
 import { nav } from '../lib/data'
 import { CURRENCIES, Currency } from '../lib/currency'
 import { cartCount, useStore } from '../lib/store'
@@ -135,6 +135,10 @@ export function Header() {
 
           <button type="button" className="h-9 w-9 text-ink md:hidden" aria-label="Search" onClick={() => setMobileSearch((v) => !v)}>
             <Search size={18} strokeWidth={1.75} className="mx-auto" />
+          </button>
+
+          <button type="button" onClick={() => go({ name: 'account' })} aria-label="Account" className="hidden h-9 w-9 text-ink lg:block">
+            <User size={18} strokeWidth={1.75} className="mx-auto" />
           </button>
 
           <button

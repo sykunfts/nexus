@@ -40,7 +40,7 @@ export function MegaMenu({ section, onClose }: { section: NavSection; onClose: (
         </div>
         <button
           type="button"
-          onClick={() => { go({ name: 'pdp', id: featured.id }); onClose() }}
+          onClick={() => { go({ name: 'product', id: featured.id }); onClose() }}
           className="group col-span-4 flex gap-5 border-l border-rule bg-paper p-6 text-left hover:bg-paper-2"
         >
           <div className="w-[46%] shrink-0 self-center">

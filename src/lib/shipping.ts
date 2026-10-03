@@ -120,6 +120,3 @@ export function taxFor(country: Country, taxable: number): { amount: number; inc
     default: return { amount: 0, included: false, label: 'Duties and taxes may be collected on delivery' }
   }
 }
-
-/** Until the store carries the shopper's region (Task 5), every page reads the Australian zone. */
-export const useZone = (): Zone => 'AU'

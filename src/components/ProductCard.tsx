@@ -2,11 +2,11 @@ import { useId, useState } from 'react'
 import { Check, Plus } from 'lucide-react'
 import { Product } from '../lib/data'
 import { fmt } from '../lib/currency'
-import { useStore } from '../lib/store'
+import { useStore, useZone } from '../lib/store'
 import { ProductImage } from './ProductVisual'
 import { Pill, Stars, StockDot, Tile } from './ui'
 import { cn } from '../lib/cn'
-import { etaText, originShort, useZone } from '../lib/shipping'
+import { etaText, originShort } from '../lib/shipping'
 
 /** 7-day trend sparkline, drawn in ink: a line, a faint baseline, the last point marked. */
 export function Sparkline({ series, width = 48, height = 16, className }: { series: number[]; width?: number; height?: number; className?: string }) {
@@ -56,7 +56,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
     <article className="group flex h-full flex-col bg-paper transition-colors duration-120 hover:bg-paper-2">
       {/* render */}
       <div className="relative">
-        <button type="button" onClick={() => go({ name: 'pdp', id: product.id })} className="block aspect-[4/3] w-full cursor-pointer" aria-label={`View ${product.name}`}>
+        <button type="button" onClick={() => go({ name: 'product', id: product.id })} className="block aspect-[4/3] w-full cursor-pointer" aria-label={`View ${product.name}`}>
           <ProductImage product={product} hue={variant.hue} swatch={variant.swatch} glow />
         </button>
         <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5">
@@ -82,7 +82,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
       <div className="flex flex-1 flex-col border-t border-rule px-4 pb-4 pt-3">
         {reason && <div className="mb-1 text-[12px] text-ink-3">{reason}</div>}
         <div className="flex items-baseline justify-between gap-3">
-          <button type="button" onClick={() => go({ name: 'pdp', id: product.id })} className="min-w-0 truncate text-left text-[17px] font-medium text-ink hover:underline underline-offset-4 decoration-signal decoration-2">
+          <button type="button" onClick={() => go({ name: 'product', id: product.id })} className="min-w-0 truncate text-left text-[17px] font-medium text-ink hover:underline underline-offset-4 decoration-signal decoration-2">
             {product.name}
           </button>
           <span className="reading shrink-0 text-[15px] text-ink">{fmt(product.price, currency, { compact: true })}</span>

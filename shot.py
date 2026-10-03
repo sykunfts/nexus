@@ -97,6 +97,16 @@ async def main():
             await page.evaluate("window.scrollTo(0, 980)")
             await page.wait_for_timeout(600)
         await run("home-rails", 1440, 900, rails)
+        async def route_pdp(page):
+            await page.goto("file:///tmp/claude-0/-home-claude/257f0885-4cfa-5197-81c4-04d07b5fc765/scratchpad/nexus/dist/index.html#/p/xgimi-mogo-4-laser")
+            await page.wait_for_timeout(1500)
+            assert await page.locator("h1:has-text('MoGo 4 Laser')").count() == 1, "route #/p/<id> did not open the product"
+        await run("route-pdp", 1440, 900, route_pdp)
+        async def route_404(page):
+            await page.goto("file:///tmp/claude-0/-home-claude/257f0885-4cfa-5197-81c4-04d07b5fc765/scratchpad/nexus/dist/index.html#/nope")
+            await page.wait_for_timeout(800)
+            assert await page.locator("text=That link did not match").count() == 1, "404 page missing"
+        await run("route-404", 1440, 900, route_404)
         await run("home-mobile", 400, 820)
         async def pdp_m(page):
             await page.click("text=See the MoGo 4 Laser")

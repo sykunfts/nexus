@@ -97,12 +97,15 @@ export interface Product {
   inBox?: string[]
 }
 
+export type GearKind = 'phone' | 'hub' | 'charger' | 'source' | 'region'
 export interface GearItem {
   id: string
+  kind: GearKind
   name: string
   detail: string
   facts: CompatFacts
   defaultOn: boolean
+  deviceId?: string      // the devices.ts entry it came from, when added from the picker
 }
 
 export const PRICE_CHECKED = '2026-10-02'
@@ -882,21 +885,21 @@ export const byId = (id: string) => {
   return p
 }
 
-/** "My setup": what the shopper already owns. Checked live on every PDP and in the cart. */
-export const gear: GearItem[] = [
-  { id: 'g-iphone', name: 'iPhone 16 Pro', detail: 'iOS, MagSafe (Qi2), Find My', defaultOn: true,
+/** Default "My setup": what a new shopper is assumed to own until they edit it. Checked live on every PDP and in the cart. */
+export const DEFAULT_GEAR: GearItem[] = [
+  { id: 'g-iphone', kind: 'phone', name: 'iPhone 16 Pro', detail: 'iOS, MagSafe (Qi2), Find My', defaultOn: true,
     facts: { phone: { os: 'ios', magnets: true, trackerNet: 'find-my' } } },
-  { id: 'g-pixel', name: 'Pixel 9', detail: 'Android, Qi (no magnets), Find Hub', defaultOn: false,
+  { id: 'g-pixel', kind: 'phone', name: 'Pixel 9', detail: 'Android, Qi (no magnets), Find Hub', defaultOn: false,
     facts: { phone: { os: 'android', magnets: false, trackerNet: 'find-hub' } } },
-  { id: 'g-apple-home', name: 'Apple Home (Apple TV 4K)', detail: 'Apple Home, Matter, Thread border router', defaultOn: true,
+  { id: 'g-apple-home', kind: 'hub', name: 'Apple Home (Apple TV 4K)', detail: 'Apple Home, Matter, Thread border router', defaultOn: true,
     facts: { hubs: ['homekit', 'matter', 'thread'] } },
-  { id: 'g-google-home', name: 'Google Home (Nest Mini)', detail: 'Google Home, Matter, no Thread', defaultOn: false,
+  { id: 'g-google-home', kind: 'hub', name: 'Google Home (Nest Mini)', detail: 'Google Home, Matter, no Thread', defaultOn: false,
     facts: { hubs: ['google', 'matter'] } },
-  { id: 'g-switch', name: 'Nintendo Switch', detail: 'HDMI source', defaultOn: true,
+  { id: 'g-switch', kind: 'source', name: 'Nintendo Switch', detail: 'HDMI source', defaultOn: true,
     facts: { requires: [{ anyOf: ['hdmi'], label: 'an HDMI input' }] } },
-  { id: 'g-region', name: 'Australia, 230 V, Type I', detail: 'Plug and voltage check', defaultOn: true,
+  { id: 'g-region', kind: 'region', name: 'Australia, 230 V, Type I', detail: 'Plug and voltage check', defaultOn: true,
     facts: { region: 'AU' } },
-  { id: 'g-charger', name: 'Anker 65 W charger', detail: 'USB-C PD charger you already own', defaultOn: true,
+  { id: 'g-charger', kind: 'charger', name: 'Anker 65 W charger', detail: 'USB-C PD charger you already own', defaultOn: true,
     facts: { pdOut: 65 } },
 ]
 
@@ -956,3 +959,6 @@ export const trendTape: { label: string; delta: number }[] = [
   { label: 'Desk 3D printers', delta: 88 },
   { label: 'Thread lighting', delta: 74 },
 ]
+
+/** @deprecated use DEFAULT_GEAR, or the store's editable `gear`. */
+export const gear = DEFAULT_GEAR

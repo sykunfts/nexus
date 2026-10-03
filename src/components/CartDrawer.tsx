@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, Minus, Plus, X } from 'lucide-react'
-import { byId, gear } from '../lib/data'
+import { byId } from '../lib/data'
 import { CURRENCIES, Currency, fmt } from '../lib/currency'
-import { canExpress, etaText, originShort, parcelCost, taxFor, useZone, Country, ZONE_LABEL } from '../lib/shipping'
-import { cartSubtotal, useStore } from '../lib/store'
+import { canExpress, etaText, originShort, parcelCost, taxFor, Country, ZONE_LABEL } from '../lib/shipping'
+import { cartSubtotal, useSetup, useStore, useZone } from '../lib/store'
 import { checkBuild, resolveFacts } from '../lib/compat'
 import { ProductImage } from './ProductVisual'
 import { Button } from './ui'
@@ -49,7 +49,7 @@ export function CartDrawer() {
   const setCurrency = useStore((s) => s.setCurrency)
   const shipMethod = useStore((s) => s.shipMethod)
   const setShipMethod = useStore((s) => s.setShipMethod)
-  const gearOn = useStore((s) => s.gearOn)
+  const owned = useSetup()
   const toast = useStore((s) => s.toast)
   const [placing, setPlacing] = useState<null | 'express' | 'oneclick' | 'done'>(null)
   const trap = useFocusTrap(open)
@@ -79,13 +79,12 @@ export function CartDrawer() {
 
   const compat = useMemo(() => {
     if (!cart.length) return null
-    const owned = gear.filter((g) => gearOn[g.id]).map((g) => ({ id: g.id, name: g.name, facts: g.facts }))
     const lines = cart.map((l) => ({ id: l.key, name: byId(l.productId).name, facts: resolveFacts(byId(l.productId), l.selection), product: byId(l.productId) }))
     const results = lines.map((subject) => checkBuild({ name: subject.name, facts: subject.facts, product: subject.product }, [...owned, ...lines.filter((x) => x.id !== subject.id)]))
     const issues = results.flatMap((r) => r.issues)
     const status = issues.some((i) => i.severity === 'bad') ? 'bad' : issues.length ? 'warn' : 'ok'
     return { status, issues, count: cart.length + owned.length } as const
-  }, [cart, gearOn])
+  }, [cart, owned])
 
   const placeOrder = (kind: 'express' | 'oneclick') => {
     setPlacing(kind)

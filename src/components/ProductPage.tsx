@@ -1,16 +1,16 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check } from 'lucide-react'
-import { byId, gear, priceCheckedText, Product, products } from '../lib/data'
+import { byId, priceCheckedText, Product, products } from '../lib/data'
 import { fmt } from '../lib/currency'
-import { defaultSelection, priceFor, useStore } from '../lib/store'
+import { defaultSelection, priceFor, useSetup, useStore, useZone } from '../lib/store'
 import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
 import { isLightSwatch, ProductImage } from './ProductVisual'
 import { ProductCard, Sparkline } from './ProductCard'
 import { Button, Chip, Row, Stars, StockDot, Toggle } from './ui'
 import { PARTS, CanvasMode } from '../lib/parts'
 import { cn } from '../lib/cn'
-import { etaText, originLabel, originShort, useZone } from '../lib/shipping'
+import { etaText, originLabel, originShort } from '../lib/shipping'
 
 const ProductCanvas = lazy(() => import('./ProductCanvas').then((m) => ({ default: m.ProductCanvas })))
 
@@ -37,7 +37,9 @@ export function ProductPage({ product }: { product: Product }) {
   const currency = useStore((s) => s.currency)
   const add = useStore((s) => s.add)
   const go = useStore((s) => s.go)
+  const gear = useStore((s) => s.gear)
   const gearOn = useStore((s) => s.gearOn)
+  const owned = useSetup()
   const toggleGear = useStore((s) => s.toggleGear)
   const cart = useStore((s) => s.cart)
   const setAdvisor = useStore((s) => s.setAdvisor)
@@ -49,10 +51,9 @@ export function ProductPage({ product }: { product: Product }) {
 
   // Live check: this configuration vs the shopper's setup + what is already in the cart.
   const compat: CompatResult = useMemo(() => {
-    const owned = gear.filter((g) => gearOn[g.id]).map((g) => ({ id: g.id, name: g.name, facts: g.facts }))
     const inCart = cart.filter((l) => l.productId !== product.id).map((l) => ({ id: l.key, name: byId(l.productId).name, facts: resolveFacts(byId(l.productId), l.selection) }))
     return checkBuild({ name: product.name, facts, product }, [...owned, ...inCart])
-  }, [facts, gearOn, cart, product])
+  }, [facts, owned, cart, product])
 
   const applyFix = (fix: NonNullable<CompatResult['issues'][number]['fix']>) => {
     if (fix.kind === 'add-sku' && fix.sku) add(byId(fix.sku), byId(fix.sku).variants[0].id)

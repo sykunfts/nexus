@@ -83,7 +83,7 @@ export function QuickView() {
                   <Button variant="primary" size="lg" onClick={() => { add(product, variant.id); setAdded(true); window.setTimeout(close, 500) }}>
                     {added ? <><Check size={16} strokeWidth={2.5} /> Added</> : 'Add to cart'}
                   </Button>
-                  <Button variant="secondary" size="lg" onClick={() => { close(); go({ name: 'pdp', id: product.id }) }}>Full details</Button>
+                  <Button variant="secondary" size="lg" onClick={() => { close(); go({ name: 'product', id: product.id }) }}>Full details</Button>
                 </div>
               </div>
             </div>

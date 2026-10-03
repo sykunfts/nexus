@@ -68,7 +68,7 @@ export function PredictiveSearch() {
   const choose = (i: number) => {
     const r = rows[i]
     if (!r) return
-    if (r.kind === 'product') go({ name: 'pdp', id: r.p.id })
+    if (r.kind === 'product') go({ name: 'product', id: r.p.id })
     else { setAdvisor(true); setOpen(false) }
     setQ('')
   }
