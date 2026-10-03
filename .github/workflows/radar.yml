@@ -1,0 +1,48 @@
+# Runs the Trend Radar every morning (06:00 Sydney in winter, 07:00 in summer) and commits the data files.
+# The CJ key comes from the repository secret CJ_API_KEY and never appears in the repository.
+name: Trend Radar
+
+on:
+  schedule:
+    - cron: '0 20 * * *'
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: 'Dry run: print the tables, write nothing'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data          # shared with the listing job: one writer to data/ at a time
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run the Radar
+        env:
+          CJ_API_KEY: ${{ secrets.CJ_API_KEY }}
+        run: |
+          if [ -z "$CJ_API_KEY" ]; then echo "::warning::CJ_API_KEY is not set: trends only, no CJ candidates. Add it under Settings → Secrets and variables → Actions."; fi
+          if [ "${{ inputs.dry }}" = "true" ]; then npm run radar -- --dry; else npm run radar; fi
+      - name: Commit the data files
+        if: ${{ inputs.dry != true }}
+        run: |
+          git config user.name "nexus-radar[bot]"
+          git config user.email "nexus-radar[bot]@users.noreply.github.com"
+          git add data/radar.json data/trends.json
+          if git diff --cached --quiet; then echo "nothing changed"; exit 0; fi
+          git commit -m "Radar: $(date -u +%F)"
+          git pull --rebase origin master
+          git push

@@ -181,11 +181,11 @@ Candidates are sorted by score; ties by trend delta. `firstSeen` is carried from
 
 ## The Radar page
 
-A second entry in the same Vite app, `/radar/`, React with the shop's tokens and components (Button, Tile, ProductImage-style frame, sparkline). No router: one page with a filter rail and a ranked list; a candidate expands in place.
+A second entry in the same Vite app, `radar.html` (served as `/nexus/radar.html` on Pages), React with the shop's tokens and components (Button, Tile, ProductImage-style frame, sparkline). No router: one page with a filter rail and a ranked list; a candidate expands in place.
 
 - Header: "Trend Radar", generated time, sources that fed the run (with "Reddit: blocked this run" when so), rate used, candidate count. A link to the shop and to the novelty rail.
-- Filter rail: section (from terms), minimum margin (0 / 30 / 45 %), flags to exclude, "AU plug only", "hide skipped". Sort: score, margin, trend, demand, newest.
-- Card: photo (CJ image), name, section and term, trend chip (label and delta, sparkline), listed count, landed cost → suggested retail → margin as a three-step strip, cheapest AU freight with days, flags as small marks with the note on hover and in the expanded view, "why it's here" line, firstSeen.
+- Filter rail: section (from terms), minimum net per sale (any / $15 / $30, what is kept at the suggested price after GST, fees and landed cost; margin itself is 45 % by construction so it cannot separate candidates), flags to exclude, "AU plug only", "hide skipped". Sort: score, net per sale, trend, demand, newest.
+- Card: photo (CJ image), name, section and term, trend chip (label and delta, sparkline), listed count, landed cost → suggested retail → net per sale as a three-step strip, cheapest AU freight with days, flags as small marks with the note on hover and in the expanded view, "why it's here" line, firstSeen.
 - Expanded: all freight lines for AU/US/GB, variant list with plug and weight, money table (cost, freight, GST, fees, net at the suggested retail, 2× and 3×), the section's median shop price, compliance notes, the CJ product link.
 - Actions: Skip (localStorage set of pids, with a "Skipped (n)" toggle to show them again); Add to shop (opens `https://github.com/sykunfts/nexus/issues/new?title=list%3A+<pid>&labels=listing&body=<json>` in a new tab; the body carries `{ pid, vid, retailAud, termId }` and a sentence explaining what will happen). No other write path exists on the page.
 - Empty and failed states: no candidates (first run, or CJ failed) shows the terms table and the sources' status; stale candidates show a banner with the age.
@@ -197,7 +197,7 @@ Visual direction follows the shop's Test Bench design; the Radar is the bench's 
 
 On `issues: opened` where `title` starts with `list:` and `issue.user.login == github.repository_owner`: checkout, `npm ci`, `node radar/listing.mjs <issue number>` which parses the JSON body, finds the candidate by `pid` in `data/radar.json`, writes `data/listings/<pid>.json` with the draft listing, commits with `[skip radar]`, closes the issue with a comment naming the file and the product's shop URL. Any other issue is left alone. The draft listing (`listing.ts`):
 
-- `id`: `cj-<pid>`; `brand`: the CJ brand field when present else "Nexus Select"; `name`: the CJ name trimmed to 60 characters with the term's label as `category`'s shop section; `tagline`: generated from term label and flags; `price`: the issue's `retailAud`; `priceSource: { amount: variant USD, currency: 'USD', at: run date }`; `fulfil: { route: 'supplier', origin: 'CN' }`; `market: 'CN'`; `variants`: from CJ variants (label, hue from a stable hash, swatch grey), `stock: 'in'`; `photos`: CJ image URLs; `facts`: `plug` from the AU variant (else region of the cheapest), `battery` from the flag, `requires` empty; `sources`: the CJ product page; `notes`: the flags' notes; `trend`: from `trends.json` for the term; `listedAt`: the run date; `rating: null`.
+- `id`: `cj-<pid>`; `brand`: "Nexus Select"; `name`: the CJ name trimmed to 60 characters; `category`: the term's shop section; `tagline`: generated from the section; `price`: the issue's `retailAud`; no `priceSource` and no CJ link in `sources` (the public product page renders both, and a shopper must not see the wholesale cost or the supplier); instead `supplier: { url, pid, vid, costUsd, termId }`, a field the shop never renders; `sources`: "Trend Radar, supplier catalogue, <date>"; `fulfil: { route: 'supplier', origin: 'CN' }`; `market: 'global'`; `variants`: the chosen CJ variant (hue from a stable hash, swatch grey), `stock: 'in'`; `photos`: CJ image URLs; `facts`: `plug: 'AU'` only when the AU variant exists, `voltage` only when the listing text states 100-240 V or 110 V; `notes`: the flags' notes; `trend`: from `trends.json` for the term at approval; `listedAt`: the run date; `rating: null`.
 
 `scripts/merge-listings.mjs` turns `data/listings/*.json` into `src/lib/data.listings.ts` at build time; `products = [...catalogue, ...EXPANSION, ...LISTINGS]`. A listing shows a "From the Radar" mark on the product page and ships supplier-direct with the CN lanes already in `shipping.ts`.
 
@@ -212,16 +212,16 @@ On `issues: opened` where `title` starts with `list:` and `issue.user.login == g
 ## Deploy
 
 - `vite.config.ts`: two inputs (`index.html`, `radar.html`); `base` is `/nexus/` when `GITHUB_PAGES=1`, `./` otherwise; the singlefile plugin only when `FRAGMENT=1` (used by `scripts/fragment.mjs` for the artifact).
-- `pages.yml`: on push to `master` and on `workflow_run` of the Radar: Node 22, `npm ci`, `npm run merge` (trends + listings), `npm run build` with `GITHUB_PAGES=1`, upload `dist/`, deploy with `actions/deploy-pages`. Pages source: GitHub Actions.
-- `radar.yml`: `schedule: cron '0 20 * * *'` (06:00 Sydney in winter, 07:00 in summer) and `workflow_dispatch`. Runs `npm run radar`, commits `data/*.json` as "Radar: <date>" when changed; the push triggers `pages.yml`. Concurrency group `radar` so runs never overlap. `permissions: contents: write`.
+- `pages.yml`: on push to `master`, on `workflow_run` of the Radar and of the listing job (a push made with the workflow token fires no `push` event), and on manual dispatch; only after a successful run. Node 22, `npm ci`, `npm run merge` (trends + listings), `npm run typecheck`, `npm run build` (relative asset paths; no env switch), upload `dist/`, deploy with `actions/deploy-pages`. No test step: the suite is kept data-independent, but a deploy must never wait on it. Pages source: GitHub Actions.
+- `radar.yml`: `schedule: cron '0 20 * * *'` (06:00 Sydney in winter, 07:00 in summer) and `workflow_dispatch`. Runs `npm run radar`, commits `data/*.json` as "Radar: <date>" when changed, rebases on master and pushes; `pages.yml` follows. Concurrency group `data`, shared with the listing job, so the two writers never overlap. `permissions: contents: write`.
 - `listing.yml`: `issues: [opened]`, `permissions: contents: write, issues: write`.
 - README gains a "Running it" section and the setup checklist below.
 
 ## Error handling
 
 - Every HTTP request: 15 s timeout, two retries (2 s, 6 s), per-host spacing (300 ms general, 1.1 s CJ), User-Agent `NexusRadar/0.3 (+https://github.com/sykunfts/nexus)`.
-- A source that fails is recorded and skipped; a term with no sources gets `confidence: none` and is excluded from CJ search.
-- CJ auth failure (bad or expired key) ends the CJ stage with `sources.cj = "failed: auth"`; the run still writes trends and keeps the previous candidates marked stale. The workflow step prints a plain sentence pointing at the secret.
+- A source is counted per term: `ok`, `partial: n of N failed`, or `failed` when every term failed or three consecutive calls failed (the source is then left alone for the rest of the run, so a hanging host cannot eat the job's 30 minutes). A term with no sources gets `confidence: none` and is excluded from CJ search. Reddit answering a full page of 100 posts whose oldest is still inside the window is `truncated` (null) rather than a false +999 %.
+- CJ auth failure (bad or expired key) ends the CJ stage with `sources.cj = "failed: …"`; the run still writes trends and keeps the previous candidates marked stale. One failing product or term search is skipped and counted (`sources.cj = "partial: n CJ calls failed"`); three consecutive CJ failures end the stage. The workflow step prints a plain sentence pointing at the secret.
 - If fewer than half the terms received any signal, the run exits 1 and writes nothing (the last good files stay). The Action then fails visibly in the Actions tab.
 - Writes are atomic (temp file, rename). `firstSeen` and the previous rate are read from the existing `radar.json` before it is replaced.
 - The listing job validates the body (pid present in `radar.json`, retail a number ≥ landed) and closes the issue with a reason when it is not.
@@ -244,7 +244,7 @@ On `issues: opened` where `title` starts with `list:` and `issue.user.login == g
 1. Repository `sykunfts/nexus`, public, pushed (GitHub Desktop the first time).
 2. Settings → Secrets and variables → Actions → New repository secret: name `CJ_API_KEY`, value the key from CJ's developer page.
 3. Settings → Pages → Source: GitHub Actions.
-4. Actions tab → Trend Radar → Run workflow once; then the shop is at `https://sykunfts.github.io/nexus/` and the Radar at `https://sykunfts.github.io/nexus/radar/`.
+4. Actions tab → Trend Radar → Run workflow once; then the shop is at `https://sykunfts.github.io/nexus/` and the Radar at `https://sykunfts.github.io/nexus/radar.html`.
 5. Issues are how approvals work; leave Issues enabled.
 
 ## Later phases (not in this build)

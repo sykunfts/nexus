@@ -8,6 +8,8 @@
 */
 import { PHOTOS } from './photos.generated'
 import { EXPANSION } from './data.expansion'
+import { LISTINGS } from './data.listings'
+import { TRENDS, TRENDS_GENERATED_AT, TRENDS_SOURCES } from './trends.generated'
 
 export type Visual =
   | 'projector' | 'projector-can' | 'ring' | 'powerbank' | 'glasses' | 'cam' | 'strip' | 'scooter' | 'earbuds'
@@ -65,6 +67,7 @@ export interface Fulfil { route: 'warehouse' | 'supplier'; origin: Origin }
 export interface Rating { value: number; count: number; at: string }
 export type Market = 'global' | 'AU' | 'US' | 'EU' | 'UK'
 export interface PriceSource { amount: number; currency: 'USD' | 'GBP' | 'EUR' | 'JPY' | 'AUD'; at: string }
+export interface Supplier { url: string; pid: string; vid: string; costUsd: number; termId: string }
 
 export interface Product {
   id: string
@@ -80,6 +83,7 @@ export interface Product {
   releasedAt?: string         // ISO release date when a page stated it; "newest" sorts by this, unknown last
   market: Market              // where the listing was verified
   sources: string[]           // where the price and specs were checked
+  supplier?: Supplier         // Radar listings: where it is sourced; never rendered on the shop
   notes?: string              // things we could not verify, shown as a note, never as a fact
   rating: Rating | null       // only where a value and a count were both visible
   throwRatio?: { value: number; source: string }   // projectors: distance ÷ image width, verified at build time
@@ -877,9 +881,13 @@ const catalogue: Omit<Product, 'photos' | 'listedAt' | 'market'>[] = [
 ]
 
 const RELEASED_AT: Record<string, string> = { 'rayban-meta-gen-3': '2026-09-23' }
+/* A product's trend comes from the Radar's file when it has one; otherwise the sample stays and says so. */
+const withTrend = <T extends { id: string; trend: Trend }>(p: T): T => (TRENDS[p.id] ? { ...p, trend: TRENDS[p.id] } : p)
+
 export const products: Product[] = [
-  ...catalogue.map((p) => ({ ...p, photos: PHOTOS[p.id], listedAt: PRICE_CHECKED, releasedAt: RELEASED_AT[p.id], market: 'AU' as const })),
-  ...EXPANSION.map((p) => ({ ...p, photos: PHOTOS[p.id] })),
+  ...catalogue.map((p) => withTrend({ ...p, photos: PHOTOS[p.id], listedAt: PRICE_CHECKED, releasedAt: RELEASED_AT[p.id], market: 'AU' as const })),
+  ...EXPANSION.map((p) => withTrend({ ...p, photos: PHOTOS[p.id] })),
+  ...LISTINGS,   // approved Radar finds, data/listings/*.json → merged at build
 ]
 
 /** Strict lookup for code that holds a known id (tests, data wiring). Render paths that dereference a route or persisted id use `productById`. */
@@ -949,8 +957,16 @@ export const nav: NavSection[] = [
   ] },
 ]
 
-/* Where trend figures come from today. Flipped when the trend feed lands; every place that ranks on them cites it. */
-export const TREND_NOTE = 'Trend figures are sample data until the trend feed is live.'
+/* Where trend figures come from: the Radar's sources and refresh date once it has run, the sample wording before. Every place that ranks on them cites it. */
+const joinNames = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`)
+export const longDate = (iso: string) => new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Australia/Sydney' })
+export const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', timeZone: 'Australia/Sydney' })
+export function trendNote(): string {
+  return TRENDS_GENERATED_AT ? `Trend figures from ${joinNames(TRENDS_SOURCES)}, refreshed ${longDate(TRENDS_GENERATED_AT)}.` : 'Trend figures are sample data until the trend feed is live.'
+}
+export const TREND_NOTE = trendNote()
+/* The short form for the header: "refreshed 4 Oct" or "sample data". */
+export const trendStatus = (): string => (TRENDS_GENERATED_AT ? `refreshed ${shortDate(TRENDS_GENERATED_AT)}` : 'sample data')
 
 export const trendingSearches = ['smart ring', 'MoGo 4 Laser', 'open-ear buds', 'LED mask', 'Matter hub', 'AI recorder']
 

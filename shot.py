@@ -1,7 +1,21 @@
-import asyncio, os, sys, json
+import asyncio, os, sys, json, subprocess, time
 from playwright.async_api import async_playwright
 
+# dist/ is a multi-asset build with module scripts, which Chromium refuses from file://; serve it locally.
+PORT = 4173
+ROOT = os.path.dirname(os.path.abspath(__file__))
+BASE = f"http://127.0.0.1:{PORT}/index.html"
+RADAR = f"http://127.0.0.1:{PORT}/radar.html"
+
 async def main():
+    server = subprocess.Popen([sys.executable, "-m", "http.server", str(PORT), "--directory", os.path.join(ROOT, "dist")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(1)
+    try:
+        await scenarios()
+    finally:
+        server.terminate()
+
+async def scenarios():
     async with async_playwright() as p:
         b = await p.chromium.launch(args=["--use-gl=swiftshader","--enable-webgl","--ignore-gpu-blocklist"])
         errors = []
@@ -10,7 +24,7 @@ async def main():
             page = await ctx.new_page()
             page.on("console", lambda m: errors.append(f"[{name}] {m.type}: {m.text}") if m.type in ("error","warning") else None)
             page.on("pageerror", lambda e: errors.append(f"[{name}] pageerror: {e}"))
-            await page.goto("file:///tmp/claude-0/-home-claude/257f0885-4cfa-5197-81c4-04d07b5fc765/scratchpad/nexus/dist/index.html")
+            await page.goto(BASE)
             await page.wait_for_timeout(1500)
             if actions: await actions(page)
             await page.screenshot(path=f"shots/{name}.png", full_page=False)
@@ -70,7 +84,7 @@ async def main():
             await page.wait_for_timeout(400)
         await run("compat-desktop", 1440, 900, compat)
         async def compat_pixel(page):
-            await page.goto("file:///tmp/claude-0/-home-claude/257f0885-4cfa-5197-81c4-04d07b5fc765/scratchpad/nexus/dist/index.html#/p/anker-maggo-10k")
+            await page.goto(BASE + "#/p/anker-maggo-10k")
             await page.wait_for_timeout(1200)
             await page.click("role=tab[name=/Works with/]")
             await page.wait_for_timeout(400)
@@ -93,16 +107,15 @@ async def main():
             await page.wait_for_timeout(600)
         await run("home-rails", 1440, 900, rails)
         async def route_pdp(page):
-            await page.goto("file:///tmp/claude-0/-home-claude/257f0885-4cfa-5197-81c4-04d07b5fc765/scratchpad/nexus/dist/index.html#/p/xgimi-mogo-4-laser")
+            await page.goto(BASE + "#/p/xgimi-mogo-4-laser")
             await page.wait_for_timeout(1500)
             assert await page.locator("h1:has-text('MoGo 4 Laser')").count() == 1, "route #/p/<id> did not open the product"
         await run("route-pdp", 1440, 900, route_pdp)
         async def route_404(page):
-            await page.goto("file:///tmp/claude-0/-home-claude/257f0885-4cfa-5197-81c4-04d07b5fc765/scratchpad/nexus/dist/index.html#/nope")
+            await page.goto(BASE + "#/nope")
             await page.wait_for_timeout(800)
             assert await page.locator("text=That link did not match").count() == 1, "404 page missing"
         await run("route-404", 1440, 900, route_404)
-        BASE = "file://" + os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "index.html")
         async def collection(page):
             await page.goto(BASE + "#/c/cinema")
             await page.wait_for_timeout(1200)
@@ -319,6 +332,37 @@ async def main():
             assert page.url.endswith("#/"), page.url   # Back skips the filter entry and returns to the previous page
             assert await page.locator("text=The new thing").count() >= 1
         await run("back-button", 1440, 900, back_button)
+        async def radar_desktop(page):
+            await page.goto(RADAR + "?demo=1"); await page.wait_for_timeout(1200)
+            assert await page.locator("ol > li").count() >= 1
+            assert await page.locator("text=fed this run").count() == 1
+            assert await page.locator("text=demo data").count() == 1
+        await run("radar-desktop", 1440, 900, radar_desktop)
+        async def radar_expanded(page):
+            await page.goto(RADAR + "?demo=1"); await page.wait_for_timeout(1200)
+            await page.locator("button:has-text('Details')").first.click(); await page.wait_for_timeout(400)
+            assert await page.locator("text=Net at suggested retail").count() == 1
+            assert await page.locator("text=Freight from China").count() == 1
+        await run("radar-expanded", 1440, 900, radar_expanded)
+        async def radar_filter(page):
+            await page.goto(RADAR + "?demo=1"); await page.wait_for_timeout(1200)
+            before = await page.locator("ol > li").count()
+            await page.click("label:has-text('AU plug only')"); await page.wait_for_timeout(300)
+            after = await page.locator("ol > li").count()
+            print("radar-filter: AU plug only", before, "→", after)
+            assert after < before
+            await page.locator("button:text-is('Skip')").first.click(); await page.wait_for_timeout(300)
+            assert await page.locator("ol > li").count() == after - 1
+            assert await page.locator("text=Show skipped (1)").count() == 1
+        await run("radar-filter-margin", 1440, 900, radar_filter)
+        async def radar_empty(page):
+            await page.goto(RADAR); await page.wait_for_timeout(1200)
+            assert await page.locator("text=The Radar hasn’t run yet").count() == 1
+        await run("radar-empty", 1440, 900, radar_empty)
+        async def radar_mobile(page):
+            await page.goto(RADAR + "?demo=1"); await page.wait_for_timeout(1200)
+            await page.click("button:has-text('Filters and sort')"); await page.wait_for_timeout(300)
+        await run("radar-mobile", 390, 820, radar_mobile)
         await b.close()
         print("\n".join(errors[:40]) if errors else "no console errors")
 asyncio.run(main())

@@ -1,0 +1,28 @@
+{
+  "code": 200,
+  "result": true,
+  "message": "Success",
+  "data": [
+    {
+      "logisticName": "CJPacket Ordinary",
+      "logisticPrice": 22.05,
+      "logisticAging": "6-10",
+      "logisticPriceCn": 158.1
+    },
+    {
+      "logisticName": "CJPacket Sensitive",
+      "logisticPrice": 24.9,
+      "logisticAging": "8-15"
+    },
+    {
+      "logisticName": "DHL Express",
+      "logisticPrice": 48.2,
+      "logisticAging": "3-5"
+    },
+    {
+      "logisticName": "Broken line",
+      "logisticPrice": "n/a",
+      "logisticAging": "x"
+    }
+  ]
+}

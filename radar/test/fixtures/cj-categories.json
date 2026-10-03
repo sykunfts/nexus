@@ -1,0 +1,51 @@
+{
+  "code": 200,
+  "result": true,
+  "message": "Success",
+  "data": [
+    {
+      "categoryFirstName": "Consumer Electronics",
+      "categoryFirstList": [
+        {
+          "categorySecondName": "Smart Electronics",
+          "categorySecondList": [
+            {
+              "categoryId": "0AC6B44A-12CC-456F-831F-54064C77D303",
+              "categoryName": "Projectors"
+            },
+            {
+              "categoryId": "11111111-0000-0000-0000-000000000001",
+              "categoryName": "Projector Accessories"
+            },
+            {
+              "categoryId": "11111111-0000-0000-0000-000000000002",
+              "categoryName": "Smart Rings"
+            },
+            {
+              "categoryId": "11111111-0000-0000-0000-000000000003",
+              "categoryName": "Camera Bags"
+            },
+            {
+              "categoryId": "11111111-0000-0000-0000-000000000004",
+              "categoryName": "Camera"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "categoryFirstName": "Home & Garden",
+      "categoryFirstList": [
+        {
+          "categorySecondName": "Household Appliances",
+          "categorySecondList": [
+            {
+              "categoryId": "11111111-0000-0000-0000-000000000005",
+              "categoryName": "Robot Vacuum Cleaners"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

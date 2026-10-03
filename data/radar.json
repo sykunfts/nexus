@@ -1,0 +1,19 @@
+{
+  "generatedAt": "2026-10-03T10:57:51.965Z",
+  "cjGeneratedAt": null,
+  "rate": {
+    "usdAud": 1.52,
+    "source": "fallback",
+    "date": "2026-10-03"
+  },
+  "sources": {
+    "wikipedia": "not yet run",
+    "hackernews": "not yet run",
+    "reddit": "not yet run",
+    "tiwib": "not yet run",
+    "cj": "not yet run"
+  },
+  "terms": [],
+  "candidates": [],
+  "novelty": []
+}

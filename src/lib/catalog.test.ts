@@ -1,4 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+/* The engine tests pin sample trend values; a real trends file must not move them. */
+vi.mock('./trends.generated', () => ({ TRENDS: {}, TRENDS_GENERATED_AT: null, TRENDS_SOURCES: [] }))
 import { facets, query, similar } from './catalog'
 import { gear, products } from './data'
 

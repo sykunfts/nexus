@@ -1,0 +1,23 @@
+{
+  "hits": [
+    {
+      "objectID": "1",
+      "title": "Smart ring review",
+      "points": 12,
+      "created_at_i": 1790848800
+    },
+    {
+      "objectID": "2",
+      "title": "Another smart ring",
+      "points": 30,
+      "created_at_i": 1790884800
+    },
+    {
+      "objectID": "3",
+      "title": "Sleep tracking ring",
+      "points": 7,
+      "created_at_i": 1789984800
+    }
+  ],
+  "nbHits": 3
+}

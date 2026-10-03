@@ -1,4 +1,5 @@
 import { byId, nav, PRICE_CHECKED, priceCheckedText, products, TREND_NOTE, trendTape } from '../lib/data'
+import { TRENDS_GENERATED_AT } from '../lib/trends.generated'
 import { fmt } from '../lib/currency'
 import { etaText } from '../lib/shipping'
 import { useStore, useZone } from '../lib/store'
@@ -12,8 +13,12 @@ const HERO = 'xgimi-mogo-4-laser'
 const LATEST_CHECK = products.map((p) => p.priceCheckedAt).sort().slice(-1)[0] ?? PRICE_CHECKED
 
 /* Rails: slot order + reasons come from the edge; cards are cached per SKU. */
+/* With real trend data the fastest movers are computed; before that, a hand-picked sample set. */
+const MOVERS = TRENDS_GENERATED_AT
+  ? [...products].sort((a, b) => b.trend.delta - a.trend.delta).slice(0, 4).map((p) => p.id)
+  : ['omnilux-contour-face', 'plaud-notepin-s', 'ringconn-gen-3', 'rayban-meta-gen-3']
 const RAILS = [
-  { id: 'viral', title: 'Moving fastest this week', reason: `Ranked by 7-day change in search and social interest. ${TREND_NOTE}`, ids: ['omnilux-contour-face', 'plaud-notepin-s', 'ringconn-gen-3', 'rayban-meta-gen-3'] },
+  { id: 'viral', title: 'Moving fastest this week', reason: `Ranked by 7-day change in search and social interest. ${TREND_NOTE}`, ids: MOVERS },
   { id: 'setup', title: 'Works with your iPhone and Apple Home', reason: 'Filtered by the works-with check against your setup', ids: ['xgimi-mogo-4-laser', 'anker-maggo-10k', 'aqara-camera-e1', 'chipolo-pop'] },
   { id: 'fast', title: 'On the shelf in Sydney', reason: 'Sydney stock, tracked', ids: ['segway-e3-pro', 'eufy-x10-pro-omni', 'elite-yard-master-2-100', 'anker-prime-100w'] },
 ]

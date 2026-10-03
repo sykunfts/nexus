@@ -1,7 +1,7 @@
 {
   "name": "nexus-marketplace",
   "version": "1.0.0",
-  "description": "NEXUS: a trend-tech dropshipping storefront prototype with a verified 64-product catalogue shipped worldwide, collection, product, compare, setup, checkout, account, order and guide pages, a works-with-your-setup checker and the Trend Scout.",
+  "description": "NEXUS: a trend-tech dropshipping marketplace prototype (64 verified products, worldwide shipping, every page working) and the Trend Radar, a daily pipeline that matches rising tech trends to CJdropshipping stock, costs them to Australia and drafts listings.",
   "main": "index.js",
   "scripts": {
     "test": "vitest run",
@@ -13,7 +13,11 @@
     "fragment": "node scripts/fragment.mjs",
     "publish:fragment": "npm run build && npm run fragment",
     "test:watch": "vitest",
-    "research:merge": "node scripts/merge-research.mjs"
+    "research:merge": "node scripts/merge-research.mjs",
+    "radar": "tsx radar/src/index.ts run",
+    "radar:dry": "tsx radar/src/index.ts run --dry --skip-cj",
+    "merge": "node scripts/merge-trends.mjs && node scripts/merge-listings.mjs",
+    "listing": "tsx radar/src/listing-cli.ts"
   },
   "keywords": [],
   "author": "",
@@ -32,13 +36,17 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/react": "^16.3.3",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.2",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@types/three": "^0.169.0",
     "@vitejs/plugin-react": "^4.7.0",
+    "js-yaml": "^5.4.2",
     "jsdom": "^25.0.1",
     "sharp": "^0.33.5",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3",
     "vite": "^5.4.21",
     "vite-plugin-singlefile": "^2.3.3",

@@ -1,0 +1,52 @@
+{
+  "code": 200,
+  "result": true,
+  "message": "Success",
+  "data": {
+    "pageNum": 1,
+    "pageSize": 20,
+    "total": 4,
+    "list": [
+      {
+        "pid": "P-A1",
+        "productNameEn": "Mini Laser Projector 1080P Portable Home Cinema",
+        "productImage": "https://cc-west-usa.oss-us-west-1.aliyuncs.com/a1.jpg",
+        "sellPrice": "62.40",
+        "listedNum": 1532,
+        "categoryName": "Projectors",
+        "productSku": "CJA1"
+      },
+      {
+        "pid": "P-B2",
+        "productNameEn": "Pocket Projector With Battery",
+        "productImage": "https://cc-west-usa.oss-us-west-1.aliyuncs.com/b2.jpg",
+        "sellPrice": 41.9,
+        "listedNum": 880,
+        "categoryName": "Projectors",
+        "productSku": "CJB2"
+      },
+      {
+        "pid": "P-C3",
+        "productNameEn": "Projector Lens Cap",
+        "productImage": "https://cc-west-usa.oss-us-west-1.aliyuncs.com/c3.jpg",
+        "sellPrice": "abc",
+        "listedNum": 10,
+        "categoryName": "Projectors",
+        "productSku": "CJC3"
+      },
+      {
+        "pid": "P-D4",
+        "productNameEn": "Cheap Cable",
+        "productImage": "https://cc-west-usa.oss-us-west-1.aliyuncs.com/d4.jpg",
+        "sellPrice": 1.2,
+        "listedNum": 5000,
+        "categoryName": "Projectors",
+        "productSku": "CJD4"
+      },
+      {
+        "productNameEn": "No pid item",
+        "sellPrice": 9
+      }
+    ]
+  }
+}

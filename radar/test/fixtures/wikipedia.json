@@ -1,0 +1,112 @@
+{
+  "items": [
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026092000",
+      "access": "all-access",
+      "agent": "user",
+      "views": 100
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026092100",
+      "access": "all-access",
+      "agent": "user",
+      "views": 110
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026092200",
+      "access": "all-access",
+      "agent": "user",
+      "views": 120
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026092400",
+      "access": "all-access",
+      "agent": "user",
+      "views": 130
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026092500",
+      "access": "all-access",
+      "agent": "user",
+      "views": 140
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026092600",
+      "access": "all-access",
+      "agent": "user",
+      "views": 150
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026092700",
+      "access": "all-access",
+      "agent": "user",
+      "views": 160
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026092800",
+      "access": "all-access",
+      "agent": "user",
+      "views": 170
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026092900",
+      "access": "all-access",
+      "agent": "user",
+      "views": 180
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026100100",
+      "access": "all-access",
+      "agent": "user",
+      "views": 190
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026100200",
+      "access": "all-access",
+      "agent": "user",
+      "views": 200
+    },
+    {
+      "project": "en.wikipedia",
+      "article": "Smart_ring",
+      "granularity": "daily",
+      "timestamp": "2026100300",
+      "access": "all-access",
+      "agent": "user",
+      "views": 210
+    }
+  ]
+}

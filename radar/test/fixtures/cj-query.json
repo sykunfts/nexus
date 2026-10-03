@@ -1,0 +1,37 @@
+{
+  "code": 200,
+  "result": true,
+  "message": "Success",
+  "data": {
+    "pid": "P-A1",
+    "productNameEn": "Mini Laser Projector 1080P Portable Home Cinema",
+    "productImageSet": [
+      "https://cc-west-usa.oss-us-west-1.aliyuncs.com/a1.jpg",
+      "https://cc-west-usa.oss-us-west-1.aliyuncs.com/a1-2.jpg"
+    ],
+    "productUrl": "https://www.cjdropshipping.com/product/mini-laser-projector-p-P-A1.html",
+    "variants": [
+      {
+        "vid": "V-US",
+        "variantNameEn": "US Plug / Black",
+        "variantKey": "US-Black",
+        "variantSellPrice": 60.1,
+        "variantWeight": 1350
+      },
+      {
+        "vid": "V-AU",
+        "variantNameEn": "AU Plug / Black",
+        "variantKey": "AU-Black",
+        "variantSellPrice": 62.4,
+        "variantWeight": 1350
+      },
+      {
+        "vid": "V-EU",
+        "variantNameEn": "EU Plug / White",
+        "variantKey": "EU-White",
+        "variantSellPrice": "not a number",
+        "variantWeight": 1350
+      }
+    ]
+  }
+}
