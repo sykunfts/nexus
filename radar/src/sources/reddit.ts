@@ -13,6 +13,7 @@ export const REDDIT_BASE = 'https://www.reddit.com/search.json'
 export class RedditSource {
   private last = 'ok'
   status(): string { return this.last }
+  markFailed(reason: string) { this.last = `failed: ${reason}` }
 
   async fetchDaily(term: Term, w: Window, http: Http): Promise<DailySeries | null> {
     const from = epochStart(w.from)
