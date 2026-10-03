@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Menu, Search, ShoppingBag, X } from 'lucide-react'
+import { Menu, Search, ShoppingBag, User, X } from 'lucide-react'
 import { nav } from '../lib/data'
 import { CURRENCIES, Currency } from '../lib/currency'
 import { cartCount, useStore } from '../lib/store'
+import { navTarget } from '../lib/collections'
 import { MegaMenu } from './MegaMenu'
 import { PredictiveSearch } from './PredictiveSearch'
 import { cn } from '../lib/cn'
@@ -70,7 +71,7 @@ export function Header() {
               aria-haspopup="true"
               onMouseEnter={() => enter(s.id)}
               onFocus={() => setOpenId(s.id)}
-              onClick={() => setOpenId(openId === s.id ? null : s.id)}
+              onClick={() => { setOpenId(null); go(navTarget(s.label)) }}
               className={cn(
                 'relative whitespace-nowrap px-2.5 py-1.5 text-[14px] transition-colors duration-120',
                 openId === s.id ? 'text-ink' : 'text-ink-2 hover:text-ink',
@@ -137,6 +138,10 @@ export function Header() {
             <Search size={18} strokeWidth={1.75} className="mx-auto" />
           </button>
 
+          <button type="button" onClick={() => go({ name: 'account' })} aria-label="Account" className="hidden h-9 w-9 text-ink lg:block">
+            <User size={18} strokeWidth={1.75} className="mx-auto" />
+          </button>
+
           <button
             type="button"
             onClick={() => openCart(true)}
@@ -185,7 +190,7 @@ export function Header() {
                     <div className="text-[15px] font-medium text-ink">{s.label}</div>
                     <ul className="mt-1 space-y-0.5">
                       {s.columns[0].items.map((i) => (
-                        <li key={i}><a href="#" onClick={(e) => { e.preventDefault(); setMobileNav(false) }} className="block py-0.5 text-[14px] text-ink-2 hover:text-ink">{i}</a></li>
+                        <li key={i}><a href="#" onClick={(e) => { e.preventDefault(); setMobileNav(false); go(navTarget(i)) }} className="block py-0.5 text-[14px] text-ink-2 hover:text-ink">{i}</a></li>
                       ))}
                     </ul>
                   </div>

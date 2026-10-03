@@ -1,44 +1,69 @@
-# NEXUS — tech marketplace prototype
+# NEXUS — trend-tech storefront prototype
 
-Obsidian design system + the three requested components (Header/mega-menu/predictive search,
-Product card, Product page with sticky configurator, specs tab and live compatibility status),
-plus the slide-over cart, quick-view modal, AI Advisor pane and a React Three Fiber product canvas.
+Test Bench design system, a real 64-product catalogue sold worldwide, and every page working on it:
+collections with filters, search, compare, an editable My setup that every works-with check reads,
+six guides with live elements, account, orders, international checkout and confirmation. Static page,
+browser-persisted state, no payment taken.
 
 ## Run it
 
 ```bash
 npm install
-npm run dev        # Vite dev server
-npm run typecheck  # tsc --noEmit
-npm run build      # single-file build in dist/ (what the published prototype is)
+npm run dev              # Vite dev server
+npm test                 # vitest: routes, catalogue engine, collections, shipping, orders, validation, devices, store
+npm run typecheck        # tsc --noEmit
+npm run build            # single-file build in dist/
+npm run fragment         # dist/index.html → ../nexus-marketplace.html (the published fragment)
+npm run photos           # photos/<id>-N.jpg → src/lib/photos.generated.ts (data URIs)
+npm run research:merge   # research/expansion-*.json → src/lib/data.expansion.ts
+python3 shot.py          # Playwright screenshots of every page + a link crawl (needs the build)
 ```
 
 Stack: React 18, TypeScript, Tailwind CSS 4 (CSS-first tokens in `src/styles/globals.css`),
-Framer Motion 11, Lucide React, Zustand 5, Three.js + @react-three/fiber + @react-three/drei.
+Framer Motion 11, Lucide React, Zustand 5 (+ persist), Three.js + @react-three/fiber + @react-three/drei, vitest.
+
+## Routes
+
+| Hash | Page |
+| --- | --- |
+| `#/` | Home |
+| `#/c/<slug>?f=…&sort=…` | Collection (category or saved query), filters and sort in the hash |
+| `#/search?q=…` | Search results |
+| `#/p/<id>` | Product |
+| `#/compare?ids=a,b` | Compare up to four |
+| `#/setup` | My setup (editable devices, region) |
+| `#/guides`, `#/guides/<slug>` | Guides |
+| `#/how-we-pick` | How we pick |
+| `#/account`, `#/orders`, `#/orders/<id>` | Account and orders |
+| `#/checkout`, `#/orders/<id>/confirmed` | Checkout and confirmation |
 
 ## Layout
 
 ```
 src/
-  styles/globals.css        design tokens (@theme), glass/micro/tnum utilities, motion rules
-  lib/data.ts               catalogue model + sample products, gear, nav
-  lib/compat.ts             @nexus/compat — pure compatibility engine (ports, power, bandwidth)
-  lib/currency.ts           multi-currency formatting, tax estimate, shipping rates
-  lib/store.ts              Zustand store (cart, view, currency, gear, compare, toasts)
-  lib/parts.ts              exploded-view part manifest
-  components/ui.tsx         Button, Chip, Pill, StockDot, Stars, Kbd, Toggle, Eyebrow
-  components/Header.tsx     sticky glass header, hover-intent mega-menu, status indicators, currency
-  components/MegaMenu.tsx   mega-menu panel with featured product
-  components/PredictiveSearch.tsx  ⌘K search with typed results, keyboard nav, Advisor hand-off
-  components/ProductCard.tsx       hover lift, quick-view trigger, swatches, stock, add-to-cart morph
-  components/ProductPage.tsx       3-pane PDP: canvas, sticky configurator, tabs, compat report
-  components/ProductCanvas.tsx     R3F 360° / exploded view with callouts (lazy-loaded)
-  components/ProductVisual.tsx     procedural SVG product renders (swap for AVIF in production)
-  components/CartDrawer.tsx        slide-over cart, currency, inline tax/shipping, express + one-click
-  components/QuickView.tsx         quick-view dialog
-  components/Advisor.tsx           AI Tech Advisor pane (scripted model turn, real budget solver + compat)
-  components/Home.tsx              hero + personalised rails
-  App.tsx                          shell: routing by state, toasts, compare tray, mobile tab bar
+  styles/globals.css        design tokens (@theme), ruled sheet utilities, motion rules
+  lib/data.ts               catalogue model, the 21 hand-verified products, default gear, nav
+  lib/data.expansion.ts     generated: 43 verified worldwide products (scripts/merge-research.mjs)
+  lib/routes.ts             typed hash routes + filter serialisation
+  lib/catalog.ts            query engine: filters, sort, facets, similar
+  lib/collections.ts        saved queries for every menu and footer item
+  lib/compat.ts             works-with engine (app, magnets, finder, home/Thread, plug family, inputs, power)
+  lib/shipping.ts           countries, zones, ETA and rate matrix per origin, tax by destination
+  lib/currency.ts           display currency formatting (AUD base)
+  lib/orders.ts             order lines, shipments split by origin, totals, time-derived status
+  lib/validate.ts           address (per-country postcodes, AU state check), card (Luhn, expiry), email
+  lib/devices.ts            devices a shopper can add to My setup, each with a source
+  lib/guides.ts             guide registry
+  lib/store.ts              Zustand store with persist: route, gear, cart, account, orders, searches
+  pages/                    CollectionPage, ComparePage, SetupPage, CheckoutPage, ConfirmedPage,
+                            AccountPage, OrdersPage, GuidesPage, HowWePickPage, NotFoundPage
+  components/               Header, MegaMenu, PredictiveSearch, FilterRail, AddressForm, ProductCard,
+                            ProductPage, ProductCanvas, ProductVisual (+ ProductImage), CartDrawer,
+                            QuickView, Advisor, Home, FlipBoard, ui, guides/*
+  App.tsx                   route → page, hash sync, toasts, compare tray, mobile tab bar, footer
+research/                   SCHEMA.md + expansion-*.json from the research agents
+scripts/                    embed-photos.mjs, merge-research.mjs, fragment.mjs, cj-probe.mjs
+docs/superpowers/           specs and plans
 ```
 
 ## Dropping into Next.js 15 (App Router)

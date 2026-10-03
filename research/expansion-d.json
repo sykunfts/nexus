@@ -1,0 +1,949 @@
+[
+  {
+    "id": "creality-k2",
+    "name": "K2",
+    "brand": "Creality",
+    "category": "Maker",
+    "tagline": "An enclosed 260 mm CoreXY printer rated at 600 mm/s, with an AI camera and an optional CFS unit for up to 16-colour printing.",
+    "priceSource": {
+      "amount": 399.0,
+      "currency": "USD",
+      "at": "store.creality.com",
+      "url": "https://store.creality.com/products/k2-combo-3d-printer"
+    },
+    "compareAtSource": {
+      "amount": 549.0,
+      "currency": "USD",
+      "at": "store.creality.com"
+    },
+    "rating": {
+      "value": 4.84,
+      "count": 244,
+      "at": "store.creality.com"
+    },
+    "origin": "CN",
+    "market": "US",
+    "visual": "printer",
+    "hue": 25,
+    "variants": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "swatch": "#2a2b2e"
+      }
+    ],
+    "options": [
+      {
+        "id": "configuration",
+        "label": "Configuration",
+        "choices": [
+          {
+            "id": "k2",
+            "label": "K2 (without CFS)",
+            "sub": "Pre-assembled printer only",
+            "delta": 0,
+            "facts": {}
+          },
+          {
+            "id": "k2-combo",
+            "label": "K2 Combo (K2 + CFS)",
+            "sub": "Adds one CFS multi-colour unit, USD 549.00",
+            "delta": 150,
+            "facts": {}
+          }
+        ]
+      }
+    ],
+    "facts": {},
+    "specs": [
+      {
+        "group": "Printing",
+        "rows": [
+          {
+            "label": "Build volume",
+            "value": "260 × 260 × 260 mm",
+            "n": 17576000,
+            "better": "high"
+          },
+          {
+            "label": "Speed",
+            "value": "Up to 600 mm/s claimed",
+            "n": 600,
+            "better": "high"
+          },
+          {
+            "label": "Multi-material",
+            "value": "CFS system, up to 16 colours (Combo includes one CFS unit)"
+          },
+          {
+            "label": "Camera",
+            "value": "AI camera"
+          },
+          {
+            "label": "Enclosure",
+            "value": "Enclosed with temperature control"
+          }
+        ]
+      },
+      {
+        "group": "Support",
+        "rows": [
+          {
+            "label": "Warranty",
+            "value": "1 year",
+            "n": 1,
+            "better": "high"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "store.creality.com",
+      "creality3dofficial.com"
+    ],
+    "notes": "Noise level, machine weight and slicer software are not stated on the pages read. Colour finish, power supply voltage and plug are not stated. K2 Combo is USD 549.00 (was 699.00) on store.creality.com; the Combo add-to-cart showed Sold Out at time of fetch while creality3dofficial.com listed 28 available and showed USD 369.00 (meta) / USD 449 (description) for the K2 Combo. Silent mode and smart auto levelling are mentioned without figures.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "plaud-note-pro",
+    "name": "Note Pro",
+    "brand": "Plaud",
+    "category": "Work",
+    "tagline": "A 3 mm card-style AI voice recorder with up to 50 hours of recording, a 0.95-inch display and 300 free transcription minutes a month.",
+    "priceSource": {
+      "amount": 189.0,
+      "currency": "USD",
+      "at": "plaud.ai",
+      "url": "https://www.plaud.ai/products/plaud-note-pro"
+    },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "tag",
+    "hue": 230,
+    "variants": [
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#1b1b1f"
+      },
+      {
+        "id": "silver",
+        "label": "Silver",
+        "swatch": "#c8c9cc"
+      }
+    ],
+    "options": [],
+    "facts": {
+      "app": [
+        "ios"
+      ],
+      "magnetic": true
+    },
+    "inBox": [
+      "Plaud Note Pro",
+      "Magnetic case",
+      "Magnetic ring",
+      "Charging cable"
+    ],
+    "specs": [
+      {
+        "group": "Recording",
+        "rows": [
+          {
+            "label": "Battery",
+            "value": "500 mAh, up to 50 hours recording, up to 60 days standby",
+            "n": 50,
+            "better": "high"
+          },
+          {
+            "label": "Storage",
+            "value": "64 GB",
+            "n": 64,
+            "better": "high"
+          },
+          {
+            "label": "Microphones",
+            "value": "4 MEMS + 1 VPU, 16.4 ft pickup range"
+          },
+          {
+            "label": "Charging",
+            "value": "2 hours",
+            "n": 2,
+            "better": "low"
+          }
+        ]
+      },
+      {
+        "group": "Design",
+        "rows": [
+          {
+            "label": "Thickness",
+            "value": "0.12 in (about 3 mm)",
+            "n": 3.05,
+            "better": "low"
+          },
+          {
+            "label": "Weight",
+            "value": "1.06 oz (about 30 g)",
+            "n": 30,
+            "better": "low"
+          },
+          {
+            "label": "Size",
+            "value": "3.37 × 2.13 × 0.12 in"
+          },
+          {
+            "label": "Screen",
+            "value": "0.95-inch AMOLED InstantView display"
+          },
+          {
+            "label": "Connectivity",
+            "value": "Bluetooth LE 5.4, Wi-Fi"
+          },
+          {
+            "label": "Subscription",
+            "value": "Starter plan free with 300 transcription minutes a month; Pro and Unlimited plans available"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "plaud.ai"
+    ],
+    "notes": "Page shows 495 reviews with 96% five-star but no numeric average was captured, so rating is null. The page named the iOS app plus Plaud Desktop and Web; Android availability was not confirmed on the page read. Pro plan minutes are quoted as 1,200 annually; plan prices not captured. Attaches to a phone via the included magnetic ring and case.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "flipper-zero",
+    "name": "Zero",
+    "brand": "Flipper",
+    "category": "Maker",
+    "tagline": "A pocket multitool for sub-1 GHz radio, NFC, RFID, infrared and iButton with a 2100 mAh battery that lasts up to 28 days.",
+    "priceSource": {
+      "amount": 169.0,
+      "currency": "USD",
+      "at": "flipper.net",
+      "url": "https://flipper.net/products/flipper-zero"
+    },
+    "rating": null,
+    "origin": "US",
+    "market": "US",
+    "visual": "hub",
+    "hue": 28,
+    "variants": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "swatch": "#f3f0ea"
+      }
+    ],
+    "options": [],
+    "facts": {
+      "app": [
+        "ios",
+        "android"
+      ]
+    },
+    "inBox": [
+      "Flipper Zero",
+      "USB-A to USB-C cable",
+      "User manual",
+      "Vinyl sticker"
+    ],
+    "specs": [
+      {
+        "group": "Radios",
+        "rows": [
+          {
+            "label": "Wireless",
+            "value": "Sub-1 GHz 315–900 MHz, NFC, 125 kHz RFID, infrared, iButton 1-Wire, Bluetooth LE 5.4"
+          },
+          {
+            "label": "Ports",
+            "value": "USB-C, GPIO pins"
+          }
+        ]
+      },
+      {
+        "group": "Hardware",
+        "rows": [
+          {
+            "label": "Display",
+            "value": "Monochrome LCD, 128 × 64 px",
+            "n": 8192,
+            "better": "high"
+          },
+          {
+            "label": "Battery",
+            "value": "2100 mAh, up to 28 days",
+            "n": 2100,
+            "better": "high"
+          },
+          {
+            "label": "Storage",
+            "value": "microSD up to 256 GB (card not included)",
+            "n": 256,
+            "better": "high"
+          },
+          {
+            "label": "Processor",
+            "value": "STM32WB55RG, ARM Cortex-M4"
+          },
+          {
+            "label": "Weight",
+            "value": "102 g (3.6 oz)",
+            "n": 102,
+            "better": "low"
+          },
+          {
+            "label": "Size",
+            "value": "100 × 40 × 25 mm"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "flipper.net"
+    ],
+    "notes": "shop.flipperzero.one redirects to flipper.net. Listed in stock, ships from Los Angeles in 1–3 business days. A microSD card is required and not included. Colour finish not stated on the page. Desktop apps for Windows, macOS and Linux also listed. No rating shown.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "raspberry-pi-5-desktop-kit-8gb",
+    "name": "5 desktop kit (8 GB)",
+    "brand": "Raspberry Pi",
+    "category": "Maker",
+    "tagline": "The official Raspberry Pi 5 kit with an 8 GB board, fan case, 27 W supply, keyboard, mouse, 32 GB card and beginner's guide.",
+    "priceSource": {
+      "amount": 216.4,
+      "currency": "GBP",
+      "at": "thepihut.com",
+      "url": "https://thepihut.com/products/raspberry-pi-5-desktop-kit"
+    },
+    "rating": null,
+    "origin": "UK",
+    "market": "UK",
+    "visual": "hub",
+    "hue": 350,
+    "variants": [
+      {
+        "id": "red-white",
+        "label": "Red / white",
+        "swatch": "#c51a4a"
+      }
+    ],
+    "options": [
+      {
+        "id": "plug",
+        "label": "Power supply plug",
+        "choices": [
+          {
+            "id": "uk",
+            "label": "United Kingdom",
+            "sub": "UK 3-pin",
+            "delta": 0,
+            "facts": {
+              "plug": "UK"
+            }
+          },
+          {
+            "id": "us",
+            "label": "United States",
+            "sub": "US 2-pin",
+            "delta": 0,
+            "facts": {
+              "plug": "US"
+            }
+          }
+        ]
+      }
+    ],
+    "facts": {
+      "plug": "UK",
+      "provides": [
+        {
+          "kind": "hdmi",
+          "count": 2
+        },
+        {
+          "kind": "usb-a",
+          "count": 4
+        }
+      ]
+    },
+    "inBox": [
+      "Raspberry Pi 5 8 GB board",
+      "Raspberry Pi 5 case with heatsink and fan (red/white)",
+      "Raspberry Pi 27 W USB-C power supply (white)",
+      "Raspberry Pi keyboard (red/white)",
+      "Raspberry Pi mouse (red/white)",
+      "32 GB microSD card pre-loaded with Raspberry Pi OS",
+      "2 × Raspberry Pi 1 m micro-HDMI cables (white)",
+      "Raspberry Pi Beginner's Guide"
+    ],
+    "specs": [
+      {
+        "group": "Board",
+        "rows": [
+          {
+            "label": "Memory",
+            "value": "8 GB LPDDR4X-4267",
+            "n": 8,
+            "better": "high"
+          },
+          {
+            "label": "Graphics",
+            "value": "VideoCore VII, OpenGL ES 3.1, Vulkan 1.2"
+          },
+          {
+            "label": "Ports",
+            "value": "2 × micro-HDMI (dual 4Kp60 with HDR), 2 × USB 3.0, 2 × USB 2.0"
+          },
+          {
+            "label": "Wireless",
+            "value": "Dual-band 802.11ac Wi-Fi, Bluetooth 5.0 / BLE"
+          },
+          {
+            "label": "Storage",
+            "value": "32 GB microSD pre-loaded with Raspberry Pi OS",
+            "n": 32,
+            "better": "high"
+          }
+        ]
+      },
+      {
+        "group": "Power",
+        "rows": [
+          {
+            "label": "Charging",
+            "value": "27 W USB-C power supply, 5 V / 5 A",
+            "n": 27,
+            "better": "high"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "thepihut.com"
+    ],
+    "notes": "Price shown including UK VAT at The Pi Hut, an approved Raspberry Pi reseller (Raspberry Pi does not sell the kit direct). UK and US plug variants listed at the same price; listed in stock. CPU model, power supply input voltage range and HDMI version are not stated on the page read. No rating shown.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "dji-osmo-pocket-3",
+    "name": "Osmo Pocket 3",
+    "brand": "DJI",
+    "category": "Work",
+    "tagline": "A 1-inch sensor pocket gimbal camera with 4K/120 slow motion, a 2-inch rotating touchscreen and up to 166 minutes of battery.",
+    "priceSource": {
+      "amount": 439.0,
+      "currency": "USD",
+      "at": "bhphotovideo.com",
+      "url": "https://www.bhphotovideo.com/c/product/1788803-REG/dji_cp_os_00000301_01_osmo_pocket_3.html"
+    },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "cam",
+    "hue": 220,
+    "variants": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "swatch": "#2f3135"
+      }
+    ],
+    "options": [],
+    "facts": {},
+    "inBox": [
+      "Osmo Pocket 3",
+      "USB-C to USB-C PD cable",
+      "Protective cover",
+      "Wrist strap",
+      "Handle with 1/4-inch thread"
+    ],
+    "specs": [
+      {
+        "group": "Camera",
+        "rows": [
+          {
+            "label": "Camera",
+            "value": "1-inch CMOS, 20 mm equivalent, f/2, 9.4 MP photos"
+          },
+          {
+            "label": "Resolution",
+            "value": "4K (3840 × 2160) up to 60 fps; 4K/120 fps and 1080p/240 fps in slow motion",
+            "n": 8294400,
+            "better": "high"
+          },
+          {
+            "label": "Storage",
+            "value": "microSD (UHS-II) up to 512 GB",
+            "n": 512,
+            "better": "high"
+          },
+          {
+            "label": "Screen",
+            "value": "2-inch rotatable touchscreen"
+          },
+          {
+            "label": "Sensors",
+            "value": "3-axis mechanical gimbal, stereo recording, 10-bit D-Log M"
+          }
+        ]
+      },
+      {
+        "group": "Power and size",
+        "rows": [
+          {
+            "label": "Battery",
+            "value": "1300 mAh, up to 166 minutes",
+            "n": 166,
+            "better": "high"
+          },
+          {
+            "label": "Charging",
+            "value": "16 minutes to 80%, USB-C"
+          },
+          {
+            "label": "Weight",
+            "value": "179 g (6.3 oz)",
+            "n": 179,
+            "better": "low"
+          },
+          {
+            "label": "Size",
+            "value": "139.7 × 42.2 × 33.5 mm"
+          },
+          {
+            "label": "Wireless",
+            "value": "Wi-Fi, Bluetooth LE"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "bhphotovideo.com",
+      "store.dji.com"
+    ],
+    "notes": "DJI's US store lists the standard unit at USD 439 and the Creator Combo at USD 549 but showed both out of stock on 3 Oct 2026; B&H showed in stock at USD 439.00. Companion app and colour finish not stated on the pages read. B&H shows 222 reviews but no aggregate score was captured. 4K/120 fps is only supported in slow-motion mode.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "insta360-x5",
+    "name": "X5",
+    "brand": "Insta360",
+    "category": "Work",
+    "tagline": "An 8K 360-degree action camera with dual 1/1.28-inch sensors, a 2400 mAh battery and 15 m waterproofing without a case.",
+    "priceSource": {
+      "amount": 549.99,
+      "currency": "USD",
+      "at": "store.insta360.com",
+      "url": "https://store.insta360.com/product/x5"
+    },
+    "rating": null,
+    "origin": "CN",
+    "market": "global",
+    "visual": "cam",
+    "hue": 45,
+    "variants": [
+      {
+        "id": "midnight-black",
+        "label": "Midnight Black",
+        "swatch": "#141418"
+      },
+      {
+        "id": "satin-white",
+        "label": "Satin White (Limited Edition)",
+        "swatch": "#e9e6df"
+      }
+    ],
+    "options": [],
+    "facts": {
+      "app": [
+        "ios",
+        "android"
+      ]
+    },
+    "inBox": [
+      "Insta360 X5",
+      "Battery"
+    ],
+    "specs": [
+      {
+        "group": "Camera",
+        "rows": [
+          {
+            "label": "Camera",
+            "value": "Dual 1/1.28-inch sensors, f/2.0, 6 mm"
+          },
+          {
+            "label": "Resolution",
+            "value": "8K 360 video (7680 × 3840) at 30 fps; 4K single-lens at 60 fps; 72 MP photos",
+            "n": 29491200,
+            "better": "high"
+          },
+          {
+            "label": "Storage",
+            "value": "microSD, UHS-I V30 or faster"
+          },
+          {
+            "label": "Water resistance",
+            "value": "Waterproof to 15 m (49 ft)",
+            "n": 15,
+            "better": "high"
+          }
+        ]
+      },
+      {
+        "group": "Power and size",
+        "rows": [
+          {
+            "label": "Battery",
+            "value": "2400 mAh; 93 min at 8K30, 208 min in 5.7K24 endurance mode",
+            "n": 93,
+            "better": "high"
+          },
+          {
+            "label": "Charging",
+            "value": "80% in 20 minutes with a 30 W USB-C charger"
+          },
+          {
+            "label": "Weight",
+            "value": "200 g (7.1 oz)",
+            "n": 200,
+            "better": "low"
+          },
+          {
+            "label": "Size",
+            "value": "46 × 124.5 × 38.2 mm"
+          },
+          {
+            "label": "Wireless",
+            "value": "Wi-Fi 802.11a/n/ac, Bluetooth LE 5.2"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "store.insta360.com",
+      "insta360.com"
+    ],
+    "notes": "Standard bundle (camera plus one battery) listed in stock, normally ships within 2 days; other bundles run USD 581 to 769.99. Maximum microSD capacity and screen size not stated on the pages read. Insta360 app requires iOS 13.0+ or Android 10.0+. No rating shown on the store page.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "keychron-k2-he",
+    "name": "K2 HE",
+    "brand": "Keychron",
+    "category": "Work",
+    "tagline": "A 75% wireless keyboard with hot-swappable magnetic switches, adjustable actuation, Rapid Trigger and a 4000 mAh battery.",
+    "priceSource": {
+      "amount": 139.99,
+      "currency": "USD",
+      "at": "keychron.com",
+      "url": "https://www.keychron.com/products/keychron-k2-he-wireless-magnetic-switch-keyboard"
+    },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "hub",
+    "hue": 200,
+    "variants": [
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#1c1c1e"
+      },
+      {
+        "id": "white",
+        "label": "White",
+        "swatch": "#ececec"
+      }
+    ],
+    "options": [
+      {
+        "id": "edition",
+        "label": "Edition",
+        "choices": [
+          {
+            "id": "special",
+            "label": "Special Edition",
+            "sub": "Aluminium and wood frame, OSA double-shot keycaps",
+            "delta": 0,
+            "facts": {}
+          },
+          {
+            "id": "standard",
+            "label": "Standard Version",
+            "sub": "Aluminium frame, Cherry-profile shine-through keycaps, USD 129.99",
+            "delta": -10,
+            "facts": {}
+          }
+        ]
+      }
+    ],
+    "facts": {},
+    "inBox": [
+      "Keyboard (PCB, case, aluminium plate and switches assembled)",
+      "Mac and Windows keycaps"
+    ],
+    "specs": [
+      {
+        "group": "Typing",
+        "rows": [
+          {
+            "label": "Layout",
+            "value": "75%, ANSI"
+          },
+          {
+            "label": "Switches",
+            "value": "Gateron double-rail magnetic Nebula, hot-swappable, 0.2–3.8 mm adjustable actuation, Rapid Trigger"
+          },
+          {
+            "label": "LEDs",
+            "value": "North-facing RGB backlight"
+          }
+        ]
+      },
+      {
+        "group": "Connectivity",
+        "rows": [
+          {
+            "label": "Connectivity",
+            "value": "2.4 GHz, Bluetooth 5.2 (up to 3 devices), USB-C wired"
+          },
+          {
+            "label": "Polling rate",
+            "value": "1000 Hz wired and 2.4 GHz, 125 Hz Bluetooth",
+            "n": 1000,
+            "better": "high"
+          },
+          {
+            "label": "Battery",
+            "value": "4000 mAh, up to 110 hours",
+            "n": 110,
+            "better": "high"
+          },
+          {
+            "label": "Platforms",
+            "value": "macOS, Windows, Linux; QMK firmware with Keychron Launcher web app"
+          }
+        ]
+      },
+      {
+        "group": "Build",
+        "rows": [
+          {
+            "label": "Weight",
+            "value": "980 g (Standard), 965 g (Special Edition)",
+            "n": 980,
+            "better": "low"
+          },
+          {
+            "label": "Size",
+            "value": "316.4 × 126.7 mm (Standard), 320.5 × 126.7 mm (Special Edition)"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "keychron.com"
+    ],
+    "notes": "USD 139.99 is the regular price shown on the main listing (default Special Edition); the Standard Version shows a regular price of USD 129.99 and the K HE series carousel showed a sale 'From USD 103.99'. The default Special Edition Black with Nebula V1 switch was backordered at time of fetch. ISO layouts (Nordic, DE, UK, Swiss) are listed without verified prices. Page shows a five-star glyph with 32 reviews (66% five-star) but no numeric average, so rating is null. Cable not confirmed in the box.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "niu-kqi-300x",
+    "name": "KQi 300X",
+    "brand": "NIU",
+    "category": "Mobility",
+    "tagline": "An all-terrain commuter scooter with a 500 W motor, 608 Wh battery, 37-mile range, hydraulic suspension and an IP55 rating.",
+    "priceSource": {
+      "amount": 899.0,
+      "currency": "USD",
+      "at": "shop.niu.com",
+      "url": "https://shop.niu.com/products/niu-kqi-300x-electric-scooter"
+    },
+    "compareAtSource": {
+      "amount": 1299.0,
+      "currency": "USD",
+      "at": "shop.niu.com"
+    },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "scooter",
+    "hue": 355,
+    "variants": [
+      {
+        "id": "space-grey",
+        "label": "Space Grey",
+        "swatch": "#5a5e66"
+      },
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#141414"
+      }
+    ],
+    "options": [],
+    "facts": {},
+    "specs": [
+      {
+        "group": "Performance",
+        "rows": [
+          {
+            "label": "Motor",
+            "value": "500 W rated, 1000 W peak",
+            "n": 500,
+            "better": "high"
+          },
+          {
+            "label": "Battery",
+            "value": "608.4 Wh, 48 V",
+            "n": 608.4,
+            "better": "high"
+          },
+          {
+            "label": "Range",
+            "value": "Up to 37.3 miles claimed",
+            "n": 37.3,
+            "better": "high"
+          },
+          {
+            "label": "Top speed",
+            "value": "20 mph on-road",
+            "n": 20,
+            "better": "high"
+          },
+          {
+            "label": "Charging",
+            "value": "6 hours",
+            "n": 6,
+            "better": "low"
+          }
+        ]
+      },
+      {
+        "group": "Build",
+        "rows": [
+          {
+            "label": "Weight",
+            "value": "48.7 lb",
+            "n": 48.7,
+            "better": "low"
+          },
+          {
+            "label": "Max load",
+            "value": "265 lb",
+            "n": 265,
+            "better": "high"
+          },
+          {
+            "label": "Water resistance",
+            "value": "IP55"
+          },
+          {
+            "label": "Suspension",
+            "value": "Hydraulic, 45 mm stroke"
+          },
+          {
+            "label": "Brakes",
+            "value": "Dual disc front and rear plus regenerative"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "shop.niu.com"
+    ],
+    "notes": "Page showed 74 in stock. 10.5-inch self-healing tubeless tyres, 25% hill grade, turn signals and LED lighting. NIU app offers smart unlock, cruise control and OTA updates; app platforms not stated. 29 reviews shown without a visible average, so rating is null. In-box contents not detailed. Plug and charger voltage not stated.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "segway-ninebot-kickscooter-f3",
+    "name": "Ninebot KickScooter F3",
+    "brand": "Segway",
+    "category": "Mobility",
+    "tagline": "A commuter kick scooter with a 450 W motor, 20 mph top speed, 10-inch self-sealing tubeless tyres and a 265 lb load rating.",
+    "priceSource": {
+      "amount": 999.99,
+      "currency": "USD",
+      "at": "bestbuy.com",
+      "url": "https://www.bestbuy.com/product/segway-f3-electric-scooter-w-44-miles-max-range-20-mph-max-speed-w-10-inch-self-sealing-tubeless-tires-black/J394R973J9"
+    },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "scooter",
+    "hue": 210,
+    "variants": [
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#121212"
+      }
+    ],
+    "options": [],
+    "facts": {},
+    "specs": [
+      {
+        "group": "Performance",
+        "rows": [
+          {
+            "label": "Motor",
+            "value": "450 W nominal",
+            "n": 450,
+            "better": "high"
+          },
+          {
+            "label": "Range",
+            "value": "Up to 44 miles claimed (Best Buy spec table lists 25 miles)",
+            "n": 44,
+            "better": "high"
+          },
+          {
+            "label": "Top speed",
+            "value": "20 mph",
+            "n": 20,
+            "better": "high"
+          },
+          {
+            "label": "Charging",
+            "value": "8 hours",
+            "n": 8,
+            "better": "low"
+          }
+        ]
+      },
+      {
+        "group": "Build",
+        "rows": [
+          {
+            "label": "Weight",
+            "value": "42 lb",
+            "n": 42,
+            "better": "low"
+          },
+          {
+            "label": "Max load",
+            "value": "265 lb",
+            "n": 265,
+            "better": "high"
+          },
+          {
+            "label": "Tyres",
+            "value": "10-inch self-sealing tubeless"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "bestbuy.com"
+    ],
+    "notes": "This is the F3 sold in the US (model AA.05.17.01.0004); the F3 Pro named in the brief launched as a Best Buy Canada exclusive and its price could not be verified because Segway's US and EU store pages returned no content. Best Buy lists a 'Comp. Value' of USD 1,149.99 (retailer comparison, not a maker RRP). Battery capacity, IP rating, brakes, suspension and companion app are not stated on the Best Buy page, and its spec table shows 25 miles range against 44 miles in the listing title. Stock showed 'Only 3 left at your store'. Partial assembly required. No rating shown.",
+    "checkedAt": "2026-10-03"
+  }
+]

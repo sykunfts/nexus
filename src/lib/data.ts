@@ -7,20 +7,28 @@
   fulfilment routes from the supplier connectors.
 */
 import { PHOTOS } from './photos.generated'
+import { EXPANSION } from './data.expansion'
 
 export type Visual =
   | 'projector' | 'projector-can' | 'ring' | 'powerbank' | 'glasses' | 'cam' | 'strip' | 'scooter' | 'earbuds'
   | 'pin' | 'printer' | 'robovac' | 'mask' | 'screen' | 'tag' | 'hub' | 'charger' | 'case' | 'adapter' | 'scale'
+  | 'speaker' | 'lock' | 'band' | 'watch' | 'device'
 
 export type OS = 'ios' | 'android'
 export type HomeProto = 'matter' | 'thread' | 'homekit' | 'google' | 'alexa'
-export type Region = 'AU' | 'US' | 'EU' | 'UK'
+export type Region = 'AU' | 'NZ' | 'US' | 'CA' | 'UK' | 'EU' | 'JP'
+export type PlugFamily = 'I' | 'AB' | 'G' | 'CF'
+export const PLUG_FAMILY: Record<Region, PlugFamily> = { AU: 'I', NZ: 'I', US: 'AB', CA: 'AB', JP: 'AB', UK: 'G', EU: 'CF' }
+export const MAINS: Record<Region, number> = { AU: 230, NZ: 230, US: 120, CA: 120, JP: 100, UK: 230, EU: 230 }
 export type PortKind = 'hdmi' | 'usb-c' | 'usb-a' | 'jack' | 'dc'
 export type TrackerNet = 'find-my' | 'find-hub'
 
 export const PORT_LABEL: Record<PortKind, string> = { hdmi: 'HDMI', 'usb-c': 'USB-C', 'usb-a': 'USB-A', jack: '3.5 mm audio', dc: 'DC in' }
 export const PROTO_LABEL: Record<HomeProto, string> = { matter: 'Matter', thread: 'Thread', homekit: 'Apple Home', google: 'Google Home', alexa: 'Alexa' }
-export const REGION_LABEL: Record<Region, string> = { AU: 'Australia (Type I, 240 V)', US: 'United States (Type A/B, 120 V)', EU: 'Europe (Type C/F, 230 V)', UK: 'United Kingdom (Type G, 230 V)' }
+export const REGION_LABEL: Record<Region, string> = {
+  AU: 'Australia (Type I, 230 V)', NZ: 'New Zealand (Type I, 230 V)', US: 'United States (Type A/B, 120 V)', CA: 'Canada (Type A/B, 120 V)',
+  UK: 'United Kingdom (Type G, 230 V)', EU: 'Europe (Type C/F, 230 V)', JP: 'Japan (Type A/B, 100 V)',
+}
 
 export interface Port { kind: PortKind; count: number }
 export interface Requirement { anyOf: PortKind[]; label: string }
@@ -52,8 +60,11 @@ export interface OptionGroup { id: string; label: string; choices: Choice[] }
 export interface SpecRow { label: string; value: string; n?: number; better?: 'high' | 'low' }
 export interface SpecGroup { group: string; rows: SpecRow[] }
 export interface Trend { label: 'Viral' | 'Trending' | 'Rising' | 'Steady'; delta: number; series: number[]; source: string }
-export interface Fulfil { route: 'warehouse' | 'supplier'; from: string; eta: string; days: [number, number] }
+export type Origin = 'AU' | 'CN' | 'US' | 'EU' | 'UK'
+export interface Fulfil { route: 'warehouse' | 'supplier'; origin: Origin }
 export interface Rating { value: number; count: number; at: string }
+export type Market = 'global' | 'AU' | 'US' | 'EU' | 'UK'
+export interface PriceSource { amount: number; currency: 'USD' | 'GBP' | 'EUR' | 'JPY' | 'AUD'; at: string }
 
 export interface Product {
   id: string
@@ -64,9 +75,14 @@ export interface Product {
   price: number               // AUD, GST inclusive, cheapest verified retailer on priceCheckedAt
   compareAt?: number          // maker's RRP when higher
   priceCheckedAt: string      // ISO date
+  priceSource?: PriceSource   // the listed price when it was verified in another currency
+  listedAt: string            // ISO date the product entered the catalogue
+  releasedAt?: string         // ISO release date when a page stated it; "newest" sorts by this, unknown last
+  market: Market              // where the listing was verified
   sources: string[]           // where the price and specs were checked
   notes?: string              // things we could not verify, shown as a note, never as a fact
   rating: Rating | null       // only where a value and a count were both visible
+  throwRatio?: { value: number; source: string }   // projectors: distance ÷ image width, verified at build time
   stock: 'in' | 'low' | 'out'
   stockCount?: number
   fulfil: Fulfil
@@ -82,19 +98,22 @@ export interface Product {
   inBox?: string[]
 }
 
+export type GearKind = 'phone' | 'hub' | 'charger' | 'source' | 'region'
 export interface GearItem {
   id: string
+  kind: GearKind
   name: string
   detail: string
   facts: CompatFacts
   defaultOn: boolean
+  deviceId?: string      // the devices.ts entry it came from, when added from the picker
 }
 
 export const PRICE_CHECKED = '2026-10-02'
 export const priceCheckedText = (iso: string) => new Date(`${iso}T00:00:00`).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })
 
-const WAREHOUSE: Fulfil = { route: 'warehouse', from: 'Sydney warehouse', eta: '2–4 days', days: [2, 4] }
-const SUPPLIER: Fulfil = { route: 'supplier', from: 'partner supplier', eta: '8–12 days', days: [8, 12] }
+const WAREHOUSE: Fulfil = { route: 'warehouse', origin: 'AU' }
+const SUPPLIER: Fulfil = { route: 'supplier', origin: 'CN' }
 const SAMPLE = 'Sample data until the trend worker runs'
 
 const PLUG_OPTIONS: OptionGroup = {
@@ -117,7 +136,7 @@ const sizes = (from: number, to: number): OptionGroup => ({
 const BLACK = { id: 'black', label: 'Black', swatch: '#1b1b1f' }
 const WHITE = { id: 'white', label: 'White', swatch: '#e8e8ec' }
 
-const catalogue: Omit<Product, 'photos'>[] = [
+const catalogue: Omit<Product, 'photos' | 'listedAt' | 'market'>[] = [
   /* ---------------- Home cinema ---------------- */
   {
     id: 'xgimi-mogo-4-laser',
@@ -131,6 +150,7 @@ const catalogue: Omit<Product, 'photos'>[] = [
     sources: ['au.xgimi.com', 'jbhifi.com.au'],
     notes: 'HDMI version is not stated on the AU listing. No AirPlay; use Google Cast or HDMI from an iPhone.',
     rating: { value: 4.47, count: 17, at: 'au.xgimi.com' },
+    throwRatio: { value: 1.2, source: 'https://au.xgimi.com/products/mogo-4-laser' },
     stock: 'in',
     fulfil: WAREHOUSE,
     visual: 'projector-can',
@@ -181,6 +201,7 @@ const catalogue: Omit<Product, 'photos'>[] = [
     sources: ['jbhifi.com.au', 'au.xgimi.com'],
     notes: 'HDMI version and the full port list are not stated on the AU listing.',
     rating: null,
+    throwRatio: { value: 1.3, source: 'https://www.projectorcentral.com/xgimi-vibe_one_battery_powered.htm' },
     stock: 'in',
     fulfil: WAREHOUSE,
     visual: 'projector',
@@ -855,29 +876,35 @@ const catalogue: Omit<Product, 'photos'>[] = [
   },
 ]
 
-export const products: Product[] = catalogue.map((p) => ({ ...p, photos: PHOTOS[p.id] }))
+const RELEASED_AT: Record<string, string> = { 'rayban-meta-gen-3': '2026-09-23' }
+export const products: Product[] = [
+  ...catalogue.map((p) => ({ ...p, photos: PHOTOS[p.id], listedAt: PRICE_CHECKED, releasedAt: RELEASED_AT[p.id], market: 'AU' as const })),
+  ...EXPANSION.map((p) => ({ ...p, photos: PHOTOS[p.id] })),
+]
 
+/** Strict lookup for code that holds a known id (tests, data wiring). Render paths that dereference a route or persisted id use `productById`. */
 export const byId = (id: string) => {
   const p = products.find((x) => x.id === id)
   if (!p) throw new Error(`Unknown product ${id}`)
   return p
 }
+export const productById = (id: string): Product | undefined => products.find((x) => x.id === id)
 
-/** "My setup": what the shopper already owns. Checked live on every PDP and in the cart. */
-export const gear: GearItem[] = [
-  { id: 'g-iphone', name: 'iPhone 16 Pro', detail: 'iOS, MagSafe (Qi2), Find My', defaultOn: true,
+/** Default "My setup": what a new shopper is assumed to own until they edit it. Checked live on every PDP and in the cart. */
+export const DEFAULT_GEAR: GearItem[] = [
+  { id: 'g-iphone', kind: 'phone', name: 'iPhone 16 Pro', detail: 'iOS, MagSafe (Qi2), Find My', defaultOn: true,
     facts: { phone: { os: 'ios', magnets: true, trackerNet: 'find-my' } } },
-  { id: 'g-pixel', name: 'Pixel 9', detail: 'Android, Qi (no magnets), Find Hub', defaultOn: false,
+  { id: 'g-pixel', kind: 'phone', name: 'Pixel 9', detail: 'Android, Qi (no magnets), Find Hub', defaultOn: false,
     facts: { phone: { os: 'android', magnets: false, trackerNet: 'find-hub' } } },
-  { id: 'g-apple-home', name: 'Apple Home (Apple TV 4K)', detail: 'Apple Home, Matter, Thread border router', defaultOn: true,
+  { id: 'g-apple-home', kind: 'hub', name: 'Apple Home (Apple TV 4K)', detail: 'Apple Home, Matter, Thread border router', defaultOn: true,
     facts: { hubs: ['homekit', 'matter', 'thread'] } },
-  { id: 'g-google-home', name: 'Google Home (Nest Mini)', detail: 'Google Home, Matter, no Thread', defaultOn: false,
+  { id: 'g-google-home', kind: 'hub', name: 'Google Home (Nest Mini)', detail: 'Google Home, Matter, no Thread', defaultOn: false,
     facts: { hubs: ['google', 'matter'] } },
-  { id: 'g-switch', name: 'Nintendo Switch', detail: 'HDMI source', defaultOn: true,
+  { id: 'g-switch', kind: 'source', name: 'Nintendo Switch', detail: 'HDMI source', defaultOn: true,
     facts: { requires: [{ anyOf: ['hdmi'], label: 'an HDMI input' }] } },
-  { id: 'g-region', name: 'Australia, 240 V, Type I', detail: 'Plug and voltage check', defaultOn: true,
+  { id: 'g-region', kind: 'region', name: 'Australia, 230 V, Type I', detail: 'Plug and voltage check', defaultOn: true,
     facts: { region: 'AU' } },
-  { id: 'g-charger', name: 'Anker 65 W charger', detail: 'USB-C PD charger you already own', defaultOn: true,
+  { id: 'g-charger', kind: 'charger', name: 'Anker 65 W charger', detail: 'USB-C PD charger you already own', defaultOn: true,
     facts: { pdOut: 65 } },
 ]
 
@@ -886,39 +913,39 @@ export interface NavSection { id: string; label: string; columns: NavColumn[]; f
 
 export const nav: NavSection[] = [
   { id: 'trending', label: 'Trending', featured: 'ringconn-gen-3', columns: [
-    { title: 'This week', items: ['Viral right now', 'Rising fast', 'New arrivals', 'Back in stock'] },
-    { title: 'By signal', items: ['Hot on TikTok', 'Search spikes', 'Creator picks', 'Most wishlisted'] },
-    { title: 'Collections', items: ['Under $100', 'Gifts that ship in 48 h', 'Travel tech', 'Desk upgrades'] },
+    { title: 'This week', items: ['Viral right now', 'Rising fast', 'New arrivals'] },
+    { title: 'Collections', items: ['Under $100', 'Under $300', 'Gifts that ship in 48 h', 'Travel tech'] },
+    { title: 'Guides', items: ['How we pick', 'Does it work with my phone?', 'Movie night, checked as a set'] },
   ] },
   { id: 'wearables', label: 'Wearables', featured: 'rayban-meta-gen-3', columns: [
-    { title: 'Body', items: ['Smart rings', 'Smart glasses', 'Fitness bands', 'Sleep tech'] },
-    { title: 'Audio on you', items: ['Open-ear buds', 'Bone conduction', 'Sleep buds', 'Hearing assist'] },
-    { title: 'Guides', items: ['Ring sizing', 'Which smart glasses?', 'Works with iPhone', 'Works with Android'] },
+    { title: 'Body', items: ['Smart rings', 'Smart glasses', 'Fitness bands', 'Smartwatches', 'Sleep tech'] },
+    { title: 'Audio on you', items: ['Open-ear buds', 'Speakers'] },
+    { title: 'Guides', items: ['Ring sizing', 'Works with iPhone', 'Works with Android'] },
   ] },
   { id: 'smart-home', label: 'Smart home', featured: 'aqara-camera-e1', columns: [
-    { title: 'Devices', items: ['Cameras', 'Lighting', 'Robot vacuums', 'Hubs'] },
+    { title: 'Devices', items: ['Cameras', 'Lighting', 'Robot vacuums', 'Locks', 'Hubs'] },
     { title: 'Platforms', items: ['Apple Home', 'Google Home', 'Alexa', 'Matter and Thread'] },
-    { title: 'Guides', items: ['Do I need a hub?', 'Matter explained', 'Local-only setups'] },
+    { title: 'Guides', items: ['Do I need a hub?', 'Does it work with my phone?'] },
   ] },
   { id: 'cinema', label: 'Cinema', featured: 'xgimi-mogo-4-laser', columns: [
-    { title: 'Picture', items: ['Laser projectors', 'Battery projectors', 'Outdoor screens', 'Streaming sticks'] },
-    { title: 'Sound', items: ['Open-ear buds', 'Soundbars', 'Party speakers', 'Turntables'] },
-    { title: 'Guides', items: ['Projector vs TV', 'Throw distance calculator', 'Movie night under $2,000'] },
+    { title: 'Picture', items: ['Laser projectors', 'Battery projectors', 'Outdoor screens'] },
+    { title: 'Sound', items: ['Speakers', 'Open-ear buds'] },
+    { title: 'Guides', items: ['Movie night, checked as a set', 'Throw distance calculator', 'Compare projectors'] },
   ] },
   { id: 'power', label: 'Power', featured: 'anker-maggo-10k', columns: [
-    { title: 'Power', items: ['Magnetic power banks', 'GaN chargers', 'Travel adapters', 'Portable power stations'] },
-    { title: 'Mobility', items: ['E-scooters', 'E-bikes', 'Electric skateboards', 'Helmets and locks'] },
-    { title: 'Guides', items: ['Qi2 vs MagSafe', 'Airline battery rules', 'Scooter laws by state'] },
+    { title: 'Power', items: ['Power banks', 'Chargers', 'Magnetic charging', 'Travel adapters'] },
+    { title: 'Mobility', items: ['E-scooters'] },
+    { title: 'Guides', items: ['Qi2 vs MagSafe'] },
   ] },
   { id: 'health', label: 'Health', featured: 'omnilux-contour-face', columns: [
-    { title: 'Skin and light', items: ['LED masks', 'Red light panels', 'Microcurrent', 'Hair tools'] },
-    { title: 'Body', items: ['Smart scales', 'Massage guns', 'Posture trainers', 'Sleep tech'] },
-    { title: 'Guides', items: ['Red vs near-infrared', 'What the studies say', 'TGA-listed devices'] },
+    { title: 'Skin and light', items: ['LED masks'] },
+    { title: 'Body', items: ['Smart scales', 'Recovery', 'Health watches'] },
+    { title: 'Guides', items: ['Red vs near-infrared'] },
   ] },
   { id: 'maker', label: 'Maker', featured: 'bambu-a1-mini', columns: [
-    { title: 'Make', items: ['Desk 3D printers', 'Laser engravers', 'Dev boards', 'Soldering'] },
-    { title: 'Work', items: ['AI recorders', 'Label printers', 'Portable monitors', 'Stream decks'] },
-    { title: 'Guides', items: ['First 3D print', 'Record meetings legally', 'Travel-ready desk'] },
+    { title: 'Make', items: ['Desk 3D printers', 'Dev boards'] },
+    { title: 'Work', items: ['AI recorders', 'Cameras and gimbals', 'Keyboards'] },
+    { title: 'Guides', items: ['How we pick'] },
   ] },
 ]
 
@@ -937,3 +964,6 @@ export const trendTape: { label: string; delta: number }[] = [
   { label: 'Desk 3D printers', delta: 88 },
   { label: 'Thread lighting', delta: 74 },
 ]
+
+/** @deprecated use DEFAULT_GEAR, or the store's editable `gear`. */
+export const gear = DEFAULT_GEAR

@@ -24,7 +24,6 @@ function score(q: string, hay: string[]) {
 
 const index = products.map((p) => ({ p, hay: tokens(`${p.brand} ${p.name} ${p.category} ${p.tagline}`) }))
 const categories = nav.flatMap((s) => s.columns.flatMap((c) => c.items.map((i) => ({ item: i, section: s.label }))))
-const RECENT = ['magnetic power bank', 'MoGo 4 Laser vs Vibe One']
 
 export function PredictiveSearch() {
   const [q, setQ] = useState('')
@@ -62,13 +61,17 @@ export function PredictiveSearch() {
     return () => document.removeEventListener('mousedown', onDown)
   }, [open, setOpen])
 
-  useEffect(() => setActive(0), [q])
+  const [navigated, setNavigated] = useState(false)
+  useEffect(() => { setActive(0); setNavigated(false) }, [q])
 
-  const rows = [...results.map((p) => ({ kind: 'product' as const, p })), ...(q.trim() ? [{ kind: 'advisor' as const }] : [])]
+  const recent = useStore((s) => s.recentSearches)
+  const rows = [...results.map((p) => ({ kind: 'product' as const, p })), ...(q.trim() ? [{ kind: 'all' as const }, { kind: 'advisor' as const }] : [])]
+  const search = () => { const t = q.trim(); if (!t) return; go({ name: 'search', q: t, filters: {} }); setOpen(false); setQ('') }
   const choose = (i: number) => {
     const r = rows[i]
     if (!r) return
-    if (r.kind === 'product') go({ name: 'pdp', id: r.p.id })
+    if (r.kind === 'product') go({ name: 'product', id: r.p.id })
+    else if (r.kind === 'all') { search(); return }
     else { setAdvisor(true); setOpen(false) }
     setQ('')
   }
@@ -99,9 +102,9 @@ export function PredictiveSearch() {
           onChange={(e) => { setQ(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           onKeyDown={(e) => {
-            if (e.key === 'ArrowDown') { e.preventDefault(); setActive((a) => Math.min(a + 1, rows.length - 1)) }
-            else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((a) => Math.max(a - 1, 0)) }
-            else if (e.key === 'Enter') { e.preventDefault(); choose(active) }
+            if (e.key === 'ArrowDown') { e.preventDefault(); setNavigated(true); setActive((a) => Math.min(a + 1, rows.length - 1)) }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); setNavigated(true); setActive((a) => Math.max(a - 1, 0)) }
+            else if (e.key === 'Enter') { e.preventDefault(); if (navigated) choose(active); else search() }
             else if (e.key === 'Escape') { setOpen(false); inputRef.current?.blur() }
           }}
           className="h-full min-w-0 flex-1 bg-transparent text-[14px] text-ink placeholder:text-ink-3 focus:outline-none [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
@@ -129,7 +132,7 @@ export function PredictiveSearch() {
                 <div className="p-4">
                   <div className="mb-2 text-[12.5px] text-ink-3">Recent</div>
                   <ul className="space-y-1">
-                    {RECENT.map((r) => (
+                    {(recent.length ? recent : ['magnetic power bank', 'smart ring']).map((r) => (
                       <li key={r}><button type="button" onClick={() => setQ(r)} className="block w-full text-left text-[14px] text-ink hover:underline underline-offset-4">{r}</button></li>
                     ))}
                   </ul>
@@ -183,6 +186,16 @@ export function PredictiveSearch() {
                     ))}
                   </div>
                 )}
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={active === rows.length - 2}
+                  onMouseEnter={() => setActive(rows.length - 2)}
+                  onClick={() => choose(rows.length - 2)}
+                  className={cn('flex w-full items-center border-t border-rule px-3 py-2.5 text-left text-[13.5px] transition-colors', active === rows.length - 2 ? 'bg-paper text-ink' : 'text-ink-2 hover:bg-paper')}
+                >
+                  See all results for “{q}”
+                </button>
                 <button
                   type="button"
                   role="option"

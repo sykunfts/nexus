@@ -163,6 +163,70 @@ export function ProductVisual({ visual, hue = 78, swatch = '#2b2b30', className,
         </g>
       )}
 
+      {visual === 'speaker' && (
+        <g>
+          <rect x="96" y="96" width="208" height="120" rx="22" fill={body} stroke={edge} />
+          <rect x="96" y="96" width="208" height="120" rx="22" fill={spec} />
+          {Array.from({ length: 70 }).map((_, i) => (
+            <circle key={i} cx={118 + (i % 14) * 12} cy={122 + Math.floor(i / 14) * 15} r="2.2" fill={light ? 'rgba(0,0,0,0.28)' : 'rgba(255,255,255,0.2)'} />
+          ))}
+          <rect x="150" y="84" width="100" height="10" rx="5" fill={bodyDark} stroke={edge} />
+          <circle cx="282" cy="108" r="3" fill={accent} />
+          <rect x="120" y="216" width="160" height="6" rx="3" fill={bodyDark} />
+        </g>
+      )}
+
+      {visual === 'lock' && (
+        <g>
+          <rect x="150" y="44" width="100" height="212" rx="24" fill={body} stroke={edge} />
+          <rect x="150" y="44" width="100" height="212" rx="24" fill={spec} />
+          <circle cx="200" cy="120" r="34" fill={bodyDark} stroke={edge} />
+          <circle cx="200" cy="120" r="24" fill="none" stroke={light ? 'rgba(0,0,0,0.25)' : 'rgba(255,255,255,0.2)'} strokeWidth="2" />
+          <rect x="196" y="100" width="8" height="26" rx="3" fill={accent} />
+          {[0, 1, 2].map((i) => <rect key={i} x="180" y={178 + i * 18} width="40" height="8" rx="4" fill={light ? 'rgba(0,0,0,0.18)' : 'rgba(255,255,255,0.16)'} />)}
+          <circle cx="200" cy="236" r="4" fill={accent} />
+        </g>
+      )}
+
+      {visual === 'band' && (
+        <g>
+          <path d="M120 150 C120 70 280 70 280 150 C280 230 120 230 120 150 Z" fill="none" stroke={bodyB} strokeWidth="30" />
+          <path d="M120 150 C120 70 280 70 280 150 C280 230 120 230 120 150 Z" fill="none" stroke={body} strokeWidth="24" />
+          <rect x="166" y="60" width="68" height="34" rx="10" fill={bodyDark} stroke={edge} />
+          <rect x="178" y="70" width="44" height="14" rx="4" fill="#0a0a0c" />
+          <circle cx="200" cy="77" r="3" fill={accent} />
+        </g>
+      )}
+
+      {visual === 'watch' && (
+        <g>
+          <rect x="166" y="30" width="68" height="60" rx="14" fill={body} stroke={edge} />
+          <rect x="166" y="210" width="68" height="60" rx="14" fill={body} stroke={edge} />
+          <circle cx="200" cy="150" r="70" fill={body} stroke={edge} />
+          <circle cx="200" cy="150" r="70" fill={spec} />
+          <circle cx="200" cy="150" r="58" fill="#0a0a0c" />
+          <circle cx="200" cy="150" r="58" fill="none" stroke={light ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.2)'} />
+          {[0, 90, 180, 270].map((a) => <circle key={a} cx={200 + 48 * Math.cos((a * Math.PI) / 180)} cy={150 + 48 * Math.sin((a * Math.PI) / 180)} r="2" fill="rgba(255,255,255,0.6)" />)}
+          <path d="M200 150 L200 112" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+          <path d="M200 150 L226 160" stroke={accent} strokeWidth="3" strokeLinecap="round" />
+          <circle cx="200" cy="150" r="3" fill="#fff" />
+          <rect x="268" y="130" width="10" height="24" rx="3" fill={bodyDark} stroke={edge} />
+        </g>
+      )}
+
+      {visual === 'device' && (
+        <g>
+          <rect x="92" y="90" width="216" height="130" rx="18" fill={body} stroke={edge} />
+          <rect x="92" y="90" width="216" height="130" rx="18" fill={spec} />
+          <rect x="110" y="108" width="120" height="66" rx="6" fill="#0a0a0c" stroke="rgba(255,255,255,0.2)" />
+          <path d="M122 160 L146 136 L166 150 L190 124 L214 146" fill="none" stroke={accent} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="266" cy="140" r="20" fill={bodyDark} stroke={edge} />
+          <circle cx="266" cy="140" r="8" fill={light ? '#d7d9df' : '#2e2e34'} />
+          {[0, 1, 2].map((i) => <rect key={i} x={118 + i * 34} y="186" width="22" height="8" rx="4" fill={light ? 'rgba(0,0,0,0.18)' : 'rgba(255,255,255,0.16)'} />)}
+          <circle cx="290" cy="104" r="3" fill={accent} />
+        </g>
+      )}
+
       {visual === 'ring' && (
         <g>
           <ellipse cx="200" cy="156" rx="96" ry="62" fill="none" stroke={bodyB} strokeWidth="34" />

@@ -5,8 +5,10 @@ import { ProductImage } from './ProductVisual'
 import { ProductCard } from './ProductCard'
 import { FlipBoard } from './FlipBoard'
 import { Button, Tile } from './ui'
+import { navTarget } from '../lib/collections'
 
 const HERO = 'xgimi-mogo-4-laser'
+const LATEST_CHECK = products.map((p) => p.priceCheckedAt).sort().slice(-1)[0] ?? PRICE_CHECKED
 
 /* Rails: slot order + reasons come from the edge; cards are cached per SKU. */
 const RAILS = [
@@ -41,7 +43,7 @@ function TestCard() {
       </div>
 
       {/* bench mat with dimension lines */}
-      <button type="button" onClick={() => go({ name: 'pdp', id: hero.id })} className="relative block w-full bg-mat" aria-label={`Open the ${hero.brand} ${hero.name}`}>
+      <button type="button" onClick={() => go({ name: 'product', id: hero.id })} className="relative block w-full bg-mat" aria-label={`Open the ${hero.brand} ${hero.name}`}>
         <div className="relative mx-auto aspect-[4/3] w-full max-w-[560px]">
           <ProductImage product={hero} className="absolute inset-0" />
           {!hero.photos?.length && (
@@ -96,7 +98,7 @@ function TestCard() {
         <div className="flex items-center gap-3">
           <Tile>+{hero.trend.delta}% this week</Tile>
           <span className="reading text-[15px] text-ink">{fmt(hero.price, currency, { compact: true })}</span>
-          <Button variant="primary" size="sm" onClick={() => go({ name: 'pdp', id: hero.id })}>Configure</Button>
+          <Button variant="primary" size="sm" onClick={() => go({ name: 'product', id: hero.id })}>Configure</Button>
         </div>
       </div>
     </div>
@@ -119,15 +121,15 @@ export function Home() {
               We watch what is taking off, check the specs and the price against the maker and the big Australian retailers, and ship what is worth it from Sydney or straight from the maker. Every product is checked against your phone, your home and your plug before you pay.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button variant="primary" size="lg" onClick={() => go({ name: 'pdp', id: HERO })}>See the MoGo 4 Laser</Button>
+              <Button variant="primary" size="lg" onClick={() => go({ name: 'product', id: HERO })}>See the MoGo 4 Laser</Button>
               <Button variant="secondary" size="lg" onClick={() => setAdvisor(true)}>Ask the Trend Scout</Button>
             </div>
           </div>
           <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-rule pt-5 text-[13.5px] sm:grid-cols-4">
             {[
               ['2 to 4 days', 'Sydney stock, tracked'],
-              ['8 to 12 days', 'Supplier direct, priced lower'],
-              [`${products.length} products`, `Real, sold today, prices checked ${priceCheckedText(PRICE_CHECKED)}`],
+              ['8 to 12 days', 'Supplier direct from China, priced lower'],
+              [`${products.length} products`, `Real, sold today, prices checked ${priceCheckedText(LATEST_CHECK)}`],
               ['30 days', 'Returns on both routes'],
             ].map(([v, l]) => (
               <div key={l}>
@@ -157,7 +159,7 @@ export function Home() {
           {nav.map((s) => {
             const f = byId(s.featured)
             return (
-              <button key={s.id} type="button" onClick={() => go({ name: 'pdp', id: f.id })} className="flex min-w-[150px] items-center gap-3 bg-paper px-4 py-3 text-left hover:bg-paper-2">
+              <button key={s.id} type="button" onClick={() => go(navTarget(s.label))} className="flex min-w-[150px] items-center gap-3 bg-paper px-4 py-3 text-left hover:bg-paper-2">
                 <div className="h-10 w-12 shrink-0"><ProductImage product={f} /></div>
                 <div className="min-w-0">
                   <div className="text-[14px] text-ink">{s.label}</div>
@@ -193,7 +195,7 @@ export function Home() {
           ['Movie night under $2,000', 'Projector, screen and charger, checked as a set and shipped together.', HERO],
           ['How we choose what to list', 'Velocity gets a product onto the list. Verified specs, a checked price and a works-with record keep it there.', 'omnilux-contour-face'],
         ].map(([t, s, id]) => (
-          <button key={t} type="button" onClick={() => go({ name: 'pdp', id })} className="flex gap-4 bg-paper p-5 text-left hover:bg-paper-2">
+          <button key={t} type="button" onClick={() => go({ name: 'product', id })} className="flex gap-4 bg-paper p-5 text-left hover:bg-paper-2">
             <div className="min-w-0 flex-1">
               <div className="text-[18px] font-medium leading-tight text-ink">{t}</div>
               <p className="mt-1.5 text-[13.5px] text-ink-2">{s}</p>
@@ -202,7 +204,7 @@ export function Home() {
           </button>
         ))}
       </section>
-      <p className="mt-6 text-[12px] text-ink-3">{products.length} real products. Prices are AUD including GST, checked {priceCheckedText(PRICE_CHECKED)} at the sources listed on each product page, shown in {currency}; shipping is estimated in the cart. Trend figures are sample data until the trend worker runs.</p>
+      <p className="mt-6 text-[12px] text-ink-3">{products.length} real products. Prices are AUD including GST, checked {priceCheckedText(PRICE_CHECKED)} to {priceCheckedText(LATEST_CHECK)} at the sources listed on each product page, shown in {currency}; shipping is estimated in the cart. Trend figures are sample data until the trend worker runs.</p>
     </div>
   )
 }

@@ -1,17 +1,19 @@
 {
   "name": "nexus-marketplace",
   "version": "1.0.0",
-  "description": "NEXUS: a trend-tech dropshipping storefront prototype with a real 21-product catalogue, works-with-your-setup checker and Trend Scout.",
+  "description": "NEXUS: a trend-tech dropshipping storefront prototype with a verified 64-product catalogue shipped worldwide, collection, product, compare, setup, checkout, account, order and guide pages, a works-with-your-setup checker and the Trend Scout.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc -p tsconfig.json",
     "preview": "vite preview",
     "photos": "node scripts/embed-photos.mjs",
     "fragment": "node scripts/fragment.mjs",
-    "publish:fragment": "npm run build && npm run fragment"
+    "publish:fragment": "npm run build && npm run fragment",
+    "test:watch": "vitest",
+    "research:merge": "node scripts/merge-research.mjs"
   },
   "keywords": [],
   "author": "",
@@ -29,14 +31,17 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/react": "^16.3.3",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@types/three": "^0.169.0",
     "@vitejs/plugin-react": "^4.7.0",
+    "jsdom": "^25.0.1",
+    "sharp": "^0.33.5",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "vite": "^5.4.21",
     "vite-plugin-singlefile": "^2.3.3",
-    "sharp": "^0.33.5"
+    "vitest": "^2.1.9"
   }
 }

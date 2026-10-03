@@ -1,15 +1,16 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check } from 'lucide-react'
-import { byId, gear, priceCheckedText, Product, products } from '../lib/data'
+import { byId, priceCheckedText, Product, products } from '../lib/data'
 import { fmt } from '../lib/currency'
-import { defaultSelection, priceFor, useStore } from '../lib/store'
+import { defaultSelection, priceFor, useSetup, useStore, useZone } from '../lib/store'
 import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
 import { isLightSwatch, ProductImage } from './ProductVisual'
 import { ProductCard, Sparkline } from './ProductCard'
 import { Button, Chip, Row, Stars, StockDot, Toggle } from './ui'
 import { PARTS, CanvasMode } from '../lib/parts'
 import { cn } from '../lib/cn'
+import { etaText, originLabel, originShort } from '../lib/shipping'
 
 const ProductCanvas = lazy(() => import('./ProductCanvas').then((m) => ({ default: m.ProductCanvas })))
 
@@ -36,21 +37,23 @@ export function ProductPage({ product }: { product: Product }) {
   const currency = useStore((s) => s.currency)
   const add = useStore((s) => s.add)
   const go = useStore((s) => s.go)
+  const gear = useStore((s) => s.gear)
   const gearOn = useStore((s) => s.gearOn)
+  const owned = useSetup()
   const toggleGear = useStore((s) => s.toggleGear)
   const cart = useStore((s) => s.cart)
   const setAdvisor = useStore((s) => s.setAdvisor)
 
+  const zone = useZone()
   const variant = product.variants.find((v) => v.id === variantId)!
   const price = priceFor(product, selection, variantId)
   const facts = useMemo(() => resolveFacts(product, selection), [product, selection])
 
   // Live check: this configuration vs the shopper's setup + what is already in the cart.
   const compat: CompatResult = useMemo(() => {
-    const owned = gear.filter((g) => gearOn[g.id]).map((g) => ({ id: g.id, name: g.name, facts: g.facts }))
     const inCart = cart.filter((l) => l.productId !== product.id).map((l) => ({ id: l.key, name: byId(l.productId).name, facts: resolveFacts(byId(l.productId), l.selection) }))
     return checkBuild({ name: product.name, facts, product }, [...owned, ...inCart])
-  }, [facts, gearOn, cart, product])
+  }, [facts, owned, cart, product])
 
   const applyFix = (fix: NonNullable<CompatResult['issues'][number]['fix']>) => {
     if (fix.kind === 'add-sku' && fix.sku) add(byId(fix.sku), byId(fix.sku).variants[0].id)
@@ -229,10 +232,10 @@ export function ProductPage({ product }: { product: Product }) {
 
                 <div className="flex items-center justify-between py-3 text-[13px]">
                   <StockDot stock={product.stock} count={product.stockCount} />
-                  <span className="text-ink-2">{local ? 'Sydney stock' : 'Supplier direct'}, {product.fulfil.eta}</span>
+                  <span className="text-ink-2">{originLabel(product.fulfil)}, {etaText(product.fulfil.origin, zone)}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-rule py-2 text-[11.5px] text-ink-3">
-                  <span>Price checked {priceCheckedText(product.priceCheckedAt)} at {product.sources[0]}{product.compareAt ? `, RRP ${fmt(product.compareAt, currency, { compact: true })}` : ''}</span>
+                  <span>Price checked {priceCheckedText(product.priceCheckedAt)} at {product.sources[0]}{product.priceSource ? `, from ${new Intl.NumberFormat('en', { style: 'currency', currency: product.priceSource.currency, currencyDisplay: 'narrowSymbol' }).format(product.priceSource.amount)} at ${product.priceSource.at}` : ''}{product.compareAt ? `, RRP ${fmt(product.compareAt, currency, { compact: true })}` : ''}</span>
                   <span>AUD incl. GST</span>
                 </div>
               </div>
@@ -312,7 +315,7 @@ export function ProductPage({ product }: { product: Product }) {
                       </ul>
                     </div>
                     <div className="grid grid-cols-3 divide-x divide-rule border-t border-rule text-center">
-                      {[[local ? '2 to 4 d' : '8 to 12 d', local ? 'Sydney stock' : 'supplier direct'], ['30 d', 'returns'], ['2 yr', 'warranty']].map(([v, l]) => (
+                      {[[etaText(product.fulfil.origin, zone).replace(' days', ' d'), originShort(product.fulfil).toLowerCase()], ['30 d', 'returns'], ['2 yr', 'warranty']].map(([v, l]) => (
                         <div key={l} className="py-3"><div className="reading text-[14px] text-ink">{v}</div><div className="text-[11.5px] text-ink-3">{l}</div></div>
                       ))}
                     </div>
@@ -332,6 +335,7 @@ export function ProductPage({ product }: { product: Product }) {
                       {products.filter((p) => p.id !== product.id && p.category === product.category).map((p) => <option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}
                     </select>
                   </label>
+                  {compareWith && <button type="button" onClick={() => go({ name: 'compare', ids: [product.id, compareWith] })} className="text-ink-2 underline underline-offset-4 hover:text-ink">Open the compare page</button>}
                 </div>
                 <div className="overflow-x-auto border border-rule">
                   <table className="w-full min-w-[520px] border-collapse text-[13.5px]">
@@ -374,7 +378,7 @@ export function ProductPage({ product }: { product: Product }) {
                   <CompatPanel compat={compat} onFix={applyFix} />
                 </div>
                 <div className="md:col-span-2">
-                  <div className="mb-2 text-[13px] text-ink-2">My setup, checked live</div>
+                  <div className="mb-2 flex items-center justify-between text-[13px] text-ink-2"><span>My setup, checked live</span><button type="button" onClick={() => go({ name: 'setup' })} className="underline underline-offset-4 hover:text-ink">Edit</button></div>
                   <ul className="border border-rule bg-sheet">
                     {gear.map((g) => (
                       <li key={g.id} className="flex items-center justify-between gap-3 border-b border-rule px-4 py-2.5 last:border-b-0">

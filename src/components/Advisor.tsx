@@ -6,13 +6,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUp, Check, X } from 'lucide-react'
-import { byId, gear, Product, products } from '../lib/data'
+import { byId, Product, productById, products } from '../lib/data'
 import { fmt } from '../lib/currency'
-import { useStore } from '../lib/store'
+import { useSetup, useStore, useZone } from '../lib/store'
 import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
 import { ProductImage } from './ProductVisual'
 import { Sparkline } from './ProductCard'
 import { Button, Tile } from './ui'
+import { etaText } from '../lib/shipping'
 import { cn } from '../lib/cn'
 
 interface Role { role: string; why: string; options: string[]; optional?: boolean }
@@ -26,14 +27,13 @@ const PROMPTS = [
   'Does the MoGo 4 Laser work with my setup?',
 ]
 
-function plan(prompt: string, setupOn: Record<string, boolean>): Omit<Msg, 'id' | 'from'> {
+function plan(prompt: string, owned: { id: string; name: string; facts: Product['facts'] }[]): Omit<Msg, 'id' | 'from'> {
   const p = prompt.toLowerCase()
   const m = p.match(/\$\s?(\d[\d,]*)/)
   const budget = m ? Number(m[1].replace(/,/g, '')) : 2000
 
   const named = products.find((x) => p.includes(x.name.toLowerCase()) || p.includes(`${x.brand} ${x.name}`.toLowerCase()))
   if (named && /(work|compatible|setup|phone|home|plug|switch)/.test(p)) {
-    const owned = gear.filter((g) => setupOn[g.id]).map((g) => ({ id: g.id, name: g.name, facts: g.facts }))
     const result = checkBuild({ name: named.name, facts: resolveFacts(named, {}), product: named }, owned)
     const text =
       result.status === 'ok'
@@ -107,10 +107,11 @@ function solve(kit: Kit, swaps: Record<string, number>) {
 
 function KitCard({ kit }: { kit: Kit }) {
   const currency = useStore((s) => s.currency)
+  const zone = useZone()
   const add = useStore((s) => s.add)
   const go = useStore((s) => s.go)
   const toast = useStore((s) => s.toast)
-  const gearOn = useStore((s) => s.gearOn)
+  const owned = useSetup()
   const [swaps, setSwaps] = useState<Record<string, number>>({})
   const [shown, setShown] = useState(0)
   const [added, setAdded] = useState(false)
@@ -123,12 +124,11 @@ function KitCard({ kit }: { kit: Kit }) {
   }, [shown, picks.length])
 
   const compat = useMemo(() => {
-    const owned = gear.filter((g) => gearOn[g.id]).map((g) => ({ id: g.id, name: g.name, facts: g.facts }))
     const items = picks.map((p) => ({ id: p.product.id, name: p.product.name, facts: resolveFacts(p.product, {}), product: p.product }))
     const results = items.map((s) => checkBuild({ name: s.name, facts: s.facts, product: s.product }, [...owned, ...items.filter((x) => x !== s)]))
     const issues = results.flatMap((r) => r.issues)
     return { status: issues.some((i) => i.severity === 'bad') ? 'bad' : issues.length ? 'warn' : 'ok', issues, checked: owned.length + items.length }
-  }, [picks, gearOn])
+  }, [picks, owned])
 
   const pct = Math.min(100, (total / kit.budget) * 100)
   const over = total > kit.budget
@@ -153,9 +153,9 @@ function KitCard({ kit }: { kit: Kit }) {
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline gap-2">
                   <span className="text-[11.5px] text-ink-3">{role.role}</span>
-                  <button type="button" onClick={() => go({ name: 'pdp', id: product.id })} className="truncate text-[13.5px] font-medium text-ink hover:underline underline-offset-4">{product.brand} {product.name}</button>
+                  <button type="button" onClick={() => go({ name: 'product', id: product.id })} className="truncate text-[13.5px] font-medium text-ink hover:underline underline-offset-4">{product.brand} {product.name}</button>
                 </div>
-                <div className="truncate text-[12px] text-ink-2">{role.why}, {product.fulfil.eta}</div>
+                <div className="truncate text-[12px] text-ink-2">{role.why}, {etaText(product.fulfil.origin, zone)}</div>
               </div>
               <div className="shrink-0 text-right">
                 <div className="reading text-[12.5px] text-ink">{fmt(product.price, currency, { compact: true })}</div>
@@ -187,6 +187,7 @@ function KitCard({ kit }: { kit: Kit }) {
 function TrendCard({ ids }: { ids: string[] }) {
   const go = useStore((s) => s.go)
   const currency = useStore((s) => s.currency)
+  const zone = useZone()
   return (
     <ul className="mt-3 divide-y divide-rule border border-rule bg-sheet">
       {ids.map((id, i) => {
@@ -196,8 +197,8 @@ function TrendCard({ ids }: { ids: string[] }) {
             <span className="reading w-4 text-[11px] text-ink-3">{i + 1}</span>
             <div className="h-10 w-12 shrink-0 bg-paper"><ProductImage product={p} /></div>
             <div className="min-w-0 flex-1">
-              <button type="button" onClick={() => go({ name: 'pdp', id })} className="block truncate text-[13.5px] font-medium text-ink hover:underline underline-offset-4">{p.brand} {p.name}</button>
-              <div className="truncate text-[12px] text-ink-3">{p.category}, {fmt(p.price, currency, { compact: true })}, {p.fulfil.eta}</div>
+              <button type="button" onClick={() => go({ name: 'product', id })} className="block truncate text-[13.5px] font-medium text-ink hover:underline underline-offset-4">{p.brand} {p.name}</button>
+              <div className="truncate text-[12px] text-ink-3">{p.category}, {fmt(p.price, currency, { compact: true })}, {etaText(p.fulfil.origin, zone)}</div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <Sparkline series={p.trend.series} />
@@ -214,7 +215,7 @@ function CheckCard({ product, result }: { product: Product; result: CompatResult
   const go = useStore((s) => s.go)
   return (
     <div className="mt-3 border border-rule bg-sheet">
-      <button type="button" onClick={() => go({ name: 'pdp', id: product.id })} className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-paper">
+      <button type="button" onClick={() => go({ name: 'product', id: product.id })} className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-paper">
         <div className="h-10 w-12 shrink-0 bg-paper"><ProductImage product={product} /></div>
         <div className="min-w-0 flex-1">
           <div className="truncate text-[13.5px] font-medium text-ink">{product.brand} {product.name}</div>
@@ -238,8 +239,8 @@ function CheckCard({ product, result }: { product: Product; result: CompatResult
 export function Advisor() {
   const open = useStore((s) => s.advisorOpen)
   const close = () => useStore.getState().setAdvisor(false)
-  const view = useStore((s) => s.view)
-  const gearOn = useStore((s) => s.gearOn)
+  const route = useStore((s) => s.route)
+  const owned = useSetup()
   const [msgs, setMsgs] = useState<Msg[]>([])
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
@@ -261,13 +262,14 @@ export function Advisor() {
     setInput('')
     setThinking(true)
     window.setTimeout(() => {
-      const r = plan(text, gearOn)
+      const r = plan(text, owned)
       setMsgs((m) => [...m, { id: ++seq.current, from: 'ai', ...r }])
       setThinking(false)
     }, 900)
   }
 
-  const context = view.name === 'pdp' ? `Viewing ${byId(view.id).brand} ${byId(view.id).name}` : 'Home'
+  const viewing = route.name === 'product' ? productById(route.id) : undefined
+  const context = viewing ? `Viewing ${viewing.brand} ${viewing.name}` : 'Home'
 
   return (
     <AnimatePresence>

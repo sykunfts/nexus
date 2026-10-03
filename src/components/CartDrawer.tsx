@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, Minus, Plus, X } from 'lucide-react'
-import { byId, gear } from '../lib/data'
-import { CURRENCIES, Currency, fmt, shippingCost, taxOf } from '../lib/currency'
-import { cartSubtotal, useStore } from '../lib/store'
+import { Minus, Plus, X } from 'lucide-react'
+import { productById } from '../lib/data'
+import { CURRENCIES, Currency, fmt } from '../lib/currency'
+import { canExpress, etaText, originShort, parcelCost, taxFor, zoneOf, ZONE_LABEL } from '../lib/shipping'
+import { cartSubtotal, useDeliveryCountry, useSetup, useStore } from '../lib/store'
 import { checkBuild, resolveFacts } from '../lib/compat'
 import { ProductImage } from './ProductVisual'
 import { Button } from './ui'
@@ -48,9 +49,8 @@ export function CartDrawer() {
   const setCurrency = useStore((s) => s.setCurrency)
   const shipMethod = useStore((s) => s.shipMethod)
   const setShipMethod = useStore((s) => s.setShipMethod)
-  const gearOn = useStore((s) => s.gearOn)
-  const toast = useStore((s) => s.toast)
-  const [placing, setPlacing] = useState<null | 'express' | 'oneclick' | 'done'>(null)
+  const owned = useSetup()
+  const go = useStore((s) => s.go)
   const trap = useFocusTrap(open)
 
   useEffect(() => {
@@ -63,33 +63,31 @@ export function CartDrawer() {
 
   const subtotal = cartSubtotal(cart)
   const info = CURRENCIES[currency]
-  const shipping = cart.length ? shippingCost(subtotal, shipMethod, info.region) : 0
-  const tax = taxOf(subtotal + shipping, currency)
+  const country = useDeliveryCountry()
+  const zone = zoneOf(country)
+  /* A line whose product left the catalogue is skipped rather than crashing the drawer; the store drops such lines on hydration too. */
+  const items = useMemo(() => cart.flatMap((l) => { const product = productById(l.productId); return product ? [{ line: l, product }] : [] }), [cart])
+  // one parcel per origin; express only where the lane offers it
+  const origins = [...new Set(items.map((i) => i.product.fulfil.origin))]
+  const shipping = origins.reduce((sum, o) => {
+    const parcelSubtotal = items.filter((i) => i.product.fulfil.origin === o).reduce((n, i) => n + i.line.qty * i.line.unitPrice, 0)
+    const method = shipMethod === 'express' && canExpress(o, zone) ? 'express' : 'standard'
+    return sum + parcelCost(o, zone, method, parcelSubtotal)
+  }, 0)
+  const tax = taxFor(country, subtotal + shipping)
   const total = subtotal + shipping + (tax.included ? 0 : tax.amount)
-  const parcels = new Set(cart.map((l) => byId(l.productId).fulfil.route)).size
+  const parcels = origins.length
 
   const compat = useMemo(() => {
-    if (!cart.length) return null
-    const owned = gear.filter((g) => gearOn[g.id]).map((g) => ({ id: g.id, name: g.name, facts: g.facts }))
-    const lines = cart.map((l) => ({ id: l.key, name: byId(l.productId).name, facts: resolveFacts(byId(l.productId), l.selection), product: byId(l.productId) }))
+    if (!items.length) return null
+    const lines = items.map(({ line, product }) => ({ id: line.key, name: product.name, facts: resolveFacts(product, line.selection), product }))
     const results = lines.map((subject) => checkBuild({ name: subject.name, facts: subject.facts, product: subject.product }, [...owned, ...lines.filter((x) => x.id !== subject.id)]))
     const issues = results.flatMap((r) => r.issues)
     const status = issues.some((i) => i.severity === 'bad') ? 'bad' : issues.length ? 'warn' : 'ok'
-    return { status, issues, count: cart.length + owned.length } as const
-  }, [cart, gearOn])
+    return { status, issues, count: items.length + owned.length } as const
+  }, [items, owned])
 
-  const placeOrder = (kind: 'express' | 'oneclick') => {
-    setPlacing(kind)
-    window.setTimeout(() => {
-      setPlacing('done')
-      window.setTimeout(() => {
-        useStore.setState({ cart: [] })
-        setPlacing(null)
-        close()
-        toast({ title: 'Order placed, NX-48213', body: 'Local items ship today; supplier items go to the partner. Undo within 5 seconds to cancel.', action: { label: 'Undo', onClick: () => toast({ title: 'Order cancelled', body: 'Nothing was charged.' }) } })
-      }, 900)
-    }, 1100)
-  }
+  const checkout = () => { close(); go({ name: 'checkout' }) }
 
   return (
     <AnimatePresence>
@@ -111,7 +109,7 @@ export function CartDrawer() {
             <div className="flex items-center justify-between border-b border-ink px-5 py-3.5">
               <div>
                 <h2 id="cart-title" className="text-[18px] font-medium text-ink">Cart</h2>
-                <div className="text-[12.5px] text-ink-3">{cart.reduce((n, l) => n + l.qty, 0)} items, held for 15 minutes</div>
+                <div className="text-[12.5px] text-ink-3">{items.reduce((n, i) => n + i.line.qty, 0)} items, held for 15 minutes</div>
               </div>
               <button type="button" onClick={close} aria-label="Close cart" className="p-2 text-ink"><X size={18} /></button>
             </div>
@@ -129,7 +127,7 @@ export function CartDrawer() {
             )}
 
             <div className="panel-scroll flex-1 overflow-y-auto">
-              {cart.length === 0 ? (
+              {items.length === 0 ? (
                 <div className="flex h-full flex-col items-start justify-center gap-3 px-6 py-16">
                   <div className="display-md text-[26px] text-ink">Nothing in the cart yet.</div>
                   <p className="max-w-[30ch] text-[14px] text-ink-2">Add something, or ask the Trend Scout what is taking off this week.</p>
@@ -138,8 +136,7 @@ export function CartDrawer() {
               ) : (
                 <ul>
                   <AnimatePresence initial={false}>
-                    {cart.map((l) => {
-                      const p = byId(l.productId)
+                    {items.map(({ line: l, product: p }) => {
                       const v = p.variants.find((x) => x.id === l.variantId) ?? p.variants[0]
                       const sel = (p.options ?? []).map((g) => g.choices.find((c) => c.id === l.selection[g.id])?.label).filter(Boolean)
                       const hot = lastAdded === l.key
@@ -159,7 +156,7 @@ export function CartDrawer() {
                               <div className="min-w-0">
                                 <div className="truncate text-[14px] font-medium text-ink">{p.brand} {p.name}</div>
                                 <div className="truncate text-[12.5px] text-ink-3">{[v.label, ...sel].join(', ')}</div>
-                                <div className={cn('text-[12px]', p.fulfil.route === 'warehouse' ? 'text-pass' : 'text-ink-3')}>{p.fulfil.route === 'warehouse' ? 'Sydney stock' : 'Supplier direct'}, {p.fulfil.eta}</div>
+                                <div className={cn('text-[12px]', p.fulfil.route === 'warehouse' ? 'text-pass' : 'text-ink-3')}>{originShort(p.fulfil)}, {etaText(p.fulfil.origin, zone)}</div>
                               </div>
                               <div className="reading shrink-0 text-[14px] text-ink">{fmt(l.unitPrice * l.qty, currency, { compact: true })}</div>
                             </div>
@@ -180,13 +177,13 @@ export function CartDrawer() {
               )}
             </div>
 
-            {cart.length > 0 && (
+            {items.length > 0 && (
               <div className="border-t border-ink bg-paper px-5 pb-4 pt-3">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex border border-rule-2 bg-sheet" role="radiogroup" aria-label="Shipping method">
                     {(['standard', 'express'] as const).map((m) => (
                       <button key={m} type="button" role="radio" aria-checked={shipMethod === m} onClick={() => setShipMethod(m)} className={cn('px-2.5 py-1 text-[12.5px] transition-colors', shipMethod === m ? 'bg-ink text-paper' : 'text-ink-2 hover:text-ink')}>
-                        {m === 'standard' ? 'Standard, as listed' : 'Express, next day'}
+                        {m === 'standard' ? 'Standard, as listed' : 'Express where offered'}
                       </button>
                     ))}
                   </div>
@@ -201,8 +198,8 @@ export function CartDrawer() {
                 {/* receipt */}
                 <dl className="reading mt-3 text-[12.5px] text-ink-2">
                   <div className="flex justify-between py-0.5"><dt>Subtotal</dt><dd>{fmt(subtotal, currency)}</dd></div>
-                  <div className="flex justify-between py-0.5"><dt>Shipping to {info.region}{parcels > 1 ? `, ${parcels} parcels` : ''}</dt><dd>{shipping === 0 ? 'Free' : fmt(shipping, currency)}</dd></div>
-                  <div className="flex justify-between py-0.5"><dt>{info.taxLabel}</dt><dd>{fmt(tax.amount, currency)}</dd></div>
+                  <div className="flex justify-between py-0.5"><dt>Shipping to {ZONE_LABEL[zone]}{parcels > 1 ? `, ${parcels} parcels` : ''}</dt><dd>{shipping === 0 ? 'Free' : fmt(shipping, currency)}</dd></div>
+                  <div className="flex justify-between py-0.5"><dt>{tax.label}</dt><dd>{fmt(tax.amount, currency)}</dd></div>
                   <div className="mt-1 flex items-baseline justify-between border-t border-ink pt-2 text-ink">
                     <dt className="font-sans text-[14px] font-medium">Total</dt>
                     <dd className="text-[18px]" aria-live="polite">{fmt(total, currency)}</dd>
@@ -210,19 +207,16 @@ export function CartDrawer() {
                 </dl>
 
                 <div className="mt-3 grid grid-cols-3 gap-px bg-rule-2 border border-rule-2">
-                  <button type="button" onClick={() => placeOrder('express')} className="h-10 bg-ink text-[13px] font-medium text-paper">Apple Pay</button>
-                  <button type="button" onClick={() => placeOrder('express')} className="h-10 bg-sheet text-[13px] font-medium text-ink hover:bg-paper">Google Pay</button>
-                  <button type="button" onClick={() => placeOrder('express')} className="h-10 bg-sheet text-[13px] font-medium text-ink hover:bg-paper">Crypto</button>
+                  <button type="button" onClick={checkout} className="h-10 bg-ink text-[13px] font-medium text-paper">Apple Pay</button>
+                  <button type="button" onClick={checkout} className="h-10 bg-sheet text-[13px] font-medium text-ink hover:bg-paper">Google Pay</button>
+                  <button type="button" onClick={checkout} className="h-10 bg-sheet text-[13px] font-medium text-ink hover:bg-paper">Crypto</button>
                 </div>
 
-                <button type="button" onClick={() => placeOrder('oneclick')} disabled={placing !== null} className="mt-2 flex h-12 w-full items-center justify-between bg-ink px-4 text-paper hover:bg-[#1f2730] disabled:opacity-80">
-                  <span className="flex items-center gap-2 text-[14px] font-medium">
-                    {placing === 'done' && <Check size={16} strokeWidth={2.5} />}
-                    {placing === null ? 'Buy now' : placing === 'done' ? 'Order placed' : 'Authorising'}
-                  </span>
-                  <span className="text-[12px] opacity-80">Home address, Visa 4242</span>
+                <button type="button" onClick={checkout} className="mt-2 flex h-12 w-full items-center justify-between bg-ink px-4 text-paper hover:bg-[#1f2730]">
+                  <span className="text-[15px] font-medium">Buy now</span>
+                  <span className="text-[12px] text-paper/70">Checks out in one page</span>
                 </button>
-                <button type="button" className="mt-2 h-10 w-full border border-ink text-[13.5px] font-medium text-ink hover:bg-ink hover:text-paper">Full checkout</button>
+                <button type="button" onClick={checkout} className="mt-2 h-10 w-full border border-ink text-[13.5px] font-medium text-ink hover:bg-ink hover:text-paper">Full checkout</button>
                 <p className="mt-2 text-[11.5px] text-ink-3">Prices held in {currency} for this session. 30-day returns on both routes.</p>
               </div>
             )}

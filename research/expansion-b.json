@@ -1,0 +1,559 @@
+[
+  {
+    "id": "ultrahuman-ring-air",
+    "name": "Ring AIR",
+    "brand": "Ultrahuman",
+    "category": "Wearables",
+    "tagline": "A 2.4 mm titanium smart ring with 4–6 days of battery, 100 m water resistance and no subscription.",
+    "priceSource": { "amount": 349, "currency": "USD", "at": "ultrahuman.com", "url": "https://www.ultrahuman.com/global/ring/buy/" },
+    "rating": null,
+    "origin": "US",
+    "market": "global",
+    "visual": "ring",
+    "hue": 205,
+    "variants": [
+      { "id": "raw-titanium", "label": "Raw Titanium", "swatch": "#8f9499" },
+      { "id": "aster-black", "label": "Aster Black", "swatch": "#1c1c1e" },
+      { "id": "matte-grey", "label": "Matte Grey", "swatch": "#6b6e73" },
+      { "id": "bionic-gold", "label": "Bionic Gold", "swatch": "#c9a75a" },
+      { "id": "space-silver", "label": "Space Silver", "swatch": "#c7ccd1" }
+    ],
+    "options": [
+      { "id": "size", "label": "Ring size", "choices": [
+        { "id": "5", "label": "5", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "6", "label": "6", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "7", "label": "7", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "8", "label": "8", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "9", "label": "9", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "10", "label": "10", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "11", "label": "11", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "12", "label": "12", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "13", "label": "13", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "14", "label": "14", "sub": "US", "delta": 0, "facts": {} }
+      ] }
+    ],
+    "facts": { "app": ["ios", "android"] },
+    "inBox": ["Ring AIR", "Standard Ring Charger", "USB-C to USB-C cable (1 m)"],
+    "specs": [
+      { "group": "Design", "rows": [
+        { "label": "Weight", "value": "2.4–3.6 g (varies with size)", "n": 2.4, "better": "low" },
+        { "label": "Thickness", "value": "2.4 mm", "n": 2.4, "better": "low" },
+        { "label": "Build", "value": "Titanium with PVD coating" },
+        { "label": "Sizes", "value": "5–14, no half sizes" },
+        { "label": "Water resistance", "value": "100 m (328 ft) for up to 12 hours", "n": 100, "better": "high" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "4–6 days", "n": 4, "better": "high" },
+        { "label": "Charging", "value": "180 min from 0 to 100% on the included charger", "n": 180, "better": "low" }
+      ] },
+      { "group": "Tracking", "rows": [
+        { "label": "Sensors", "value": "Temperature, PPG, 6-axis IMU" },
+        { "label": "Subscription", "value": "None; no recurring fees to access your data" },
+        { "label": "App", "value": "Ultrahuman app, iOS 15 or later and Android 6 or later" }
+      ] }
+    ],
+    "sources": ["ultrahuman.com"],
+    "notes": "Brand is headquartered in India, which is not an allowed origin value; US recorded as the closest match for the store priced. A free sizing kit is available on request. No finish surcharge shown. Warranty and a visible rating were not on the pages read.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "samsung-galaxy-ring",
+    "name": "Galaxy Ring",
+    "brand": "Samsung",
+    "category": "Wearables",
+    "tagline": "A titanium smart ring with up to 7 days of battery, 10ATM and IP68 ratings and a charging case for Galaxy phones.",
+    "priceSource": { "amount": 399.99, "currency": "USD", "at": "samsung.com", "url": "https://www.samsung.com/us/rings/galaxy-ring/buy/" },
+    "rating": { "value": 3.9, "count": 2243, "at": "samsung.com" },
+    "origin": "US",
+    "market": "US",
+    "visual": "ring",
+    "hue": 42,
+    "variants": [
+      { "id": "titanium-black", "label": "Titanium Black", "swatch": "#232326" },
+      { "id": "titanium-silver", "label": "Titanium Silver", "swatch": "#c9ccd1" },
+      { "id": "titanium-gold", "label": "Titanium Gold", "swatch": "#d4b276" }
+    ],
+    "options": [
+      { "id": "size", "label": "Ring size", "choices": [
+        { "id": "5", "label": "5", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "6", "label": "6", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "7", "label": "7", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "8", "label": "8", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "9", "label": "9", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "10", "label": "10", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "11", "label": "11", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "12", "label": "12", "sub": "US", "delta": 0, "facts": {} },
+        { "id": "13", "label": "13", "sub": "US", "delta": 0, "facts": {} }
+      ] }
+    ],
+    "facts": { "app": ["android"] },
+    "specs": [
+      { "group": "Design", "rows": [
+        { "label": "Build", "value": "Titanium" },
+        { "label": "Sizes", "value": "9 sizes, 5–13" },
+        { "label": "Water resistance", "value": "10ATM (100 m for up to 10 min) and IP68", "n": 100, "better": "high" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "Up to 7 days (sizes 12 and 13); up to 6 days for smaller sizes", "n": 7, "better": "high" },
+        { "label": "Charging", "value": "Charging case; up to 14 days between outlet charges", "n": 14, "better": "high" }
+      ] },
+      { "group": "Tracking", "rows": [
+        { "label": "Sensors", "value": "Accelerometer, optical bio-signal sensor, skin temperature sensor" },
+        { "label": "App", "value": "Samsung Health; needs a compatible Samsung Galaxy phone and Samsung account" }
+      ] }
+    ],
+    "sources": ["samsung.com"],
+    "notes": "Brand is based in South Korea, which is not an allowed origin value; US recorded for the store priced. At check Titanium Black and Titanium Gold were out of stock on the US store. The buy page's size picker showed a 14 and no 12, which looks like a stock-listing quirk; the overview page states 9 sizes, 5–13. Weight, thickness, charging case capacity and subscription terms were not on the pages read. Overview page shows 'From $299.99 before trade-in'.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "whoop-5-0",
+    "name": "5.0",
+    "brand": "WHOOP",
+    "category": "Wearables",
+    "tagline": "A screenless strap with 14+ days of battery, sold through an annual membership that includes the hardware.",
+    "priceSource": { "amount": 199, "currency": "USD", "at": "whoop.com", "url": "https://www.whoop.com/us/en/membership/" },
+    "rating": null,
+    "origin": "US",
+    "market": "US",
+    "visual": "strip",
+    "hue": 0,
+    "variants": [
+      { "id": "jet-black", "label": "Jet Black (CoreKnit band)", "swatch": "#121214" }
+    ],
+    "options": [
+      { "id": "membership", "label": "Membership (per year)", "choices": [
+        { "id": "one", "label": "WHOOP One", "sub": "$199/yr: WHOOP 5.0, wired Basic Charger, CoreKnit Jet Black band", "delta": 0, "facts": {} },
+        { "id": "peak", "label": "WHOOP Peak", "sub": "$239/yr: WHOOP 5.0, Wireless PowerPack, SuperKnit band", "delta": 40, "facts": {} },
+        { "id": "life", "label": "WHOOP Life", "sub": "$359/yr: WHOOP MG (ECG, blood pressure insights), Wireless PowerPack, SuperKnit Luxe band", "delta": 160, "facts": {} }
+      ] }
+    ],
+    "facts": {},
+    "inBox": ["WHOOP 5.0", "Basic Charger (wired)", "CoreKnit Jet Black band"],
+    "specs": [
+      { "group": "Membership", "rows": [
+        { "label": "Subscription", "value": "Membership required: One $199/yr, Peak $239/yr, Life $359/yr; hardware included", "n": 199, "better": "low" },
+        { "label": "Warranty", "value": "Lifetime warranty and 24/7 support included with membership" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "14+ days", "n": 14, "better": "high" },
+        { "label": "Charging", "value": "Wired Basic Charger (One) or Wireless PowerPack (Peak and Life)" }
+      ] },
+      { "group": "Tracking", "rows": [
+        { "label": "Sensors", "value": "Captures data points every second (maker's statement)" },
+        { "label": "Metrics", "value": "Sleep, strain, recovery and health insights; MG adds ECG, daily blood pressure readings and an AFib Heart Screener" }
+      ] }
+    ],
+    "sources": ["whoop.com"],
+    "notes": "The listed price is the annual WHOOP One membership, which ships the 5.0 hardware; there is no standalone device price. The Life tier ships the WHOOP MG, a different device. Weight, water rating, app platforms and monthly billing options were not on the pages read. Medical claims (ECG, blood pressure, AFib) are the maker's.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "garmin-index-sleep-monitor",
+    "name": "Index Sleep Monitor",
+    "brand": "Garmin",
+    "category": "Wearables",
+    "tagline": "A screenless upper-arm sleep band with up to 7 nights of battery, Pulse Ox and skin temperature tracking.",
+    "priceSource": { "amount": 169.99, "currency": "USD", "at": "bestbuy.com", "url": "https://www.bestbuy.com/product/garmin-index-sleep-monitor-size-l-xl-black/JXF9YF5FQQ" },
+    "rating": null,
+    "origin": "US",
+    "market": "US",
+    "visual": "strip",
+    "hue": 150,
+    "variants": [
+      { "id": "black", "label": "Black", "swatch": "#1a1a1a" }
+    ],
+    "options": [
+      { "id": "size", "label": "Band size", "choices": [
+        { "id": "s-m", "label": "S-M", "sub": "", "delta": 0, "facts": {} },
+        { "id": "l-xl", "label": "L-XL", "sub": "", "delta": 0, "facts": {} }
+      ] }
+    ],
+    "facts": { "app": ["ios", "android"] },
+    "specs": [
+      { "group": "Design", "rows": [
+        { "label": "Build", "value": "Upper-arm band; machine washable on a gentle cycle with the module removed" },
+        { "label": "Sizes", "value": "S-M and L-XL" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "Up to 7 nights with continuous Pulse Ox", "n": 7, "better": "high" }
+      ] },
+      { "group": "Tracking", "rows": [
+        { "label": "Metrics", "value": "Sleep stages, sleep score 0–100, HRV status, Pulse Ox, respiration, skin temperature, stress, Body Battery, women's health" },
+        { "label": "App", "value": "Garmin Connect, iPhone and Android; pairs with Garmin watches for combined metrics" },
+        { "label": "Clearance", "value": "Not a medical device (maker's statement)" }
+      ] }
+    ],
+    "sources": ["bestbuy.com", "garmin.com"],
+    "notes": "Garmin's press release lists the suggested retail price at $169.99, matching Best Buy. The Best Buy SKU checked is L-XL Black (010-03024-00); its page shows a $169.99–$173.49 range across sizes and lists 'Protective qualities: none' with no water rating. Weight and in-box contents were not on the pages read. Best Buy shows 96% would recommend but no review count, so no rating is recorded.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "even-realities-g2",
+    "name": "G2",
+    "brand": "Even Realities",
+    "category": "Wearables",
+    "tagline": "Prescription-ready display glasses with a 1200-nit green micro LED, IP65 rating and about 2 days of battery.",
+    "priceSource": { "amount": 599, "currency": "USD", "at": "evenrealities.com", "url": "https://www.evenrealities.com/products/g2-a" },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "glasses",
+    "hue": 140,
+    "variants": [
+      { "id": "grey1", "label": "Grey1", "swatch": "#6f7378" },
+      { "id": "brown1", "label": "Brown1", "swatch": "#6b4f3a" },
+      { "id": "green1", "label": "Green1", "swatch": "#3f5a4a" }
+    ],
+    "options": [
+      { "id": "lens", "label": "Lenses", "choices": [
+        { "id": "plano", "label": "Without prescription", "sub": "No vision correction", "delta": 0, "facts": {} },
+        { "id": "single-vision", "label": "Single vision", "sub": "Distance correction, from $159; custom-made and non-returnable", "delta": 159, "facts": {} }
+      ] }
+    ],
+    "facts": {},
+    "inBox": ["Even G2 A glasses with chosen lenses", "Pouch"],
+    "specs": [
+      { "group": "Optics", "rows": [
+        { "label": "Display", "value": "Micro LED, 640 × 350, green, 1200 nits, 27.5° field of view, 98% passthrough", "n": 1200, "better": "high" },
+        { "label": "Camera", "value": "None listed on the maker's spec page" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "192 mAh (0.744 Wh); about 2 days of regular use", "n": 2, "better": "high" },
+        { "label": "Charging", "value": "Case 2000 mAh (7.4 Wh), 7 recharges of the glasses", "n": 7, "better": "high" }
+      ] },
+      { "group": "Build", "rows": [
+        { "label": "Build", "value": "Magnesium alloy frame, titanium alloy temples" },
+        { "label": "Water resistance", "value": "IP65" },
+        { "label": "Wireless", "value": "BLE 5.4" },
+        { "label": "Microphones", "value": "Four microphones" },
+        { "label": "Sizes", "value": "G2 A (Crown Panto, 48-23) and G2 B frames" }
+      ] }
+    ],
+    "sources": ["evenrealities.com", "support.evenrealities.com"],
+    "notes": "Substitute: the G1 is marked 'no longer available for purchase' on the maker's store, so its successor the G2 is recorded. Only the G2 A frame was priced; the G2 B frame was not checked. Weight, app platforms and a visible rating were not on the pages read. HSA/FSA eligible per the product page.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "xreal-one",
+    "name": "One",
+    "brand": "XREAL",
+    "category": "Wearables",
+    "tagline": "82 g display glasses with a Sony micro-OLED, 1080p per eye at 120 Hz, 50° field of view and an X1 chip for native 3DoF.",
+    "priceSource": { "amount": 399, "currency": "USD", "at": "us.shop.xreal.com", "url": "https://us.shop.xreal.com/products/xreal-one" },
+    "compareAtSource": { "amount": 499, "currency": "USD", "at": "us.shop.xreal.com" },
+    "rating": null,
+    "origin": "CN",
+    "market": "US",
+    "visual": "glasses",
+    "hue": 0,
+    "variants": [
+      { "id": "black", "label": "Black", "swatch": "#1b1b1f" }
+    ],
+    "options": [],
+    "facts": { "provides": [{ "kind": "usb-c", "count": 1 }] },
+    "inBox": ["Glasses", "USB-C to USB-C cable", "Nose pads (S/M/L)", "Cleaning cloth", "Protective case", "User manual"],
+    "specs": [
+      { "group": "Optics", "rows": [
+        { "label": "Display", "value": "Sony 0.68-inch micro-OLED, 1080p per eye (4 million pixels), 120 Hz, 600 nits, 50° field of view", "n": 600, "better": "high" },
+        { "label": "Camera", "value": "None listed on the maker's page" },
+        { "label": "Dimming", "value": "3-mode electrochromic dimming" }
+      ] },
+      { "group": "Build", "rows": [
+        { "label": "Weight", "value": "82 g", "n": 82, "better": "low" },
+        { "label": "Battery", "value": "Powered over the detachable USB-C cable; no battery listed" },
+        { "label": "Speakers", "value": "Sound by Bose" },
+        { "label": "Connectivity", "value": "Detachable USB-C cable; works with XREAL Hub and XREAL Beam Pro" }
+      ] },
+      { "group": "Software", "rows": [
+        { "label": "Platforms", "value": "XREAL X1 chip, native 3DoF, Ultrawide mode up to a 310-inch curved virtual screen, software IPD adjustment" },
+        { "label": "Warranty", "value": "1 year" }
+      ] }
+    ],
+    "sources": ["us.shop.xreal.com"],
+    "notes": "Host-device compatibility (phones, consoles, PCs) and the USB-C DisplayPort requirement are not stated on the page read. IPD range not stated. The page lists 161 reviews without a visible score, so no rating is recorded. Only a black frame is shown.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "meta-ray-ban-display",
+    "name": "Ray-Ban Display",
+    "brand": "Meta",
+    "category": "Wearables",
+    "tagline": "AI glasses with an in-lens display, a 12 MP camera, up to 6 hours of mixed use and a Neural Band wrist controller.",
+    "priceSource": { "amount": 799, "currency": "USD", "at": "bestbuy.com", "url": "https://www.bestbuy.com/product/meta-ray-ban-display-neural-band--ai-glasses-with-in-lens-display-shiny-frame-standard-band-size-3-black/J3LHRV8TTW" },
+    "rating": null,
+    "origin": "US",
+    "market": "US",
+    "visual": "glasses",
+    "hue": 25,
+    "variants": [
+      { "id": "black", "label": "Black", "swatch": "#1b1b1f" },
+      { "id": "sand", "label": "Sand", "swatch": "#d2b48c" }
+    ],
+    "options": [
+      { "id": "frame", "label": "Frame size", "choices": [
+        { "id": "150", "label": "150 mm", "sub": "", "delta": 0, "facts": {} },
+        { "id": "156", "label": "156 mm", "sub": "", "delta": 0, "facts": {} }
+      ] }
+    ],
+    "facts": {},
+    "inBox": ["Meta Ray-Ban Display glasses", "Meta Neural Band", "Folding charging case"],
+    "specs": [
+      { "group": "Optics", "rows": [
+        { "label": "Display", "value": "In-lens display" },
+        { "label": "Camera", "value": "12 MP", "n": 12, "better": "high" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "Up to 6 hours of continuous mixed use", "n": 6, "better": "high" },
+        { "label": "Charging", "value": "Folding charging case adds up to 24 hours", "n": 24, "better": "high" }
+      ] },
+      { "group": "Build", "rows": [
+        { "label": "Microphones", "value": "Built-in microphone" },
+        { "label": "Sizes", "value": "150 mm and 156 mm frames; Neural Band sized separately" }
+      ] }
+    ],
+    "sources": ["bestbuy.com", "meta.com"],
+    "notes": "Best Buy requires an in-store demo before purchase and lists limited availability. meta.com shows 'from $799' but its page body did not load. Display resolution, brightness, field of view, weight, water rating, storage, speakers and app platforms were not on the pages read; the Best Buy page lists a 4032 × 3024 figure that is likely photo capture resolution, not the display. SKU checked is Black, standard frame, Neural Band size 3.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "bee-pioneer",
+    "name": "Pioneer",
+    "brand": "Bee",
+    "category": "Wearables",
+    "tagline": "A clip-on or wrist-worn AI listener with dual microphones and up to 7 days of battery, with no subscription required today.",
+    "priceSource": { "amount": 49.99, "currency": "USD", "at": "bee.computer", "url": "https://bee.computer/bee-pioneer" },
+    "rating": null,
+    "origin": "US",
+    "market": "US",
+    "visual": "pin",
+    "hue": 48,
+    "variants": [
+      { "id": "black", "label": "Black", "swatch": "#1a1a1a" }
+    ],
+    "options": [],
+    "facts": { "app": ["ios", "android"] },
+    "inBox": ["Bee Pioneer", "Two wristbands (yellow and black)", "Clip attachment", "Quick start guide", "Sticker pack"],
+    "specs": [
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "Up to 7 days (160+ hours) per charge", "n": 160, "better": "high" }
+      ] },
+      { "group": "Capture", "rows": [
+        { "label": "Microphones", "value": "Dual microphones with noise filtering" },
+        { "label": "Build", "value": "Pendant worn on the included clip or wristband" }
+      ] },
+      { "group": "Software", "rows": [
+        { "label": "App", "value": "Bee app for iOS with Apple Watch support; Android early-access build on Google Play" },
+        { "label": "Subscription", "value": "None required today; maker says a paid Premium monthly tier is planned" }
+      ] }
+    ],
+    "sources": ["bee.computer"],
+    "notes": "Chosen over the Limitless pendant, which third-party coverage reports as discontinued and which had no maker price page found. Bee ships within the United States only. The page shows a 'Black Friday Discount: Save 20%' banner alongside the $49.99 price. Weight, dimensions and Bluetooth version were not on the pages read.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "therabody-theraface-mask",
+    "name": "TheraFace Mask",
+    "brand": "Therabody",
+    "category": "Health",
+    "tagline": "A 648-LED face mask with red, infrared and blue modes, 3–9 minute sessions and VibraWave vibration massage.",
+    "priceSource": { "amount": 649.99, "currency": "USD", "at": "therabody.com", "url": "https://www.therabody.com/products/theraface-mask" },
+    "rating": { "value": 4.3, "count": 123, "at": "therabody.com" },
+    "origin": "US",
+    "market": "US",
+    "visual": "mask",
+    "hue": 330,
+    "variants": [
+      { "id": "standard", "label": "Standard", "swatch": "#f2f2f2" }
+    ],
+    "options": [],
+    "facts": {},
+    "inBox": ["TheraFace Mask", "Removable protective eye shields", "Display stand", "USB-C charging cable"],
+    "specs": [
+      { "group": "Light", "rows": [
+        { "label": "LEDs", "value": "648 LEDs for full-face coverage", "n": 648, "better": "high" },
+        { "label": "Wavelengths", "value": "Red 633 nm, red + infrared 830 nm, blue 415 nm" },
+        { "label": "Session", "value": "3–9 minutes", "n": 3, "better": "low" },
+        { "label": "Massage", "value": "VibraWave vibration around the eyes and the top and back of the head" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "About 120 minutes in LED mode or 60 minutes in vibration mode", "n": 120, "better": "high" },
+        { "label": "Charging", "value": "USB-C" }
+      ] },
+      { "group": "Build", "rows": [
+        { "label": "Weight", "value": "576 g device; 636 g with stand", "n": 576, "better": "low" },
+        { "label": "Clearance", "value": "FDA cleared (maker's statement)" },
+        { "label": "Warranty", "value": "1-year limited" }
+      ] }
+    ],
+    "sources": ["therabody.com"],
+    "notes": "Skin and medical claims are the maker's. Colour is not named on the page. The page's rating value is shown as 4.3089433 and is rounded to 4.3. Plug style is not applicable (USB-C cable only; no adapter listed).",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "currentbody-skin-led-mask-series-3",
+    "name": "Skin LED Light Therapy Face Mask: Series 3",
+    "brand": "CurrentBody",
+    "category": "Health",
+    "tagline": "A 750-LED face mask with six wavelengths from 415 nm blue to 1072 nm deep near-infrared and 10-minute sessions.",
+    "priceSource": { "amount": 569.99, "currency": "USD", "at": "currentbody.us", "url": "https://www.currentbody.us/products/currentbody-skin-led-light-therapy-mask" },
+    "rating": { "value": 4.6, "count": 4219, "at": "currentbody.us" },
+    "origin": "UK",
+    "market": "US",
+    "visual": "mask",
+    "hue": 5,
+    "variants": [
+      { "id": "white", "label": "White", "swatch": "#f4f1ec" }
+    ],
+    "options": [],
+    "facts": {},
+    "inBox": ["LED Light Therapy Mask: Series 3", "Storage bag", "USB-C charging cable", "Controller", "Eye inserts", "User manual"],
+    "specs": [
+      { "group": "Light", "rows": [
+        { "label": "LEDs", "value": "750 LEDs (VERITACE-certified)", "n": 750, "better": "high" },
+        { "label": "Wavelengths", "value": "633 nm red, 830 nm near-infrared, 1072 nm deep near-infrared, 415 nm blue, 532 nm green, 590 nm yellow" },
+        { "label": "Session", "value": "10 minutes", "n": 10, "better": "low" },
+        { "label": "Routine", "value": "3–5 times a week" }
+      ] },
+      { "group": "Build", "rows": [
+        { "label": "Charging", "value": "USB-C" },
+        { "label": "Controller", "value": "Separate handheld controller" },
+        { "label": "Clearance", "value": "FDA-cleared (maker's statement)" }
+      ] }
+    ],
+    "sources": ["currentbody.us", "currentbody.com"],
+    "notes": "Substitute: the Series 2 appears on the maker's pages only as a comparison line with no price, so the current Series 3 is recorded. The UK store lists the Series 3 at £499.99 with 4.6 from 4,351 reviews. Battery life, weight, warranty and CE/TGA status were not on the pages read. Skin and medical claims are the maker's.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "withings-scanwatch-2",
+    "name": "ScanWatch 2",
+    "brand": "Withings",
+    "category": "Wearables",
+    "tagline": "A hybrid watch with ECG, SpO2 and 24/7 temperature tracking, up to 35 days of battery and 5 ATM water resistance.",
+    "priceSource": { "amount": 369.95, "currency": "USD", "at": "withings.com", "url": "https://www.withings.com/us/en/scanwatch-2" },
+    "rating": null,
+    "origin": "EU",
+    "market": "US",
+    "visual": "tag",
+    "hue": 212,
+    "variants": [
+      { "id": "black-silver", "label": "Black & Silver", "swatch": "#1e1e22" },
+      { "id": "white-silver", "label": "White & Silver", "swatch": "#e9e9ea" },
+      { "id": "blue-rose-gold", "label": "Blue & Rose Gold", "swatch": "#2f4a6d" },
+      { "id": "white-rose-gold", "label": "White & Rose Gold", "swatch": "#f3e8e4" },
+      { "id": "blue-silver", "label": "Blue & Silver", "swatch": "#2c4a73" }
+    ],
+    "options": [
+      { "id": "size", "label": "Case size", "choices": [
+        { "id": "38", "label": "38 mm", "sub": "", "delta": 0, "facts": {} },
+        { "id": "42", "label": "42 mm", "sub": "", "delta": 0, "facts": {} }
+      ] }
+    ],
+    "facts": { "app": ["ios", "android"] },
+    "inBox": ["ScanWatch 2", "FKM wristband"],
+    "specs": [
+      { "group": "Health", "rows": [
+        { "label": "Sensors", "value": "ECG, SpO2, 24/7 temperature tracking" },
+        { "label": "Clearance", "value": "ECG app FDA cleared, 510(k) K240795, to detect atrial fibrillation (maker's statement)" },
+        { "label": "Subscription", "value": "Withings+ optional; 1 month free included" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "Up to 35 days", "n": 35, "better": "high" },
+        { "label": "Charging", "value": "Fast charge in 2 hours", "n": 2, "better": "low" }
+      ] },
+      { "group": "Build", "rows": [
+        { "label": "Display", "value": "DeepGray OLED Gen 3, 0.63-inch, 282 PPI" },
+        { "label": "Build", "value": "Stainless steel case, sapphire crystal glass" },
+        { "label": "Water resistance", "value": "5 ATM (50 m)", "n": 50, "better": "high" },
+        { "label": "Sizes", "value": "38 mm and 42 mm; 18–20 mm wristbands" },
+        { "label": "App", "value": "Withings app, iOS and Android" }
+      ] }
+    ],
+    "sources": ["withings.com"],
+    "notes": "Finishes vary by size: Blue & Rose Gold and White & Rose Gold are 38 mm only, Blue & Silver is 42 mm only. Weight, Bluetooth version, a visible rating and the Withings+ price after the trial were not on the page read. ScanWatch Nova is a separate $599.95 model with two wristbands. Medical claims are the maker's.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "hyperice-normatec-elite",
+    "name": "Normatec Elite Legs",
+    "brand": "Hyperice",
+    "category": "Health",
+    "tagline": "Hose-free compression boots with 7 levels from 40 to 110 mmHg, 5 zones, Bluetooth and up to 4 hours of battery.",
+    "priceSource": { "amount": 1099, "currency": "USD", "at": "hyperice.com", "url": "https://hyperice.com/products/normatec-elite" },
+    "rating": { "value": 4.9, "count": 99, "at": "hyperice.com" },
+    "origin": "US",
+    "market": "US",
+    "visual": "case",
+    "hue": 15,
+    "variants": [
+      { "id": "standard", "label": "Standard", "swatch": "#1f1f23" }
+    ],
+    "options": [
+      { "id": "size", "label": "Boot size", "choices": [
+        { "id": "short", "label": "Short", "sub": "5 ft 7 in and under", "delta": 0, "facts": {} },
+        { "id": "standard", "label": "Standard", "sub": "5 ft 7 in to 6 ft 4 in", "delta": 0, "facts": {} },
+        { "id": "tall", "label": "Tall", "sub": "6 ft 4 in and over", "delta": 0, "facts": {} }
+      ] }
+    ],
+    "facts": {},
+    "inBox": ["2 Normatec Elite Legs", "12 V wall charger", "Drawstring bag"],
+    "specs": [
+      { "group": "Compression", "rows": [
+        { "label": "Pressure", "value": "7 levels, 40–110 mmHg", "n": 110, "better": "high" },
+        { "label": "Zones", "value": "5 zones of gapless compression", "n": 5, "better": "high" },
+        { "label": "Session", "value": "20–60 minutes typical", "n": 20, "better": "low" }
+      ] },
+      { "group": "Power", "rows": [
+        { "label": "Battery", "value": "Up to 4 hours", "n": 4, "better": "high" },
+        { "label": "Charging", "value": "12 V wall charger" }
+      ] },
+      { "group": "Build", "rows": [
+        { "label": "Weight", "value": "6.4 lb (about 2.9 kg) for the pair; 3.2 lb per boot", "n": 2903, "better": "low" },
+        { "label": "Connectivity", "value": "Bluetooth; no hoses or separate control unit" },
+        { "label": "Sizes", "value": "Short, Standard, Tall" }
+      ] }
+    ],
+    "sources": ["hyperice.com"],
+    "notes": "Companion app name and platforms, FDA status, warranty, colour, charging time and the wall charger's plug style are not stated on the page read. The Normatec Elite Hips attachment is a separate product. Recovery claims are the maker's.",
+    "checkedAt": "2026-10-03"
+  },
+  {
+    "id": "shark-cryoglow",
+    "name": "CryoGlow",
+    "brand": "Shark",
+    "category": "Health",
+    "tagline": "A red, blue and infrared LED face mask with under-eye cooling pads, 4–8 minute treatments and a remote.",
+    "priceSource": { "amount": 299.99, "currency": "USD", "at": "sharkninja.com", "url": "https://www.sharkninja.com/shark-cryoglow-red-blue-infrared-iqled-face-mask-under-eye-cooling---blue-frost/FW312.html" },
+    "compareAtSource": { "amount": 349.99, "currency": "USD", "at": "sharkninja.com" },
+    "rating": null,
+    "origin": "US",
+    "market": "US",
+    "visual": "mask",
+    "hue": 200,
+    "variants": [
+      { "id": "blue-frost", "label": "Blue Frost", "swatch": "#a9d3e6" }
+    ],
+    "options": [],
+    "facts": {},
+    "inBox": ["CryoGlow LED mask", "Clip-on chill pads", "Remote", "USB-C charging cable"],
+    "specs": [
+      { "group": "Light", "rows": [
+        { "label": "LEDs", "value": "Red, blue and deep infrared LEDs with iQLED tri-wick sequencing" },
+        { "label": "Session", "value": "Better Aging 6 min, Skin Clearing 8 min, Skin Sustain 4 min, Under-Eye Revive 5–15 min", "n": 4, "better": "low" },
+        { "label": "Cooling", "value": "InstaChill under-eye cooling with 3 temperature-controlled chill levels" },
+        { "label": "Clearance", "value": "Clinically tested and FDA-cleared (maker's statement)" }
+      ] },
+      { "group": "Build", "rows": [
+        { "label": "Battery", "value": "7.2 V rechargeable battery included; USB-C charging" },
+        { "label": "Weight", "value": "1.5 lb (about 680 g)", "n": 680, "better": "low" },
+        { "label": "Size", "value": "7.99 × 5.51 × 8.62 in" },
+        { "label": "Controls", "value": "Remote control" },
+        { "label": "Warranty", "value": "2 years limited" }
+      ] }
+    ],
+    "sources": ["sharkninja.com"],
+    "notes": "Model FW312. LED count and nm wavelengths are not on the page. The page shows 4.8 of 5 but no review count, so no rating is recorded. Runtime per charge is not disclosed; the spec sheet lists 16.92 W standard and 35 W peak draw with a 35.4 in cord. Skin and medical claims are the maker's.",
+    "checkedAt": "2026-10-03"
+  }
+]
