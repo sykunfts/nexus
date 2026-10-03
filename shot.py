@@ -157,6 +157,14 @@ async def main():
             await page.goto(BASE + "#/setup")
             await page.wait_for_timeout(1000)
         await run("setup-desktop", 1440, 900, setup_page)
+        async def compare_rings(page):
+            await page.goto(BASE + "#/compare?ids=ringconn-gen-3%2Coura-ring-5")
+            await page.wait_for_timeout(1200)
+            row = page.locator("tr:has(td:text-is('Battery'))")
+            assert await row.count() == 1, "Battery row missing"
+            cells = row.locator("td[data-winner='true']")
+            assert await cells.count() == 1 and "14" in (await cells.first.inner_text()), "RingConn should win Battery"
+        await run("compare-rings", 1440, 900, compare_rings)
         await run("home-mobile", 400, 820)
         async def pdp_m(page):
             await page.click("text=See the MoGo 4 Laser")

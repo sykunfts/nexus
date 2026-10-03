@@ -335,6 +335,7 @@ export function ProductPage({ product }: { product: Product }) {
                       {products.filter((p) => p.id !== product.id && p.category === product.category).map((p) => <option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}
                     </select>
                   </label>
+                  {compareWith && <button type="button" onClick={() => go({ name: 'compare', ids: [product.id, compareWith] })} className="text-ink-2 underline underline-offset-4 hover:text-ink">Open the compare page</button>}
                 </div>
                 <div className="overflow-x-auto border border-rule">
                   <table className="w-full min-w-[520px] border-collapse text-[13.5px]">
