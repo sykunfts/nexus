@@ -13,6 +13,9 @@ describe('merge-trends', () => {
     const out = readFileSync(path.join(dir, 'src', 'lib', 'trends.generated.ts'), 'utf8')
     expect(out).toContain('export const TRENDS_GENERATED_AT: string | null = "2026-10-04T20:05:10.000Z"')
     expect(out).toContain('export const TRENDS_SOURCES: string[] = ["Wikipedia","Hacker News","TIWIB"]')
+    writeFileSync(path.join(dir, 'data', 'trends.json'), JSON.stringify({ generatedAt: '2026-10-04T20:05:10.000Z', sources: { wikipedia: 'partial: 1 of 31 failed (x)', hackernews: 'failed: 500', reddit: 'ok', tiwib: 'ok' }, products: { a: { delta: 1, label: 'Steady', score: 0, confidence: 'low', series: [] } }, terms: [] }))
+    execFileSync('node', [path.resolve('scripts/merge-trends.mjs'), dir])
+    expect(readFileSync(path.join(dir, 'src', 'lib', 'trends.generated.ts'), 'utf8')).toContain('TRENDS_SOURCES: string[] = ["Wikipedia","Reddit","TIWIB"]')   // partial still fed the run
     expect(out).toContain('"oura-ring-5"')
     expect(out).toContain('"source": "Wikipedia, Hacker News and TIWIB"')
   })
@@ -29,8 +32,11 @@ describe('merge-trends', () => {
 describe('products with real trends', () => {
   it('trendNote uses the sample wording when there is no file', async () => {
     vi.resetModules()
-    const { trendNote } = await import('./data')
-    expect(trendNote()).toBe('Trend figures are sample data until the trend feed is live.')
+    vi.doMock('./trends.generated', () => ({ TRENDS: {}, TRENDS_GENERATED_AT: null, TRENDS_SOURCES: [] }))
+    try {
+      const { trendNote } = await import('./data')
+      expect(trendNote()).toBe('Trend figures are sample data until the trend feed is live.')
+    } finally { vi.doUnmock('./trends.generated') }
   })
   it('a product with a file trend uses it, one without keeps a sample trend marked sample', async () => {
     vi.resetModules()

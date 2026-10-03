@@ -2,10 +2,11 @@
 import type { Candidate, Flag, RadarFile, Rate, SourceId } from '../../radar/src/types'
 import { longDate } from '../lib/data'
 
-export interface RadarFilters { section: string | null; minMargin: 0 | 0.3 | 0.45; exclude: Flag[]; auPlugOnly: boolean; hideSkipped: boolean }
-export type RadarSort = 'score' | 'margin' | 'trend' | 'demand' | 'newest'
+/* The suggested price always earns the 45 % target, so margin cannot separate candidates; net dollars per sale can. */
+export interface RadarFilters { section: string | null; minNet: 0 | 15 | 30; exclude: Flag[]; auPlugOnly: boolean; hideSkipped: boolean }
+export type RadarSort = 'score' | 'net' | 'trend' | 'demand' | 'newest'
 
-export const DEFAULT_FILTERS: RadarFilters = { section: null, minMargin: 0, exclude: [], auPlugOnly: false, hideSkipped: true }
+export const DEFAULT_FILTERS: RadarFilters = { section: null, minNet: 0, exclude: [], auPlugOnly: false, hideSkipped: true }
 export const REPO = 'sykunfts/nexus'
 
 const SOURCE_NAME: Record<SourceId | 'cj', string> = { wikipedia: 'Wikipedia', hackernews: 'Hacker News', reddit: 'Reddit', tiwib: 'TIWIB', cj: 'CJ' }
@@ -14,7 +15,7 @@ const join = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1
 export function filterCandidates(c: Candidate[], f: RadarFilters, skipped: Set<string>): Candidate[] {
   return c.filter((x) =>
     (!f.section || x.section === f.section) &&
-    x.money.marginPct >= f.minMargin &&
+    x.money.netAud >= f.minNet &&
     !x.flags.some((fl) => f.exclude.includes(fl)) &&
     (!f.auPlugOnly || x.variant.auPlug) &&
     (!f.hideSkipped || !skipped.has(x.pid)))
@@ -27,7 +28,7 @@ export function sortCandidates(c: Candidate[], s: RadarSort, deltas: Record<stri
   const out = [...c]
   const delta = (x: Candidate) => deltas[x.termId] ?? 0
   switch (s) {
-    case 'margin': return out.sort((a, b) => b.money.marginPct - a.money.marginPct)
+    case 'net': return out.sort((a, b) => b.money.netAud - a.money.netAud)
     case 'trend': return out.sort((a, b) => delta(b) - delta(a) || b.score - a.score)
     case 'demand': return out.sort((a, b) => b.listedNum - a.listedNum)
     case 'newest': return out.sort((a, b) => b.firstSeen.localeCompare(a.firstSeen) || b.score - a.score)
@@ -51,8 +52,9 @@ export function rateLabel(r: Rate): string {
 export function sourcesLine(s: RadarFile['sources']): string {
   const keys = Object.keys(s) as (SourceId | 'cj')[]
   if (keys.every((k) => s[k] === 'not yet run')) return 'The Radar has not run yet.'
-  const ok = keys.filter((k) => s[k] === 'ok').map((k) => SOURCE_NAME[k])
-  const rest = keys.filter((k) => s[k] !== 'ok').map((k) => {
+  const fed = (v: string) => v === 'ok' || v.startsWith('partial')
+  const ok = keys.filter((k) => fed(s[k])).map((k) => (s[k] === 'ok' ? SOURCE_NAME[k] : `${SOURCE_NAME[k]} (${s[k].replace(/^partial:\s*/, '').replace(/\s*\(.*\)$/, '')})`))
+  const rest = keys.filter((k) => !fed(s[k])).map((k) => {
     const v = s[k]
     const m = v.match(/^failed:\s*(?:http\s*)?(\d{3})/)
     return `${SOURCE_NAME[k]}: ${m ? `blocked (${m[1]})` : v}.`

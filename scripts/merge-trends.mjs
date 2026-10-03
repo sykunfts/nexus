@@ -13,7 +13,7 @@ let file = null
 try { file = JSON.parse(await readFile(path.join(root, 'data', 'trends.json'), 'utf8')) } catch { file = null }
 const products = file?.products ?? {}
 const real = Object.keys(products).length > 0
-const sources = real ? Object.entries(file.sources ?? {}).filter(([, v]) => v === 'ok').map(([k]) => NAME[k] ?? k) : []
+const sources = real ? Object.entries(file.sources ?? {}).filter(([, v]) => v === 'ok' || String(v).startsWith('partial')).map(([k]) => NAME[k] ?? k) : []   // partial still fed the run
 const join = (xs) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`)
 const trends = {}
 for (const [id, t] of Object.entries(products)) trends[id] = { label: t.label, delta: t.delta, series: t.series, source: join(sources) || 'Trend Radar signals' }

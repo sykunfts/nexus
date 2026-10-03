@@ -14,8 +14,17 @@ import { RadarRail } from './components/RadarRail'
 import { CandidateCard } from './components/CandidateCard'
 import { NoveltyRail } from './components/NoveltyRail'
 import { EmptyState } from './components/EmptyState'
+import { TermsTable } from './components/TermsTable'
 
 const SKIP_KEY = 'nexus.radar.skipped'
+
+/* Why a run that scored its terms has nothing to rank: the most likely first-run state. */
+function noCandidatesReason(f: RadarFile): string {
+  const cj = f.sources.cj
+  if (cj === 'skipped') return 'No CJ candidates: the run had no CJ_API_KEY. Add it under Settings → Secrets and variables → Actions, then run the Radar again.'
+  if (cj.startsWith('failed')) return `CJ could not be read this run (${cj.replace(/^failed:\s*/, '')}). The trends below are current; candidates return on the next successful run.`
+  return 'CJ returned nothing usable for the rising terms this run.'
+}
 const readSkipped = (): Set<string> => { try { return new Set(JSON.parse(localStorage.getItem(SKIP_KEY) ?? '[]') as string[]) } catch { return new Set() } }
 const writeSkipped = (s: Set<string>) => { try { localStorage.setItem(SKIP_KEY, JSON.stringify([...s])) } catch { /* storage blocked: skips last for this page only */ } }
 
@@ -52,10 +61,10 @@ export function RadarApp() {
               onToggleSkipped={() => setFilters({ ...filters, hideSkipped: !filters.hideSkipped })}
             />
             <div>
-              {visible.length === 0 ? (
-                <div className="border border-rule bg-sheet px-5 py-10 text-[15px] text-ink-2">
-                  Nothing clears these filters. {file.candidates.length === 0 ? 'The last run found no candidates: check the sources line above.' : 'Loosen the margin or flag filters to see more.'}
-                </div>
+              {file.candidates.length === 0 ? (
+                <TermsTable terms={file.terms} reason={noCandidatesReason(file)} />
+              ) : visible.length === 0 ? (
+                <div className="border border-rule bg-sheet px-5 py-10 text-[15px] text-ink-2">Nothing clears these filters. Loosen the net-per-sale or flag filters to see more.</div>
               ) : (
                 <ol className="border-t border-ink">
                   {visible.map((c, i) => (

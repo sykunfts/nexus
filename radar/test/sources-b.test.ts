@@ -23,6 +23,13 @@ describe('reddit', () => {
     expect(s?.days.find((d) => d.date === '2026-09-25')?.value).toBe(1)
     expect(s?.days.reduce((n, d) => n + d.value, 0)).toBe(3)   // the September 1 post is outside the window
   })
+  it('a full page whose oldest post is inside the window is truncated: null, with the reason', async () => {
+    const src = new RedditSource()
+    const full = { data: { children: Array.from({ length: 100 }, (_, i) => ({ data: { created_utc: Date.parse('2026-10-03T00:00:00Z') / 1000 - i * 3600 } })) } }
+    const s = await src.fetchDaily(term, w, httpWith(() => json(full)))
+    expect(s).toBeNull()
+    expect(src.status()).toMatch(/^truncated/)
+  })
   it('403 → null and status says so', async () => {
     const src = new RedditSource()
     const s = await src.fetchDaily(term, w, httpWith(() => json({ message: 'Forbidden' }, 403)))

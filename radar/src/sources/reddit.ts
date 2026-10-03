@@ -24,7 +24,11 @@ export class RedditSource {
       const res = await http(url)
       if (!res.ok) { this.last = `failed: ${res.status}`; return null }
       const body = (await res.json()) as RedditResponse
-      for (const c of body.data?.children ?? []) {
+      const children = body.data?.children ?? []
+      /* A full page whose oldest post is still inside the window hides the earlier week: growth would read as the page size. */
+      const oldest = Math.min(...children.map((c) => c.data?.created_utc ?? Infinity))
+      if (children.length >= 100 && oldest >= from) { this.last = `truncated: more than 100 posts in the window for "${phrase}"`; return null }
+      for (const c of children) {
         const t = c.data?.created_utc
         if (typeof t !== 'number' || t < from || t >= until) continue
         const date = dateOfEpoch(t)

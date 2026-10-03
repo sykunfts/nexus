@@ -2,15 +2,18 @@
   A draft shop listing from a Radar candidate, and the decision behind the approval job: only the
   repository owner, only a candidate from today's radar.json, only at a price that covers landed cost.
 */
-import type { Product } from '../../src/lib/data'
+import { longDate, type Product } from '../../src/lib/data'
 import { FLAG_NOTES } from './flags'
 import type { Candidate, ProductTrend, RadarFile } from './types'
 
 const hash = (s: string) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0 } return h }
 const trim = (s: string, n: number) => (s.length <= n ? s : s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…')
 
+const voltageIn = (text: string): '100-240' | '110' | undefined => (/\b100\s*-\s*240\s*v/i.test(text) ? '100-240' : /\b110\s*v\b/i.test(text) && !/220|230|240/.test(text) ? '110' : undefined)
+
 export function draftListing(c: Candidate, trend: ProductTrend | null, runDate: string, retailAud: number): Product {
   const au = c.variant.auPlug
+  const voltage = voltageIn(`${c.name} ${c.variant.name}`)
   return {
     id: `cj-${c.pid}`,
     name: trim(c.name, 60),
@@ -19,10 +22,10 @@ export function draftListing(c: Candidate, trend: ProductTrend | null, runDate: 
     tagline: `${c.section} find from the Trend Radar, shipped direct from the maker in China.`,
     price: retailAud,
     priceCheckedAt: runDate,
-    priceSource: { amount: c.variant.priceUsd, currency: 'USD', at: runDate },
     listedAt: runDate,
     market: 'global',
-    sources: [c.cjUrl],
+    sources: [`Trend Radar, supplier catalogue, ${longDate(runDate + 'T12:00:00Z')}`],   // the public page sees this; the cost and the CJ link stay in `supplier`
+    supplier: { url: c.cjUrl, pid: c.pid, vid: c.variant.vid, costUsd: c.variant.priceUsd, termId: c.termId },
     notes: c.flags.length ? c.flags.map((f) => FLAG_NOTES[f]).join(' ') : undefined,
     rating: null,
     stock: 'in',
@@ -39,7 +42,7 @@ export function draftListing(c: Candidate, trend: ProductTrend | null, runDate: 
       { label: 'Ships from', value: 'China, CJdropshipping' },
       { label: 'Plug', value: au ? 'AU plug variant' : c.variant.name || 'as listed' },
     ] }],
-    facts: { ...(au ? { plug: 'AU' as const } : {}), voltage: '100-240' },
+    facts: { ...(au ? { plug: 'AU' as const } : {}), ...(voltage ? { voltage } : {}) },
   }
 }
 

@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: radar
+  group: data          # shared with the listing job: one writer to data/ at a time
   cancel-in-progress: false
 
 jobs:
@@ -44,4 +44,5 @@ jobs:
           git add data/radar.json data/trends.json
           if git diff --cached --quiet; then echo "nothing changed"; exit 0; fi
           git commit -m "Radar: $(date -u +%F)"
+          git pull --rebase origin master
           git push

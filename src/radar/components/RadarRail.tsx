@@ -6,7 +6,7 @@ import { cn } from '../../lib/cn'
 import type { RadarFilters, RadarSort } from '../lib'
 
 const FLAG_LABEL: Record<Flag, string> = { battery: 'Lithium battery', mains: 'Mains power', radio: 'Radio / Bluetooth', skin: 'Used on the body', kids: 'For children', heavy: 'Over 2 kg' }
-const SORTS: { id: RadarSort; label: string }[] = [{ id: 'score', label: 'Radar score' }, { id: 'margin', label: 'Margin' }, { id: 'trend', label: 'Trend' }, { id: 'demand', label: 'Dropshipper demand' }, { id: 'newest', label: 'Newest' }]
+const SORTS: { id: RadarSort; label: string }[] = [{ id: 'score', label: 'Radar score' }, { id: 'net', label: 'Net per sale' }, { id: 'trend', label: 'Trend' }, { id: 'demand', label: 'Dropshipper demand' }, { id: 'newest', label: 'Newest' }]
 
 export function RadarRail(p: { filters: RadarFilters; onChange: (f: RadarFilters) => void; sort: RadarSort; onSort: (s: RadarSort) => void; sections: string[]; flags: Flag[]; skippedCount: number; onToggleSkipped: () => void }) {
   const [openMobile, setOpenMobile] = useState(false)
@@ -27,14 +27,15 @@ export function RadarRail(p: { filters: RadarFilters; onChange: (f: RadarFilters
         </ul>
       </div>
       <div>
-        <div className="mb-1.5 text-[12.5px] text-ink-3">Minimum margin</div>
-        <div className="flex border border-rule-2 bg-sheet" role="radiogroup" aria-label="Minimum margin">
-          {([0, 0.3, 0.45] as const).map((m) => (
-            <button key={m} type="button" role="radio" aria-checked={f.minMargin === m} onClick={() => p.onChange({ ...f, minMargin: m })} className={cn('reading flex-1 py-1.5 text-[12.5px]', f.minMargin === m ? 'bg-ink text-paper' : 'text-ink-2 hover:text-ink')}>
-              {m === 0 ? 'Any' : `${Math.round(m * 100)} %`}
+        <div className="mb-1.5 text-[12.5px] text-ink-3">Minimum net per sale</div>
+        <div className="flex border border-rule-2 bg-sheet" role="radiogroup" aria-label="Minimum net per sale">
+          {([0, 15, 30] as const).map((m) => (
+            <button key={m} type="button" role="radio" aria-checked={f.minNet === m} onClick={() => p.onChange({ ...f, minNet: m })} className={cn('reading flex-1 py-1.5 text-[12.5px]', f.minNet === m ? 'bg-ink text-paper' : 'text-ink-2 hover:text-ink')}>
+              {m === 0 ? 'Any' : `$${m}`}
             </button>
           ))}
         </div>
+        <p className="mt-1 text-[11.5px] text-ink-3">What you keep per sale at the suggested price, after GST, card fees and landed cost.</p>
       </div>
       <div>
         <div className="mb-1.5 text-[12.5px] text-ink-3">Leave out</div>

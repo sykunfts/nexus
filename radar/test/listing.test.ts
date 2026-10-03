@@ -22,14 +22,15 @@ describe('draft listing', () => {
     expect(p.name.length).toBeLessThanOrEqual(60)
     expect(p.category).toBe('Home cinema')
     expect(p.price).toBe(cand.money.retailAud)
-    expect(p.priceSource).toEqual({ amount: 62.4, currency: 'USD', at: '2026-10-04' })
+    expect(p.priceSource).toBeUndefined()                                   // the wholesale cost never reaches the product page
+    expect(p.supplier).toEqual({ url: cand.cjUrl, pid: 'P-A1', vid: 'V-AU', costUsd: 62.4, termId: 'laser-projector' })
+    expect(p.sources).toEqual(['Trend Radar, supplier catalogue, 4 October 2026'])
     expect(p.fulfil).toEqual({ route: 'supplier', origin: 'CN' })
     expect(p.market).toBe('global')
     expect(p.variants.length).toBeGreaterThan(0)
     expect(p.photos).toEqual(['https://cc.example/a1.jpg'])
     expect(p.facts.plug).toBe('AU')
-    expect(p.facts.voltage).toBe('100-240')
-    expect(p.sources).toEqual([cand.cjUrl])
+    expect(p.facts.voltage).toBeUndefined()                                 // not claimed unless the listing text states it
     expect(p.specs.flatMap((g) => g.rows).length).toBeGreaterThanOrEqual(3)
     expect(p.badges).toContain('From the Radar')
     expect(p.trend.label).toBe('Trending')
@@ -37,9 +38,11 @@ describe('draft listing', () => {
     expect(p.rating).toBeNull()
     expect(p.listedAt).toBe('2026-10-04')
   })
-  it('without a trend or an AU plug it stays honest', () => {
+  it('without a trend or an AU plug it stays honest, and voltage comes only from the text', () => {
     const p = draftListing({ ...cand, variant: { ...cand.variant, auPlug: false, name: 'US Plug' } }, null, '2026-10-04', 199.95)
     expect(p.facts.plug).toBeUndefined()
+    expect(draftListing({ ...cand, name: 'Projector 100-240V wide voltage' }, null, '2026-10-04', 199.95).facts.voltage).toBe('100-240')
+    expect(draftListing({ ...cand, name: 'Projector 110V only' }, null, '2026-10-04', 199.95).facts.voltage).toBe('110')
     expect(p.trend.label).toBe('Steady')
     expect(p.trend.delta).toBe(0)
   })

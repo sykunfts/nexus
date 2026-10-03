@@ -18,13 +18,16 @@ describe('workflows', () => {
     const step = Object.values(w.jobs)[0].steps.find((s) => s.run?.includes('npm run radar'))!
     expect(step.env?.CJ_API_KEY).toBe('${{ secrets.CJ_API_KEY }}')
   })
-  it('pages deploys on push and after a radar run', () => {
+  it('pages deploys on push, after a radar run and after a listing, and never gates on the data-dependent suite', () => {
     const w = read('pages.yml')
     expect(w.on).toHaveProperty('push')
-    expect((w.on.workflow_run as { workflows: string[] }).workflows).toContain('Trend Radar')
+    expect(w.on).toHaveProperty('workflow_dispatch')
+    expect((w.on.workflow_run as { workflows: string[] }).workflows).toEqual(expect.arrayContaining(['Trend Radar', 'Add a Radar listing']))
+    expect(w.jobs.build.if).toContain("github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'")
     expect(w.permissions?.pages).toBe('write')
     expect(runs(w).some((r) => r.includes('npm run merge'))).toBe(true)
     expect(runs(w).some((r) => r.includes('npm run build'))).toBe(true)
+    expect(runs(w).some((r) => /npm (run )?test\b/.test(r))).toBe(false)   // a real trends file must never stop a deploy
     expect(Object.values(w.jobs).some((j) => j.steps.some((s) => s.uses?.startsWith('actions/deploy-pages')))).toBe(true)
   })
   it('the listing job only acts on the owner\'s "list:" issues', () => {
@@ -35,6 +38,12 @@ describe('workflows', () => {
     expect(job.if).toContain('github.event.issue.user.login == github.repository_owner')
     expect(w.permissions?.issues).toBe('write')
     expect(runs(w).some((r) => r.includes('npm run listing'))).toBe(true)
+  })
+  it('the two committing workflows share a concurrency group and rebase before pushing', () => {
+    const radar = read('radar.yml'); const listing = read('listing.yml')
+    expect((radar.concurrency as { group: string }).group).toBe('data')
+    expect((listing.concurrency as { group: string }).group).toBe('data')
+    for (const w of [radar, listing]) expect(runs(w).some((r) => r.includes('git pull --rebase'))).toBe(true)
   })
   it('every npm script the workflows call exists', () => {
     for (const f of ['radar.yml', 'pages.yml', 'listing.yml']) for (const s of npmScripts(read(f))) expect(Object.keys(pkg.scripts), `${f} → ${s}`).toContain(s)

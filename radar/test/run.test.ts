@@ -102,4 +102,34 @@ describe('runRadar', () => {
     const { ok } = await runRadar({ ...base, http: fakeHttp({ wiki: dead, hn: () => json({ error: 'x' }, 403), reddit: () => json({}, 403), tiwib: () => new Response('<rss></rss>', { status: 200 }) }), env: {}, cj: false })
     expect(ok).toBe(false)
   })
+  it('one bad CJ product is skipped, not the whole stage', async () => {
+    let queries = 0
+    const http = fakeHttp({ cj: (url) => {
+      if (url.includes('getAccessToken')) return json({ result: true, data: { accessToken: 't' } })
+      if (url.includes('getCategory')) return json(cats)
+      if (url.includes('/product/list')) return json(list)
+      if (url.includes('/product/query')) { queries++; return queries === 1 ? json({ result: false, code: 1600100, message: 'product not found' }) : json(query) }
+      if (url.includes('freightCalculate')) return json(freight)
+      return json({}, 500)
+    } })
+    const { radar } = await runRadar({ ...base, http, env: { CJ_API_KEY: 'k' }, cj: true, only: ['laser-projector'], limit: 1 })
+    expect(radar.sources.cj).toBe('partial: 1 CJ calls failed')
+    expect(radar.candidates.length).toBeGreaterThan(0)   // the second list item still made it
+  })
+  it('a source that fails on some terms is partial, not failed; a source that keeps failing is cut off', async () => {
+    let wikiCalls = 0
+    const flaky = await runRadar({ ...base, http: fakeHttp({ wiki: () => { wikiCalls++; return wikiCalls === 2 ? json({}, 500) : json(wiki) } }), env: {}, cj: false })
+    expect(flaky.radar.sources.wikipedia).toMatch(/^partial: 1 of 31 failed/)
+    expect(flaky.trends.sources.wikipedia).toMatch(/^partial/)
+    let hnCalls = 0
+    const dead = await runRadar({ ...base, http: fakeHttp({ hn: () => { hnCalls++; return json({}, 500) } }), env: {}, cj: false })
+    expect(dead.radar.sources.hackernews).toMatch(/^failed/)
+    expect(hnCalls).toBeLessThan(10)   // cut off after a few consecutive failures instead of 31 × 2 calls
+  })
+  it('terms with no signal are never sent to CJ', async () => {
+    const { selectTerms } = await import('../src/run')
+    const none = { id: 'z', label: 'z', section: 'x', delta: 0, trendLabel: 'Steady' as const, score: 0, confidence: 'none' as const, series: [], sources: { wikipedia: null, hackernews: null, reddit: null, tiwib: null } }
+    const low = { ...none, id: 'y', score: -1.5, confidence: 'low' as const }
+    expect(selectTerms([none, low]).map((t) => t.id)).toEqual(['y'])
+  })
 })

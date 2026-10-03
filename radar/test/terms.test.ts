@@ -16,6 +16,6 @@ describe('watch terms', () => {
       for (const id of t.products) expect(products.some((p) => p.id === id), `${t.id} → ${id}`).toBe(true)
     }
     const mapped = new Set(terms.flatMap((t) => t.products))
-    expect(products.filter((p) => !mapped.has(p.id)).map((p) => p.id)).toEqual([])   // every product has a term
+    expect(products.filter((p) => !mapped.has(p.id) && !p.id.startsWith('cj-')).map((p) => p.id)).toEqual([])   // every catalogue product has a term; Radar listings are keyed by termId instead
   })
 })

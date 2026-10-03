@@ -67,6 +67,7 @@ export interface Fulfil { route: 'warehouse' | 'supplier'; origin: Origin }
 export interface Rating { value: number; count: number; at: string }
 export type Market = 'global' | 'AU' | 'US' | 'EU' | 'UK'
 export interface PriceSource { amount: number; currency: 'USD' | 'GBP' | 'EUR' | 'JPY' | 'AUD'; at: string }
+export interface Supplier { url: string; pid: string; vid: string; costUsd: number; termId: string }
 
 export interface Product {
   id: string
@@ -82,6 +83,7 @@ export interface Product {
   releasedAt?: string         // ISO release date when a page stated it; "newest" sorts by this, unknown last
   market: Market              // where the listing was verified
   sources: string[]           // where the price and specs were checked
+  supplier?: Supplier         // Radar listings: where it is sourced; never rendered on the shop
   notes?: string              // things we could not verify, shown as a note, never as a fact
   rating: Rating | null       // only where a value and a count were both visible
   throwRatio?: { value: number; source: string }   // projectors: distance ÷ image width, verified at build time

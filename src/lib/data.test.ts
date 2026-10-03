@@ -19,8 +19,15 @@ describe('catalogue', () => {
       if (p.rating) expect(p.rating.count, p.id).toBeGreaterThan(0)
     }
   })
+  it('a Radar listing never shows its wholesale cost or supplier link on the page', () => {
+    for (const p of products.filter((x) => x.id.startsWith('cj-'))) {
+      expect(p.priceSource, p.id).toBeUndefined()
+      expect(p.sources.join(' '), p.id).not.toMatch(/cjdropshipping\.com/)
+      expect(p.supplier?.url, p.id).toMatch(/cjdropshipping\.com/)
+    }
+  })
   it('converts overseas prices at the snapshot rate', () => {
-    for (const p of products.filter((x) => x.priceSource)) {
+    for (const p of products.filter((x) => x.priceSource && !x.id.startsWith('cj-'))) {
       const rate = CURRENCIES[p.priceSource!.currency].rate
       expect(Math.abs(p.price - p.priceSource!.amount / rate), p.id).toBeLessThan(1)   // converted prices round to whole dollars
     }
