@@ -8,7 +8,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Samsung",
     "category": "Home cinema",
     "tagline": "A Full HD portable projector with 430 ISO lumens, 360-degree 5 W sound and Tizen smart TV apps.",
-    "price": 1818.17,
+    "price": 1818,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 1199.99,
@@ -141,11 +141,11 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
   },
   {
     "id": "anker-nebula-capsule-3-laser",
-    "name": "Nebula Capsule 3 Laser",
-    "brand": "Anker",
+    "name": "Capsule 3 Laser",
+    "brand": "Anker Nebula",
     "category": "Home cinema",
     "tagline": "A 1080p laser projector with Android TV 11, 300 ANSI lumens, a 52 Wh battery and USB-C PD charging.",
-    "price": 1136.35,
+    "price": 1136,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 749.99,
@@ -282,8 +282,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Dangbei",
     "category": "Home cinema",
     "tagline": "A slim 1080p ALPD laser projector with 1200 ISO lumens, Google TV and built-in Netflix.",
-    "price": 1362.12,
-    "compareAt": 1513.64,
+    "price": 1362,
+    "compareAt": 1514,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 899,
@@ -435,8 +435,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Marshall",
     "category": "Audio",
     "tagline": "A compact IP67 Bluetooth speaker with 32-plus hours of playtime and Bluetooth 5.3 LE.",
-    "price": 196.95,
-    "compareAt": 272.71,
+    "price": 197,
+    "compareAt": 273,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 129.99,
@@ -608,7 +608,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Sony",
     "category": "Audio",
     "tagline": "Open-ring earbuds with 8 hours per charge, 22 hours with the case and Bluetooth 5.3 with LC3.",
-    "price": 345.45,
+    "price": 345,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 228,
@@ -726,7 +726,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Shokz",
     "category": "Audio",
     "tagline": "Open-ear earbuds with 11 hours per charge, 48 hours with the case, IP55 and multipoint pairing.",
-    "price": 365.31,
+    "price": 365,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 179,
@@ -841,7 +841,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "category": "Audio",
     "tagline": "Open-ear earbuds with a silicone ear hook, 30 hours of total battery and IP54 water resistance.",
     "price": 150,
-    "compareAt": 195.45,
+    "compareAt": 195,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 99,
@@ -930,8 +930,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "JBL",
     "category": "Audio",
     "tagline": "An IP68 Bluetooth 5.4 speaker with 14 hours of playtime, Auracast and lossless USB-C audio.",
-    "price": 181.74,
-    "compareAt": 227.2,
+    "price": 182,
+    "compareAt": 227,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 119.95,
@@ -1111,8 +1111,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Ugreen",
     "category": "Power",
     "tagline": "A 100 W GaN wall charger with two USB-C ports, one USB-A port and a foldable plug.",
-    "price": 72.85,
-    "compareAt": 90.89,
+    "price": 73,
+    "compareAt": 91,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 48.08,
@@ -1216,8 +1216,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Anker",
     "category": "Power",
     "tagline": "A 26,250 mAh power bank with 300 W total output, 140 W per USB-C port and a 13-minute charge to 50%.",
-    "price": 303.02,
-    "compareAt": 393.92,
+    "price": 303,
+    "compareAt": 394,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 199.99,
@@ -1358,7 +1358,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Belkin",
     "category": "Power",
     "tagline": "A 3-in-1 Qi2 15 W magnetic travel pad that also charges an Apple Watch and AirPods.",
-    "price": 166.65,
+    "price": 167,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 109.99,
@@ -1444,7 +1444,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Ultrahuman",
     "category": "Wearables",
     "tagline": "A 2.4 mm titanium smart ring with 4–6 days of battery, 100 m water resistance and no subscription.",
-    "price": 528.79,
+    "price": 529,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 349,
@@ -1675,7 +1675,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Samsung",
     "category": "Wearables",
     "tagline": "A titanium smart ring with up to 7 days of battery, 10ATM and IP68 ratings and a charging case for Galaxy phones.",
-    "price": 606.05,
+    "price": 606,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 399.99,
@@ -1869,7 +1869,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "WHOOP",
     "category": "Wearables",
     "tagline": "A screenless strap with 14+ days of battery, sold through an annual membership that includes the hardware.",
-    "price": 301.52,
+    "price": 302,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 199,
@@ -2000,7 +2000,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Garmin",
     "category": "Wearables",
     "tagline": "A screenless upper-arm sleep band with up to 7 nights of battery, Pulse Ox and skin temperature tracking.",
-    "price": 257.56,
+    "price": 258,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 169.99,
@@ -2123,7 +2123,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Even Realities",
     "category": "Wearables",
     "tagline": "Prescription-ready display glasses with a 1200-nit green micro LED, IP65 rating and about 2 days of battery.",
-    "price": 907.58,
+    "price": 908,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 599,
@@ -2273,8 +2273,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "XREAL",
     "category": "Wearables",
     "tagline": "82 g display glasses with a Sony micro-OLED, 1080p per eye at 120 Hz, 50° field of view and an X1 chip for native 3DoF.",
-    "price": 604.55,
-    "compareAt": 756.06,
+    "price": 605,
+    "compareAt": 756,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 399,
@@ -2398,7 +2398,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Meta",
     "category": "Wearables",
     "tagline": "AI glasses with an in-lens display, a 12 MP camera, up to 6 hours of mixed use and a Neural Band wrist controller.",
-    "price": 1210.61,
+    "price": 1211,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 799,
@@ -2531,7 +2531,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Bee",
     "category": "Wearables",
     "tagline": "A clip-on or wrist-worn AI listener with dual microphones and up to 7 days of battery, with no subscription required today.",
-    "price": 75.74,
+    "price": 76,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 49.99,
@@ -2634,7 +2634,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Therabody",
     "category": "Health",
     "tagline": "A 648-LED face mask with red, infrared and blue modes, 3–9 minute sessions and VibraWave vibration massage.",
-    "price": 984.83,
+    "price": 985,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 649.99,
@@ -2757,7 +2757,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "CurrentBody",
     "category": "Health",
     "tagline": "A 750-LED face mask with six wavelengths from 415 nm blue to 1072 nm deep near-infrared and 10-minute sessions.",
-    "price": 863.62,
+    "price": 864,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 569.99,
@@ -2866,7 +2866,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Withings",
     "category": "Wearables",
     "tagline": "A hybrid watch with ECG, SpO2 and 24/7 temperature tracking, up to 35 days of battery and 5 ATM water resistance.",
-    "price": 560.53,
+    "price": 561,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 369.95,
@@ -3036,7 +3036,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Hyperice",
     "category": "Health",
     "tagline": "Hose-free compression boots with 7 levels from 40 to 110 mmHg, 5 zones, Bluetooth and up to 4 hours of battery.",
-    "price": 1665.15,
+    "price": 1665,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 1099,
@@ -3185,8 +3185,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Shark",
     "category": "Health",
     "tagline": "A red, blue and infrared LED face mask with under-eye cooling pads, 4–8 minute treatments and a remote.",
-    "price": 454.53,
-    "compareAt": 530.29,
+    "price": 455,
+    "compareAt": 530,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 299.99,
@@ -3296,7 +3296,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "SwitchBot",
     "category": "Smart home",
     "tagline": "A retrofit smart deadbolt with fingerprint, NFC, auto and voice unlock on a rechargeable 4200 mAh battery pack.",
-    "price": 212.11,
+    "price": 212,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 139.99,
@@ -3446,8 +3446,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Govee",
     "category": "Smart home",
     "tagline": "A bendable RGBIC neon rope light with shape mapping, 64 scene and 12 music modes, and Matter support.",
-    "price": 72.71,
-    "compareAt": 106.05,
+    "price": 73,
+    "compareAt": 106,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 47.99,
@@ -3555,7 +3555,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Nanoleaf",
     "category": "Smart home",
     "tagline": "Modular light squares with shelf, hooks and pegboard pieces, 1200–6500 K tunable whites and a built-in Thread border router.",
-    "price": 242.41,
+    "price": 242,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 159.99,
@@ -3671,7 +3671,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "SwitchBot",
     "category": "Smart home",
     "tagline": "A Matter bridge hub with temperature and humidity sensing, a control dial and scene buttons for 30+ devices.",
-    "price": 181.8,
+    "price": 182,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 119.99,
@@ -3777,7 +3777,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Aqara",
     "category": "Smart home",
     "tagline": "A Matter over Thread lever lock with fingerprint, keypad, Apple Home Key, NFC and key access on four AA batteries.",
-    "price": 348.47,
+    "price": 348,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 229.99,
@@ -3909,8 +3909,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Dreame",
     "category": "Smart home",
     "tagline": "A 20,000 Pa robot vacuum and mop that climbs 6 cm thresholds, with 80 °C hot-water mop washing and auto-empty.",
-    "price": 1515.14,
-    "compareAt": 2424.23,
+    "price": 1515,
+    "compareAt": 2424,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 999.99,
@@ -4045,8 +4045,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Roborock",
     "category": "Smart home",
     "tagline": "A 7.98 cm thin robot vacuum and mop with 22,000 Pa suction, 4 cm threshold climbing and a hot-water washing dock.",
-    "price": 1969.68,
-    "compareAt": 2424.23,
+    "price": 1970,
+    "compareAt": 2424,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 1299.99,
@@ -4181,7 +4181,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "TP-Link",
     "category": "Smart home",
     "tagline": "A wired 2K QHD indoor and outdoor security camera with colour night vision, dual spotlights and an IP66 rating.",
-    "price": 60.59,
+    "price": 61,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 39.99,
@@ -4252,11 +4252,11 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
   },
   {
     "id": "philips-hue-play-hdmi-sync-box-8k",
-    "name": "Hue Play HDMI Sync Box 8K",
+    "name": "Play HDMI Sync Box 8K",
     "brand": "Philips Hue",
     "category": "Smart home",
     "tagline": "An HDMI 2.1 sync box with four inputs that matches Hue lights to 8K60 and 4K120 video with HDR10+ and Dolby Vision.",
-    "price": 583.32,
+    "price": 583,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 384.99,
@@ -4380,7 +4380,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Ecovacs",
     "category": "Smart home",
     "tagline": "A cordless window-cleaning robot with a battery station, 5,500 Pa adsorption, six spray nozzles and 110 minutes per charge.",
-    "price": 604.55,
+    "price": 605,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 399,
@@ -4505,8 +4505,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Creality",
     "category": "Maker",
     "tagline": "An enclosed 260 mm CoreXY printer rated at 600 mm/s, with an AI camera and an optional CFS unit for up to 16-colour printing.",
-    "price": 604.55,
-    "compareAt": 831.82,
+    "price": 605,
+    "compareAt": 832,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 399,
@@ -4627,7 +4627,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Plaud",
     "category": "Work",
     "tagline": "A 3 mm card-style AI voice recorder with up to 50 hours of recording, a 0.95-inch display and 300 free transcription minutes a month.",
-    "price": 286.36,
+    "price": 286,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 189,
@@ -4754,11 +4754,11 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
   },
   {
     "id": "flipper-zero",
-    "name": "Flipper Zero",
-    "brand": "Flipper Devices",
+    "name": "Zero",
+    "brand": "Flipper",
     "category": "Maker",
     "tagline": "A pocket multitool for sub-1 GHz radio, NFC, RFID, infrared and iButton with a 2100 mAh battery that lasts up to 28 days.",
-    "price": 256.06,
+    "price": 256,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 169,
@@ -4869,11 +4869,11 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
   },
   {
     "id": "raspberry-pi-5-desktop-kit-8gb",
-    "name": "Pi 5 Desktop Kit (8 GB)",
+    "name": "5 desktop kit (8 GB)",
     "brand": "Raspberry Pi",
     "category": "Maker",
     "tagline": "The official Raspberry Pi 5 kit with an 8 GB board, fan case, 27 W supply, keyboard, mouse, 32 GB card and beginner's guide.",
-    "price": 441.63,
+    "price": 442,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 216.4,
@@ -5015,7 +5015,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "DJI",
     "category": "Work",
     "tagline": "A 1-inch sensor pocket gimbal camera with 4K/120 slow motion, a 2-inch rotating touchscreen and up to 166 minutes of battery.",
-    "price": 665.15,
+    "price": 665,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 439,
@@ -5135,7 +5135,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Insta360",
     "category": "Work",
     "tagline": "An 8K 360-degree action camera with dual 1/1.28-inch sensors, a 2400 mAh battery and 15 m waterproofing without a case.",
-    "price": 833.32,
+    "price": 833,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 549.99,
@@ -5259,7 +5259,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Keychron",
     "category": "Work",
     "tagline": "A 75% wireless keyboard with hot-swappable magnetic switches, adjustable actuation, Rapid Trigger and a 4000 mAh battery.",
-    "price": 212.11,
+    "price": 212,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 139.99,
@@ -5402,8 +5402,8 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "NIU",
     "category": "Mobility",
     "tagline": "An all-terrain commuter scooter with a 500 W motor, 608 Wh battery, 37-mile range, hydraulic suspension and an IP55 rating.",
-    "price": 1362.12,
-    "compareAt": 1968.18,
+    "price": 1362,
+    "compareAt": 1968,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 899,
@@ -5527,7 +5527,7 @@ export const EXPANSION: Omit<Product, 'photos'>[] = [
     "brand": "Segway",
     "category": "Mobility",
     "tagline": "A commuter kick scooter with a 450 W motor, 20 mph top speed, 10-inch self-sealing tubeless tyres and a 265 lb load rating.",
-    "price": 1515.14,
+    "price": 1515,
     "priceCheckedAt": "2026-10-03",
     "priceSource": {
       "amount": 999.99,

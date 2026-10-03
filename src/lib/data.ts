@@ -908,39 +908,39 @@ export interface NavSection { id: string; label: string; columns: NavColumn[]; f
 
 export const nav: NavSection[] = [
   { id: 'trending', label: 'Trending', featured: 'ringconn-gen-3', columns: [
-    { title: 'This week', items: ['Viral right now', 'Rising fast', 'New arrivals', 'Back in stock'] },
-    { title: 'By signal', items: ['Hot on TikTok', 'Search spikes', 'Creator picks', 'Most wishlisted'] },
-    { title: 'Collections', items: ['Under $100', 'Gifts that ship in 48 h', 'Travel tech', 'Desk upgrades'] },
+    { title: 'This week', items: ['Viral right now', 'Rising fast', 'New arrivals'] },
+    { title: 'Collections', items: ['Under $100', 'Under $300', 'Gifts that ship in 48 h', 'Travel tech'] },
+    { title: 'Guides', items: ['How we pick', 'Does it work with my phone?', 'Movie night, checked as a set'] },
   ] },
   { id: 'wearables', label: 'Wearables', featured: 'rayban-meta-gen-3', columns: [
-    { title: 'Body', items: ['Smart rings', 'Smart glasses', 'Fitness bands', 'Sleep tech'] },
-    { title: 'Audio on you', items: ['Open-ear buds', 'Bone conduction', 'Sleep buds', 'Hearing assist'] },
-    { title: 'Guides', items: ['Ring sizing', 'Which smart glasses?', 'Works with iPhone', 'Works with Android'] },
+    { title: 'Body', items: ['Smart rings', 'Smart glasses', 'Fitness bands', 'Smartwatches', 'Sleep tech'] },
+    { title: 'Audio on you', items: ['Open-ear buds', 'Speakers'] },
+    { title: 'Guides', items: ['Ring sizing', 'Works with iPhone', 'Works with Android'] },
   ] },
   { id: 'smart-home', label: 'Smart home', featured: 'aqara-camera-e1', columns: [
-    { title: 'Devices', items: ['Cameras', 'Lighting', 'Robot vacuums', 'Hubs'] },
+    { title: 'Devices', items: ['Cameras', 'Lighting', 'Robot vacuums', 'Locks', 'Hubs'] },
     { title: 'Platforms', items: ['Apple Home', 'Google Home', 'Alexa', 'Matter and Thread'] },
-    { title: 'Guides', items: ['Do I need a hub?', 'Matter explained', 'Local-only setups'] },
+    { title: 'Guides', items: ['Do I need a hub?', 'Does it work with my phone?'] },
   ] },
   { id: 'cinema', label: 'Cinema', featured: 'xgimi-mogo-4-laser', columns: [
-    { title: 'Picture', items: ['Laser projectors', 'Battery projectors', 'Outdoor screens', 'Streaming sticks'] },
-    { title: 'Sound', items: ['Open-ear buds', 'Soundbars', 'Party speakers', 'Turntables'] },
-    { title: 'Guides', items: ['Projector vs TV', 'Throw distance calculator', 'Movie night under $2,000'] },
+    { title: 'Picture', items: ['Laser projectors', 'Battery projectors', 'Outdoor screens'] },
+    { title: 'Sound', items: ['Speakers', 'Open-ear buds'] },
+    { title: 'Guides', items: ['Movie night, checked as a set', 'Throw distance calculator', 'Compare projectors'] },
   ] },
   { id: 'power', label: 'Power', featured: 'anker-maggo-10k', columns: [
-    { title: 'Power', items: ['Magnetic power banks', 'GaN chargers', 'Travel adapters', 'Portable power stations'] },
-    { title: 'Mobility', items: ['E-scooters', 'E-bikes', 'Electric skateboards', 'Helmets and locks'] },
-    { title: 'Guides', items: ['Qi2 vs MagSafe', 'Airline battery rules', 'Scooter laws by state'] },
+    { title: 'Power', items: ['Power banks', 'Chargers', 'Magnetic charging', 'Travel adapters'] },
+    { title: 'Mobility', items: ['E-scooters'] },
+    { title: 'Guides', items: ['Qi2 vs MagSafe'] },
   ] },
   { id: 'health', label: 'Health', featured: 'omnilux-contour-face', columns: [
-    { title: 'Skin and light', items: ['LED masks', 'Red light panels', 'Microcurrent', 'Hair tools'] },
-    { title: 'Body', items: ['Smart scales', 'Massage guns', 'Posture trainers', 'Sleep tech'] },
-    { title: 'Guides', items: ['Red vs near-infrared', 'What the studies say', 'TGA-listed devices'] },
+    { title: 'Skin and light', items: ['LED masks'] },
+    { title: 'Body', items: ['Smart scales', 'Recovery', 'Health watches'] },
+    { title: 'Guides', items: ['Red vs near-infrared'] },
   ] },
   { id: 'maker', label: 'Maker', featured: 'bambu-a1-mini', columns: [
-    { title: 'Make', items: ['Desk 3D printers', 'Laser engravers', 'Dev boards', 'Soldering'] },
-    { title: 'Work', items: ['AI recorders', 'Label printers', 'Portable monitors', 'Stream decks'] },
-    { title: 'Guides', items: ['First 3D print', 'Record meetings legally', 'Travel-ready desk'] },
+    { title: 'Make', items: ['Desk 3D printers', 'Dev boards'] },
+    { title: 'Work', items: ['AI recorders', 'Cameras and gimbals', 'Keyboards'] },
+    { title: 'Guides', items: ['How we pick'] },
   ] },
 ]
 

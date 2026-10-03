@@ -4,6 +4,8 @@ import { Home as HomeIcon, Search, ShoppingBag, TrendingUp, User, X } from 'luci
 import { byId, products } from './lib/data'
 import { formatRoute, parseRoute, Route } from './lib/routes'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { CollectionPage } from './pages/CollectionPage'
+import { collectionBySlug, FOOTER } from './lib/collections'
 import { cartCount, useStore } from './lib/store'
 import { Header } from './components/Header'
 import { Home } from './components/Home'
@@ -120,15 +122,11 @@ function Footer() {
           <p className="mt-2 max-w-[38ch] text-[13.5px] text-ink-2">Trending tech, specs and prices checked against the maker, checked against your phone, home and plug, and shipped from Sydney or straight from the maker.</p>
           <div className="mt-4 flex items-center gap-2 text-[12.5px] text-ink-3"><span className="inline-block h-1.5 w-1.5 bg-pass" /> All systems operational, status.nexus.store</div>
         </div>
-        {[
-          ['Shop', ['Trending', 'Wearables', 'Smart home', 'Cinema', 'Power', 'Health']],
-          ['Help', ['Works-with checker', 'Delivery routes', 'Returns', 'Warranty', 'Contact']],
-          ['Company', ['How we pick products', 'Suppliers', 'Creators', 'Press']],
-        ].map(([t, items]) => (
-          <div key={t as string}>
-            <div className="mb-2 text-[13px] text-ink-3">{t as string}</div>
+        {FOOTER.map((g) => (
+          <div key={g.title}>
+            <div className="mb-2 text-[13px] text-ink-3">{g.title}</div>
             <ul className="space-y-1 text-[14px] text-ink">
-              {(items as string[]).map((i) => <li key={i}><a href="#" onClick={(e) => e.preventDefault()} className="hover:underline underline-offset-4">{i}</a></li>)}
+              {g.items.map((i) => <li key={i.label}><a href={formatRoute(i.route)} onClick={(e) => { e.preventDefault(); useStore.getState().go(i.route) }} className="hover:underline underline-offset-4">{i.label}</a></li>)}
             </ul>
           </div>
         ))}
@@ -148,6 +146,12 @@ function Page({ route }: { route: Route }) {
   switch (route.name) {
     case 'home': return <Home />
     case 'product': return products.some((p) => p.id === route.id) ? <ProductPage key={route.id} product={byId(route.id)} /> : <NotFoundPage hash={formatRoute(route)} />
+    case 'collection': {
+      const c = collectionBySlug(route.slug)
+      if (!c) return <NotFoundPage hash={formatRoute(route)} />
+      return <CollectionPage key={c.slug} title={c.title} blurb={c.blurb} base={c.filters} filters={route.filters} sort={route.sort} defaultSort={c.sort} onChange={(filters, sort) => useStore.getState().go({ ...route, filters, sort })} />
+    }
+    case 'search': return <CollectionPage key={route.q} title={`Results for “${route.q}”`} base={{ text: route.q }} filters={route.filters} sort={route.sort} q={route.q} onChange={(filters, sort) => useStore.getState().go({ ...route, filters, sort })} />
     case 'not-found': return <NotFoundPage hash={route.hash} />
     default: return <NotFoundPage hash={formatRoute(route)} />
   }

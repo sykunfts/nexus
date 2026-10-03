@@ -70,13 +70,8 @@ async def main():
             await page.wait_for_timeout(400)
         await run("compat-desktop", 1440, 900, compat)
         async def compat_pixel(page):
-            await page.click("text=See the MoGo 4 Laser")
-            await page.wait_for_timeout(600)
-            await page.click("#site-search")
-            await page.type("#site-search", "MagGo")
-            await page.wait_for_timeout(500)
-            await page.keyboard.press("Enter")
-            await page.wait_for_timeout(1000)
+            await page.goto("file:///tmp/claude-0/-home-claude/257f0885-4cfa-5197-81c4-04d07b5fc765/scratchpad/nexus/dist/index.html#/p/anker-maggo-10k")
+            await page.wait_for_timeout(1200)
             await page.click("role=tab[name=/Works with/]")
             await page.wait_for_timeout(400)
             await page.click("role=switch[name=/Include Pixel 9/]")
@@ -107,6 +102,49 @@ async def main():
             await page.wait_for_timeout(800)
             assert await page.locator("text=That link did not match").count() == 1, "404 page missing"
         await run("route-404", 1440, 900, route_404)
+        BASE = "file:///tmp/claude-0/-home-claude/257f0885-4cfa-5197-81c4-04d07b5fc765/scratchpad/nexus/dist/index.html"
+        async def collection(page):
+            await page.goto(BASE + "#/c/cinema")
+            await page.wait_for_timeout(1200)
+            await page.click("label:has-text('Sydney stock')")
+            await page.wait_for_timeout(600)
+            assert "#/c/cinema?f=route" in page.url, page.url
+        await run("collection-desktop", 1440, 900, collection)
+        async def collection_zero(page):
+            await page.goto(BASE + "#/c/alexa")
+            await page.wait_for_timeout(1200)
+            n0 = await page.locator("article").count()
+            await page.click("role=switch[name=/Only show products that work/]")
+            await page.wait_for_timeout(600)
+            n1 = await page.locator("article").count()
+            print("collection-zero: alexa", n0, "→ works-with", n1)
+            if n1 == 0:
+                assert await page.locator("text=Nothing matches that yet").count() == 1
+            await page.click("role=switch[name=/Only show products that work/]")
+            await page.wait_for_timeout(400)
+            assert await page.locator("article").count() == n0
+        await run("collection-zero", 1440, 900, collection_zero)
+        async def search_results(page):
+            await page.click("#site-search")
+            await page.type("#site-search", "ring")
+            await page.keyboard.press("Enter")
+            await page.wait_for_timeout(1000)
+            assert "#/search?q=ring" in page.url, page.url
+            assert await page.locator("article").count() >= 4
+        await run("search-results", 1440, 900, search_results)
+        async def mega_link(page):
+            await page.hover("button:has-text('Smart home')")
+            await page.wait_for_timeout(500)
+            await page.click("a:has-text('Robot vacuums')")
+            await page.wait_for_timeout(900)
+            assert "#/c/robot-vacuums" in page.url, page.url
+        await run("mega-link", 1440, 900, mega_link)
+        async def collection_mobile(page):
+            await page.goto(BASE + "#/c/wearables")
+            await page.wait_for_timeout(1200)
+            await page.click("button:has-text('Filters')")
+            await page.wait_for_timeout(500)
+        await run("collection-mobile", 390, 820, collection_mobile)
         await run("home-mobile", 400, 820)
         async def pdp_m(page):
             await page.click("text=See the MoGo 4 Laser")

@@ -42,8 +42,8 @@ const ensureVariants = (p) => (p.variants && p.variants.length ? p.variants : [{
 const out = items.map((p) => {
   const rate = RATES[p.priceSource.currency]
   if (!rate) throw new Error(`${p.id}: unknown currency ${p.priceSource.currency}`)
-  const price = r2(p.priceSource.amount / rate)
-  const compareAt = p.compareAtSource ? r2(p.compareAtSource.amount / RATES[p.compareAtSource.currency]) : undefined
+  const price = p.priceSource.currency === 'AUD' ? r2(p.priceSource.amount) : Math.round(p.priceSource.amount / rate)
+  const compareAt = p.compareAtSource ? Math.round(p.compareAtSource.amount / RATES[p.compareAtSource.currency]) : undefined
   const isNew = p.releasedAt && (Date.parse(LISTED_AT) - Date.parse(p.releasedAt)) / 86400000 <= 60
   const sources = [...new Set([...(p.sources ?? []), p.priceSource.at].filter(Boolean))]
   return {

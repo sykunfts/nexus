@@ -5,6 +5,7 @@ import { ProductImage } from './ProductVisual'
 import { ProductCard } from './ProductCard'
 import { FlipBoard } from './FlipBoard'
 import { Button, Tile } from './ui'
+import { navTarget } from '../lib/collections'
 
 const HERO = 'xgimi-mogo-4-laser'
 
@@ -157,7 +158,7 @@ export function Home() {
           {nav.map((s) => {
             const f = byId(s.featured)
             return (
-              <button key={s.id} type="button" onClick={() => go({ name: 'product', id: f.id })} className="flex min-w-[150px] items-center gap-3 bg-paper px-4 py-3 text-left hover:bg-paper-2">
+              <button key={s.id} type="button" onClick={() => go(navTarget(s.label))} className="flex min-w-[150px] items-center gap-3 bg-paper px-4 py-3 text-left hover:bg-paper-2">
                 <div className="h-10 w-12 shrink-0"><ProductImage product={f} /></div>
                 <div className="min-w-0">
                   <div className="text-[14px] text-ink">{s.label}</div>

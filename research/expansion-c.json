@@ -5,40 +5,125 @@
     "brand": "SwitchBot",
     "category": "Smart home",
     "tagline": "A retrofit smart deadbolt with fingerprint, NFC, auto and voice unlock on a rechargeable 4200 mAh battery pack.",
-    "priceSource": { "amount": 139.99, "currency": "USD", "at": "us.switch-bot.com", "url": "https://us.switch-bot.com/products/switchbot-lock-ultra" },
-    "rating": { "value": 4.8, "count": 28, "at": "us.switch-bot.com" },
+    "priceSource": {
+      "amount": 139.99,
+      "currency": "USD",
+      "at": "us.switch-bot.com",
+      "url": "https://us.switch-bot.com/products/switchbot-lock-ultra"
+    },
+    "rating": {
+      "value": 4.8,
+      "count": 28,
+      "at": "us.switch-bot.com"
+    },
     "origin": "CN",
     "market": "US",
     "visual": "hub",
     "hue": 210,
     "variants": [
-      { "id": "black", "label": "Black", "swatch": "#1b1b1f" },
-      { "id": "silver", "label": "Silver", "swatch": "#c0c3c7" }
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#1b1b1f"
+      },
+      {
+        "id": "silver",
+        "label": "Silver",
+        "swatch": "#c0c3c7"
+      }
     ],
     "options": [
-      { "id": "version", "label": "Version", "choices": [
-        { "id": "us", "label": "US", "sub": "US door version", "delta": 0, "facts": {} },
-        { "id": "eu", "label": "EU", "sub": "EU door version", "delta": 0, "facts": {} },
-        { "id": "uk", "label": "UK", "sub": "UK door version", "delta": 0, "facts": {} }
-      ] }
+      {
+        "id": "version",
+        "label": "Version",
+        "choices": [
+          {
+            "id": "us",
+            "label": "US",
+            "sub": "US door version",
+            "delta": 0,
+            "facts": {}
+          },
+          {
+            "id": "eu",
+            "label": "EU",
+            "sub": "EU door version",
+            "delta": 0,
+            "facts": {}
+          },
+          {
+            "id": "uk",
+            "label": "UK",
+            "sub": "UK door version",
+            "delta": 0,
+            "facts": {}
+          }
+        ]
+      }
     ],
     "facts": {},
-    "inBox": ["Lock Ultra (with backup pack)", "Mounting components", "Magnet and wood grain stickers", "Charging cable and support/direction tape"],
-    "specs": [
-      { "group": "Access", "rows": [
-        { "label": "Unlock methods", "value": "Fingerprint, auto unlock, NFC, voice, smartwatch" },
-        { "label": "Speed", "value": "Unlocks in 0.3 s with 98% fingerprint accuracy", "n": 0.3, "better": "low" },
-        { "label": "Platforms", "value": "SwitchBot app and voice; Matter via SwitchBot Hub Mini Matter (sold as a bundle)" },
-        { "label": "Fit", "value": "Single deadbolts, Jimmy-proof and mortise locks (adapter kit)" }
-      ] },
-      { "group": "Power and build", "rows": [
-        { "label": "Battery", "value": "3 × 18350 cells, 4200 mAh pack; up to 12 months at 10 locks/unlocks a day", "n": 12, "better": "high" },
-        { "label": "Size", "value": "122 × 62.6 × 66.8 mm" },
-        { "label": "Weight", "value": "367 g with batteries", "n": 367, "better": "low" },
-        { "label": "Warranty", "value": "1 year", "n": 1, "better": "high" }
-      ] }
+    "inBox": [
+      "Lock Ultra (with backup pack)",
+      "Mounting components",
+      "Magnet and wood grain stickers",
+      "Charging cable and support/direction tape"
     ],
-    "sources": ["us.switch-bot.com", "switch-bot.com"],
+    "specs": [
+      {
+        "group": "Access",
+        "rows": [
+          {
+            "label": "Unlock methods",
+            "value": "Fingerprint, auto unlock, NFC, voice, smartwatch"
+          },
+          {
+            "label": "Speed",
+            "value": "Unlocks in 0.3 s with 98% fingerprint accuracy",
+            "n": 0.3,
+            "better": "low"
+          },
+          {
+            "label": "Platforms",
+            "value": "SwitchBot app and voice; Matter via SwitchBot Hub Mini Matter (sold as a bundle)"
+          },
+          {
+            "label": "Fit",
+            "value": "Single deadbolts, Jimmy-proof and mortise locks (adapter kit)"
+          }
+        ]
+      },
+      {
+        "group": "Power and build",
+        "rows": [
+          {
+            "label": "Battery",
+            "value": "3 × 18350 cells, 4200 mAh pack; up to 12 months at 10 locks/unlocks a day",
+            "n": 12,
+            "better": "high"
+          },
+          {
+            "label": "Size",
+            "value": "122 × 62.6 × 66.8 mm"
+          },
+          {
+            "label": "Weight",
+            "value": "367 g with batteries",
+            "n": 367,
+            "better": "low"
+          },
+          {
+            "label": "Warranty",
+            "value": "1 year",
+            "n": 1,
+            "better": "high"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "us.switch-bot.com",
+      "switch-bot.com"
+    ],
     "notes": "SwitchBot's global store page quotes 9 months battery life while the US page quotes 12 months. Works-with platforms (Apple Home, Google, Alexa, Matter) are not itemised on the page; bundles with Hub Mini Matter indicate a hub is needed for Matter and remote access. Bluetooth version, materials and water rating not published on the page. Bundles: with Keypad Touch $199.98, Keypad Vision $239.98, Keypad Vision Pro $269.98, Hub Mini Matter $199.98, adapter kit $159.98.",
     "checkedAt": "2026-10-03"
   },
@@ -48,35 +133,89 @@
     "brand": "Govee",
     "category": "Smart home",
     "tagline": "A bendable RGBIC neon rope light with shape mapping, 64 scene and 12 music modes, and Matter support.",
-    "priceSource": { "amount": 47.99, "currency": "USD", "at": "us.govee.com", "url": "https://us.govee.com/products/govee-neon-rope-light-2" },
-    "compareAtSource": { "amount": 69.99, "currency": "USD", "at": "us.govee.com" },
+    "priceSource": {
+      "amount": 47.99,
+      "currency": "USD",
+      "at": "us.govee.com",
+      "url": "https://us.govee.com/products/govee-neon-rope-light-2"
+    },
+    "compareAtSource": {
+      "amount": 69.99,
+      "currency": "USD",
+      "at": "us.govee.com"
+    },
     "rating": null,
     "origin": "CN",
     "market": "US",
     "visual": "strip",
     "hue": 300,
     "variants": [
-      { "id": "white", "label": "White", "swatch": "#f2f2f0" },
-      { "id": "black", "label": "Black", "swatch": "#1b1b1f" }
+      {
+        "id": "white",
+        "label": "White",
+        "swatch": "#f2f2f0"
+      },
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#1b1b1f"
+      }
     ],
     "options": [],
     "facts": {
-      "home": ["matter", "alexa", "google"]
+      "home": [
+        "matter",
+        "alexa",
+        "google"
+      ]
     },
-    "inBox": ["Neon rope light 9.8 ft (H61D3)", "Bend clips (5 metal, 15 plastic)"],
-    "specs": [
-      { "group": "Light", "rows": [
-        { "label": "LEDs", "value": "252 RGBIC light sources", "n": 252, "better": "high" },
-        { "label": "Size", "value": "9.8 ft (3 m), model H61D3" },
-        { "label": "Modes", "value": "64 scene modes, 12 music modes, shape mapping" },
-        { "label": "Power", "value": "36 W, 24 V DC", "n": 36, "better": "low" }
-      ] },
-      { "group": "Connectivity", "rows": [
-        { "label": "Wireless", "value": "2.4 GHz Wi-Fi + Bluetooth" },
-        { "label": "Platforms", "value": "Govee Home app, Matter, Alexa, Google Assistant" }
-      ] }
+    "inBox": [
+      "Neon rope light 9.8 ft (H61D3)",
+      "Bend clips (5 metal, 15 plastic)"
     ],
-    "sources": ["us.govee.com"],
+    "specs": [
+      {
+        "group": "Light",
+        "rows": [
+          {
+            "label": "LEDs",
+            "value": "252 RGBIC light sources",
+            "n": 252,
+            "better": "high"
+          },
+          {
+            "label": "Size",
+            "value": "9.8 ft (3 m), model H61D3"
+          },
+          {
+            "label": "Modes",
+            "value": "64 scene modes, 12 music modes, shape mapping"
+          },
+          {
+            "label": "Power",
+            "value": "36 W, 24 V DC",
+            "n": 36,
+            "better": "low"
+          }
+        ]
+      },
+      {
+        "group": "Connectivity",
+        "rows": [
+          {
+            "label": "Wireless",
+            "value": "2.4 GHz Wi-Fi + Bluetooth"
+          },
+          {
+            "label": "Platforms",
+            "value": "Govee Home app, Matter, Alexa, Google Assistant"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "us.govee.com"
+    ],
     "notes": "A 16.4 ft (5 m) version (H61D5) is listed on the same page without a separate price shown. Lumen output, plug type and adapter input voltage are not stated on the page. Apple Home is not named, though Matter is listed. The page shows 0 global ratings.",
     "checkedAt": "2026-10-03"
   },
@@ -86,36 +225,93 @@
     "brand": "Nanoleaf",
     "category": "Smart home",
     "tagline": "Modular light squares with shelf, hooks and pegboard pieces, 1200–6500 K tunable whites and a built-in Thread border router.",
-    "priceSource": { "amount": 159.99, "currency": "USD", "at": "nanoleaf.me", "url": "https://nanoleaf.me/en-US/products/nanoleaf-blocks/" },
+    "priceSource": {
+      "amount": 159.99,
+      "currency": "USD",
+      "at": "nanoleaf.me",
+      "url": "https://nanoleaf.me/en-US/products/nanoleaf-blocks/"
+    },
     "rating": null,
     "origin": "US",
     "market": "US",
     "visual": "strip",
     "hue": 160,
     "variants": [
-      { "id": "white", "label": "White", "swatch": "#f4f4f2" }
+      {
+        "id": "white",
+        "label": "White",
+        "swatch": "#f4f4f2"
+      }
     ],
     "options": [],
     "facts": {
-      "home": ["homekit", "google", "alexa", "thread"],
+      "home": [
+        "homekit",
+        "google",
+        "alexa",
+        "thread"
+      ],
       "plug": "US",
       "voltage": "100-240"
     },
-    "inBox": ["3 × Squares (Large)", "1 × Light Pegboard", "2 × Hooks", "1 × Shelves", "1 × Shelf Cover", "1 × Rigid Linkers (pack)", "1 × Mounting Supplies Pack", "1 × Controller", "1 × Power Supply"],
-    "specs": [
-      { "group": "Light", "rows": [
-        { "label": "Brightness", "value": "320 lm per large square (70 lm small, 230 lm textured, 62 lm pegboard)", "n": 320, "better": "high" },
-        { "label": "Colour temperature", "value": "1200–6500 K, 16 million+ colours" },
-        { "label": "Capacity", "value": "Up to 17 large or textured squares per 42 W PSU (60 small squares)", "n": 17, "better": "high" },
-        { "label": "Size", "value": "9.1 × 9.1 × 1.1 in per large square" },
-        { "label": "Power", "value": "3 W per large square; 42 W PSU, 100–240 V AC, Type A plug" }
-      ] },
-      { "group": "Connectivity", "rows": [
-        { "label": "Connectivity", "value": "Wi-Fi 2.4 GHz, Bluetooth; built-in Thread border router; Matter not supported" },
-        { "label": "Platforms", "value": "Apple Home, Google Home, Amazon Alexa, SmartThings, Razer Chroma, Corsair iCUE, Overwolf, Homey, Nanoleaf apps" }
-      ] }
+    "inBox": [
+      "3 × Squares (Large)",
+      "1 × Light Pegboard",
+      "2 × Hooks",
+      "1 × Shelves",
+      "1 × Shelf Cover",
+      "1 × Rigid Linkers (pack)",
+      "1 × Mounting Supplies Pack",
+      "1 × Controller",
+      "1 × Power Supply"
     ],
-    "sources": ["nanoleaf.me"],
+    "specs": [
+      {
+        "group": "Light",
+        "rows": [
+          {
+            "label": "Brightness",
+            "value": "320 lm per large square (70 lm small, 230 lm textured, 62 lm pegboard)",
+            "n": 320,
+            "better": "high"
+          },
+          {
+            "label": "Colour temperature",
+            "value": "1200–6500 K, 16 million+ colours"
+          },
+          {
+            "label": "Capacity",
+            "value": "Up to 17 large or textured squares per 42 W PSU (60 small squares)",
+            "n": 17,
+            "better": "high"
+          },
+          {
+            "label": "Size",
+            "value": "9.1 × 9.1 × 1.1 in per large square"
+          },
+          {
+            "label": "Power",
+            "value": "3 W per large square; 42 W PSU, 100–240 V AC, Type A plug"
+          }
+        ]
+      },
+      {
+        "group": "Connectivity",
+        "rows": [
+          {
+            "label": "Connectivity",
+            "value": "Wi-Fi 2.4 GHz, Bluetooth; built-in Thread border router; Matter not supported"
+          },
+          {
+            "label": "Platforms",
+            "value": "Apple Home, Google Home, Amazon Alexa, SmartThings, Razer Chroma, Corsair iCUE, Overwolf, Homey, Nanoleaf apps"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "nanoleaf.me"
+    ],
     "notes": "Nanoleaf is headquartered in Canada; origin is recorded as US for the North American region. The review widget shows 89 reviews with 83% five-star but no average value. Panel finish is not stated in text; the kit is shown white in imagery. Kit sold is Starter Kit / Mixed Squares / Combo; 5 GHz Wi-Fi is not supported.",
     "checkedAt": "2026-10-03"
   },
@@ -125,7 +321,12 @@
     "brand": "SwitchBot",
     "category": "Smart home",
     "tagline": "A Matter bridge hub with temperature and humidity sensing, a control dial and scene buttons for 30+ devices.",
-    "priceSource": { "amount": 119.99, "currency": "USD", "at": "us.switch-bot.com", "url": "https://us.switch-bot.com/products/switchbot-hub-3" },
+    "priceSource": {
+      "amount": 119.99,
+      "currency": "USD",
+      "at": "us.switch-bot.com",
+      "url": "https://us.switch-bot.com/products/switchbot-hub-3"
+    },
     "rating": null,
     "origin": "CN",
     "market": "US",
@@ -134,22 +335,63 @@
     "variants": [],
     "options": [],
     "facts": {
-      "home": ["homekit", "google", "alexa", "matter"]
+      "home": [
+        "homekit",
+        "google",
+        "alexa",
+        "matter"
+      ]
     },
     "specs": [
-      { "group": "Hub", "rows": [
-        { "label": "Connectivity", "value": "Wi-Fi 2.4 GHz, Bluetooth; Matter bridge for Apple Home and Home Assistant; Thread border router not stated" },
-        { "label": "Capacity", "value": "Control 30+ connected devices", "n": 30, "better": "high" },
-        { "label": "Sensors", "value": "Temperature and humidity; CO2 with Meter Pro CO2" },
-        { "label": "Platforms", "value": "Apple Home (via Matter), Google Home, Alexa, SmartThings, Siri Shortcuts, IFTTT, Home Assistant, Fire TV" }
-      ] },
-      { "group": "Build", "rows": [
-        { "label": "Size", "value": "126 × 94 × 38 mm" },
-        { "label": "Weight", "value": "190 g", "n": 190, "better": "low" },
-        { "label": "Warranty", "value": "1 year", "n": 1, "better": "high" }
-      ] }
+      {
+        "group": "Hub",
+        "rows": [
+          {
+            "label": "Connectivity",
+            "value": "Wi-Fi 2.4 GHz, Bluetooth; Matter bridge for Apple Home and Home Assistant; Thread border router not stated"
+          },
+          {
+            "label": "Capacity",
+            "value": "Control 30+ connected devices",
+            "n": 30,
+            "better": "high"
+          },
+          {
+            "label": "Sensors",
+            "value": "Temperature and humidity; CO2 with Meter Pro CO2"
+          },
+          {
+            "label": "Platforms",
+            "value": "Apple Home (via Matter), Google Home, Alexa, SmartThings, Siri Shortcuts, IFTTT, Home Assistant, Fire TV"
+          }
+        ]
+      },
+      {
+        "group": "Build",
+        "rows": [
+          {
+            "label": "Size",
+            "value": "126 × 94 × 38 mm"
+          },
+          {
+            "label": "Weight",
+            "value": "190 g",
+            "n": 190,
+            "better": "low"
+          },
+          {
+            "label": "Warranty",
+            "value": "1 year",
+            "n": 1,
+            "better": "high"
+          }
+        ]
+      }
     ],
-    "sources": ["us.switch-bot.com", "switch-bot.com"],
+    "sources": [
+      "us.switch-bot.com",
+      "switch-bot.com"
+    ],
     "notes": "Power input, infrared range, light sensor, display details and in-box contents are not stated on the fetched pages. Colour not named. 2-pack $239.98 and 4-pack $479.96; a 2-year extended warranty is offered for US$24.90. Review widget shows 9 to 10 reviews without an average value.",
     "checkedAt": "2026-10-03"
   },
@@ -159,38 +401,108 @@
     "brand": "Aqara",
     "category": "Smart home",
     "tagline": "A Matter over Thread lever lock with fingerprint, keypad, Apple Home Key, NFC and key access on four AA batteries.",
-    "priceSource": { "amount": 229.99, "currency": "USD", "at": "bestbuy.com", "url": "https://www.bestbuy.com/product/aqara-smart-lock-u300-matter-over-thread-lever-set-with-touchpad-nfc-auto-lock-home-key-fingerprint-bluetooth-key-access-black/JJ8RHCJ2FC" },
+    "priceSource": {
+      "amount": 229.99,
+      "currency": "USD",
+      "at": "bestbuy.com",
+      "url": "https://www.bestbuy.com/product/aqara-smart-lock-u300-matter-over-thread-lever-set-with-touchpad-nfc-auto-lock-home-key-fingerprint-bluetooth-key-access-black/JJ8RHCJ2FC"
+    },
     "rating": null,
     "origin": "CN",
     "market": "US",
     "visual": "hub",
     "hue": 30,
     "variants": [
-      { "id": "black", "label": "Black", "swatch": "#1b1b1f" },
-      { "id": "silver", "label": "Silver", "swatch": "#c0c3c7" }
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#1b1b1f"
+      },
+      {
+        "id": "silver",
+        "label": "Silver",
+        "swatch": "#c0c3c7"
+      }
     ],
     "options": [],
     "facts": {
-      "home": ["homekit", "google", "alexa", "matter", "thread"],
+      "home": [
+        "homekit",
+        "google",
+        "alexa",
+        "matter",
+        "thread"
+      ],
       "needsThread": true
     },
-    "inBox": ["Smart Lock U300 × 1", "User Manual × 1", "Installation Diagram × 1", "AA Battery × 4", "Mechanical Key × 2", "Accessories Kit × 1", "Backplate × 1"],
-    "specs": [
-      { "group": "Access", "rows": [
-        { "label": "Unlock methods", "value": "Fingerprint (up to 25), PIN keypad, Apple Home Key, NFC card, Bluetooth app, mechanical key" },
-        { "label": "Speed", "value": "0.3 s fingerprint unlock", "n": 0.3, "better": "low" },
-        { "label": "Platforms", "value": "Apple Home, Google Home, Alexa, SmartThings, Matter over Thread, IFTTT, Home Assistant" },
-        { "label": "Connectivity", "value": "Matter over Thread, Bluetooth, NFC" }
-      ] },
-      { "group": "Power and build", "rows": [
-        { "label": "Battery", "value": "4 × AA (included), up to 10 months", "n": 10, "better": "high" },
-        { "label": "Water resistance", "value": "IPX4" },
-        { "label": "Fit", "value": "Doors 35–55 mm (1 3/8–2 1/6 in) thick" },
-        { "label": "Weight", "value": "2290 g (5.05 lb)", "n": 2290, "better": "low" },
-        { "label": "Temperature", "value": "-30 °C to 55 °C (outer panel)" }
-      ] }
+    "inBox": [
+      "Smart Lock U300 × 1",
+      "User Manual × 1",
+      "Installation Diagram × 1",
+      "AA Battery × 4",
+      "Mechanical Key × 2",
+      "Accessories Kit × 1",
+      "Backplate × 1"
     ],
-    "sources": ["bestbuy.com", "us.aqara.com", "aqara.com"],
+    "specs": [
+      {
+        "group": "Access",
+        "rows": [
+          {
+            "label": "Unlock methods",
+            "value": "Fingerprint (up to 25), PIN keypad, Apple Home Key, NFC card, Bluetooth app, mechanical key"
+          },
+          {
+            "label": "Speed",
+            "value": "0.3 s fingerprint unlock",
+            "n": 0.3,
+            "better": "low"
+          },
+          {
+            "label": "Platforms",
+            "value": "Apple Home, Google Home, Alexa, SmartThings, Matter over Thread, IFTTT, Home Assistant"
+          },
+          {
+            "label": "Connectivity",
+            "value": "Matter over Thread, Bluetooth, NFC"
+          }
+        ]
+      },
+      {
+        "group": "Power and build",
+        "rows": [
+          {
+            "label": "Battery",
+            "value": "4 × AA (included), up to 10 months",
+            "n": 10,
+            "better": "high"
+          },
+          {
+            "label": "Water resistance",
+            "value": "IPX4"
+          },
+          {
+            "label": "Fit",
+            "value": "Doors 35–55 mm (1 3/8–2 1/6 in) thick"
+          },
+          {
+            "label": "Weight",
+            "value": "2290 g (5.05 lb)",
+            "n": 2290,
+            "better": "low"
+          },
+          {
+            "label": "Temperature",
+            "value": "-30 °C to 55 °C (outer panel)"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "bestbuy.com",
+      "us.aqara.com",
+      "aqara.com"
+    ],
     "notes": "Best Buy lists the Black lever set (model DL-D02E) at $229.99 with shipping by 7 Oct; us.aqara.com shows the same $229.99 for Black and Silver but its colour selector text was ambiguous about stock. A Thread border router (Matter controller) is required for Matter control; the lock works over Bluetooth without a hub. Materials not stated. us.aqara.com shows 45 reviews with 91% five-star but no average value.",
     "checkedAt": "2026-10-03"
   },
@@ -200,38 +512,116 @@
     "brand": "Dreame",
     "category": "Smart home",
     "tagline": "A 20,000 Pa robot vacuum and mop that climbs 6 cm thresholds, with 80 °C hot-water mop washing and auto-empty.",
-    "priceSource": { "amount": 999.99, "currency": "USD", "at": "dreametech.com", "url": "https://www.dreametech.com/products/dreame-x50-ultra" },
-    "compareAtSource": { "amount": 1599.99, "currency": "USD", "at": "dreametech.com" },
-    "rating": { "value": 4.6, "count": 193, "at": "dreametech.com" },
+    "priceSource": {
+      "amount": 999.99,
+      "currency": "USD",
+      "at": "dreametech.com",
+      "url": "https://www.dreametech.com/products/dreame-x50-ultra"
+    },
+    "compareAtSource": {
+      "amount": 1599.99,
+      "currency": "USD",
+      "at": "dreametech.com"
+    },
+    "rating": {
+      "value": 4.6,
+      "count": 193,
+      "at": "dreametech.com"
+    },
     "origin": "CN",
     "market": "US",
     "visual": "robovac",
     "hue": 20,
     "variants": [
-      { "id": "black", "label": "Black", "swatch": "#1b1b1f" },
-      { "id": "white", "label": "White", "swatch": "#f2f2f0" }
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#1b1b1f"
+      },
+      {
+        "id": "white",
+        "label": "White",
+        "swatch": "#f2f2f0"
+      }
     ],
     "options": [],
     "facts": {
-      "home": ["alexa", "google", "matter"]
+      "home": [
+        "alexa",
+        "google",
+        "matter"
+      ]
     },
-    "inBox": ["Robot vacuum", "Base station", "Main brush (pre-installed)", "Side brush", "2 × mop pads", "2 × dust bags", "Cleaning solution", "Ramp extension", "Documentation"],
-    "specs": [
-      { "group": "Cleaning", "rows": [
-        { "label": "Suction", "value": "20,000 Pa", "n": 20000, "better": "high" },
-        { "label": "Runtime", "value": "Up to 220 min (quiet mode, vacuum and mop)", "n": 220, "better": "high" },
-        { "label": "Battery", "value": "6,400 mAh", "n": 6400, "better": "high" },
-        { "label": "Clearance", "value": "Climbs thresholds up to 6 cm (ProLeap)", "n": 6, "better": "high" },
-        { "label": "Capacity", "value": "395 ml dustbin; 4.5 L clean / 4.0 L used water tanks" },
-        { "label": "Sensors", "value": "Obstacle recognition of up to 200 object types" }
-      ] },
-      { "group": "Base and app", "rows": [
-        { "label": "Base", "value": "Auto-empty 3.2 L bag (up to 100 days), 80 °C hot-water mop wash, hot-air drying, auto water and solution refill, self-cleaning washboard" },
-        { "label": "Platforms", "value": "Dreame app, built-in voice control, Alexa, Google Home, Siri, Matter, Apple Watch" },
-        { "label": "Size", "value": "350 × 350 × 89 mm robot (sensor retracted); 457 × 340 × 590 mm base" }
-      ] }
+    "inBox": [
+      "Robot vacuum",
+      "Base station",
+      "Main brush (pre-installed)",
+      "Side brush",
+      "2 × mop pads",
+      "2 × dust bags",
+      "Cleaning solution",
+      "Ramp extension",
+      "Documentation"
     ],
-    "sources": ["dreametech.com"],
+    "specs": [
+      {
+        "group": "Cleaning",
+        "rows": [
+          {
+            "label": "Suction",
+            "value": "20,000 Pa",
+            "n": 20000,
+            "better": "high"
+          },
+          {
+            "label": "Runtime",
+            "value": "Up to 220 min (quiet mode, vacuum and mop)",
+            "n": 220,
+            "better": "high"
+          },
+          {
+            "label": "Battery",
+            "value": "6,400 mAh",
+            "n": 6400,
+            "better": "high"
+          },
+          {
+            "label": "Clearance",
+            "value": "Climbs thresholds up to 6 cm (ProLeap)",
+            "n": 6,
+            "better": "high"
+          },
+          {
+            "label": "Capacity",
+            "value": "395 ml dustbin; 4.5 L clean / 4.0 L used water tanks"
+          },
+          {
+            "label": "Sensors",
+            "value": "Obstacle recognition of up to 200 object types"
+          }
+        ]
+      },
+      {
+        "group": "Base and app",
+        "rows": [
+          {
+            "label": "Base",
+            "value": "Auto-empty 3.2 L bag (up to 100 days), 80 °C hot-water mop wash, hot-air drying, auto water and solution refill, self-cleaning washboard"
+          },
+          {
+            "label": "Platforms",
+            "value": "Dreame app, built-in voice control, Alexa, Google Home, Siri, Matter, Apple Watch"
+          },
+          {
+            "label": "Size",
+            "value": "350 × 350 × 89 mm robot (sensor retracted); 457 × 340 × 590 mm base"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "dreametech.com"
+    ],
     "notes": "A 'Complete' variant was shown at $914.99 after coupon. Plug type, noise level and robot weight not stated on the page.",
     "checkedAt": "2026-10-03"
   },
@@ -241,39 +631,116 @@
     "brand": "Roborock",
     "category": "Smart home",
     "tagline": "A 7.98 cm thin robot vacuum and mop with 22,000 Pa suction, 4 cm threshold climbing and a hot-water washing dock.",
-    "priceSource": { "amount": 1299.99, "currency": "USD", "at": "us.roborock.com", "url": "https://us.roborock.com/products/roborock-saros-10" },
-    "compareAtSource": { "amount": 1599.99, "currency": "USD", "at": "us.roborock.com" },
+    "priceSource": {
+      "amount": 1299.99,
+      "currency": "USD",
+      "at": "us.roborock.com",
+      "url": "https://us.roborock.com/products/roborock-saros-10"
+    },
+    "compareAtSource": {
+      "amount": 1599.99,
+      "currency": "USD",
+      "at": "us.roborock.com"
+    },
     "rating": null,
     "origin": "CN",
     "market": "US",
     "visual": "robovac",
     "hue": 350,
     "variants": [
-      { "id": "black", "label": "Black", "swatch": "#1b1b1f" },
-      { "id": "white", "label": "White", "swatch": "#f2f2f0" }
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#1b1b1f"
+      },
+      {
+        "id": "white",
+        "label": "White",
+        "swatch": "#f2f2f0"
+      }
     ],
     "options": [],
     "facts": {
-      "home": ["alexa", "google"]
+      "home": [
+        "alexa",
+        "google"
+      ]
     },
-    "inBox": ["Robot", "Dock base", "Power cord", "User manual", "Disposable dust bag"],
-    "specs": [
-      { "group": "Cleaning", "rows": [
-        { "label": "Suction", "value": "22,000 Pa HyperForce", "n": 22000, "better": "high" },
-        { "label": "Runtime", "value": "Up to 220 min on a single charge", "n": 220, "better": "high" },
-        { "label": "Battery", "value": "6,400 mAh lithium-ion", "n": 6400, "better": "high" },
-        { "label": "Thickness", "value": "7.98 cm (3.14 in) with LDS retracted; 9.35 cm elevated", "n": 7.98, "better": "low" },
-        { "label": "Clearance", "value": "Climbs thresholds up to 4 cm (1.57 in)", "n": 4, "better": "high" },
-        { "label": "Sensors", "value": "ReactiveAI 3.0 obstacle recognition" }
-      ] },
-      { "group": "Base and app", "rows": [
-        { "label": "Base", "value": "RockDock Ultra 2.0 (10-in-1): auto-empty, 176 °F hot-water mop washing, 140 °F heated air drying, auto refill" },
-        { "label": "Platforms", "value": "Roborock app, built-in voice assistant, Alexa, Google; Matter and Apple Home promised via an upcoming OTA" },
-        { "label": "Size", "value": "13.78 × 13.90 × 3.14 in robot" },
-        { "label": "Weight", "value": "36.38 lb as listed by Best Buy (robot and dock)", "n": 36.38, "better": "low" }
-      ] }
+    "inBox": [
+      "Robot",
+      "Dock base",
+      "Power cord",
+      "User manual",
+      "Disposable dust bag"
     ],
-    "sources": ["us.roborock.com", "bestbuy.com"],
+    "specs": [
+      {
+        "group": "Cleaning",
+        "rows": [
+          {
+            "label": "Suction",
+            "value": "22,000 Pa HyperForce",
+            "n": 22000,
+            "better": "high"
+          },
+          {
+            "label": "Runtime",
+            "value": "Up to 220 min on a single charge",
+            "n": 220,
+            "better": "high"
+          },
+          {
+            "label": "Battery",
+            "value": "6,400 mAh lithium-ion",
+            "n": 6400,
+            "better": "high"
+          },
+          {
+            "label": "Thickness",
+            "value": "7.98 cm (3.14 in) with LDS retracted; 9.35 cm elevated",
+            "n": 7.98,
+            "better": "low"
+          },
+          {
+            "label": "Clearance",
+            "value": "Climbs thresholds up to 4 cm (1.57 in)",
+            "n": 4,
+            "better": "high"
+          },
+          {
+            "label": "Sensors",
+            "value": "ReactiveAI 3.0 obstacle recognition"
+          }
+        ]
+      },
+      {
+        "group": "Base and app",
+        "rows": [
+          {
+            "label": "Base",
+            "value": "RockDock Ultra 2.0 (10-in-1): auto-empty, 176 °F hot-water mop washing, 140 °F heated air drying, auto refill"
+          },
+          {
+            "label": "Platforms",
+            "value": "Roborock app, built-in voice assistant, Alexa, Google; Matter and Apple Home promised via an upcoming OTA"
+          },
+          {
+            "label": "Size",
+            "value": "13.78 × 13.90 × 3.14 in robot"
+          },
+          {
+            "label": "Weight",
+            "value": "36.38 lb as listed by Best Buy (robot and dock)",
+            "n": 36.38,
+            "better": "low"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "us.roborock.com",
+      "bestbuy.com"
+    ],
     "notes": "Roborock's US store page shows $1,299.99 (was $1,599.99) but also carried an 'Out of stock, coming soon' string; Best Buy lists the White model with a comp. value of $1,599.99, 'Save $300' and next-day shipping, which matches $1,299.99. Dustbin and water tank volumes and plug type not stated on the Roborock page; Best Buy lists a 0.07 gal bin. Matter support is not live at the time of checking.",
     "checkedAt": "2026-10-03"
   },
@@ -283,7 +750,12 @@
     "brand": "TP-Link",
     "category": "Smart home",
     "tagline": "A wired 2K QHD indoor and outdoor security camera with colour night vision, dual spotlights and an IP66 rating.",
-    "priceSource": { "amount": 39.99, "currency": "USD", "at": "us.store.tapo.com", "url": "https://us.store.tapo.com/products/tapo-c120-indoor-outdoor-wired-security-camera" },
+    "priceSource": {
+      "amount": 39.99,
+      "currency": "USD",
+      "at": "us.store.tapo.com",
+      "url": "https://us.store.tapo.com/products/tapo-c120-indoor-outdoor-wired-security-camera"
+    },
     "rating": null,
     "origin": "CN",
     "market": "US",
@@ -293,53 +765,135 @@
     "options": [],
     "facts": {},
     "specs": [
-      { "group": "Camera", "rows": [
-        { "label": "Resolution", "value": "2K QHD" },
-        { "label": "Camera", "value": "Colour night vision with dual spotlights" },
-        { "label": "Water resistance", "value": "IP66" },
-        { "label": "Power", "value": "Wired (mains powered)" }
-      ] }
+      {
+        "group": "Camera",
+        "rows": [
+          {
+            "label": "Resolution",
+            "value": "2K QHD"
+          },
+          {
+            "label": "Camera",
+            "value": "Colour night vision with dual spotlights"
+          },
+          {
+            "label": "Water resistance",
+            "value": "IP66"
+          },
+          {
+            "label": "Power",
+            "value": "Wired (mains powered)"
+          }
+        ]
+      }
     ],
-    "sources": ["us.store.tapo.com"],
+    "sources": [
+      "us.store.tapo.com"
+    ],
     "notes": "The tp-link.com specifications page could not be fetched in this environment, so field of view, storage, Wi-Fi band, platforms (Alexa/Google), adapter spec, in-box list and colour are not recorded. The price is the store page's listed $39.99; a 4-pack is shown at 33% off. Tapo Care subscription details not verified.",
     "checkedAt": "2026-10-03"
   },
   {
     "id": "philips-hue-play-hdmi-sync-box-8k",
-    "name": "Hue Play HDMI Sync Box 8K",
+    "name": "Play HDMI Sync Box 8K",
     "brand": "Philips Hue",
     "category": "Smart home",
     "tagline": "An HDMI 2.1 sync box with four inputs that matches Hue lights to 8K60 and 4K120 video with HDR10+ and Dolby Vision.",
-    "priceSource": { "amount": 384.99, "currency": "USD", "at": "philips-hue.com", "url": "https://www.philips-hue.com/en-us/p/hue-philips-hue-play-hdmi-sync-box-8k/046677579753" },
-    "rating": { "value": 3.3, "count": 8, "at": "philips-hue.com" },
+    "priceSource": {
+      "amount": 384.99,
+      "currency": "USD",
+      "at": "philips-hue.com",
+      "url": "https://www.philips-hue.com/en-us/p/hue-philips-hue-play-hdmi-sync-box-8k/046677579753"
+    },
+    "rating": {
+      "value": 3.3,
+      "count": 8,
+      "at": "philips-hue.com"
+    },
     "origin": "EU",
     "market": "US",
     "visual": "hub",
     "hue": 270,
     "variants": [
-      { "id": "black", "label": "Black", "swatch": "#1b1b1f" }
+      {
+        "id": "black",
+        "label": "Black",
+        "swatch": "#1b1b1f"
+      }
     ],
     "options": [],
     "facts": {
-      "home": ["alexa", "google", "homekit", "matter"],
-      "provides": [{ "kind": "hdmi", "count": 4 }]
+      "home": [
+        "alexa",
+        "google",
+        "homekit",
+        "matter"
+      ],
+      "provides": [
+        {
+          "kind": "hdmi",
+          "count": 4
+        }
+      ]
     },
-    "inBox": ["Hue Play HDMI Sync Box 8K", "12 V power adapter", "HDMI cable"],
-    "specs": [
-      { "group": "Video", "rows": [
-        { "label": "Inputs", "value": "4 × HDMI 2.1 inputs", "n": 4, "better": "high" },
-        { "label": "Resolution", "value": "8K 60 Hz, 4K 120 Hz, 4K 60 Hz, 1080p 120 Hz pass-through", "n": 33177600, "better": "high" },
-        { "label": "HDR", "value": "HDR10+, Dolby Vision" },
-        { "label": "Connectivity", "value": "Bluetooth 5 for setup, Wi-Fi, HDMI CEC; works without Wi-Fi once set up" }
-      ] },
-      { "group": "System", "rows": [
-        { "label": "Platforms", "value": "Requires Hue Bridge; Alexa, Google Assistant, Apple Home, Matter, SmartThings, Sonos, IFTTT" },
-        { "label": "Size", "value": "7-7/8 × 4-5/16 × 1 in" },
-        { "label": "Weight", "value": "0.59 kg", "n": 0.59, "better": "low" },
-        { "label": "Build", "value": "Synthetic and metal, black" }
-      ] }
+    "inBox": [
+      "Hue Play HDMI Sync Box 8K",
+      "12 V power adapter",
+      "HDMI cable"
     ],
-    "sources": ["philips-hue.com"],
+    "specs": [
+      {
+        "group": "Video",
+        "rows": [
+          {
+            "label": "Inputs",
+            "value": "4 × HDMI 2.1 inputs",
+            "n": 4,
+            "better": "high"
+          },
+          {
+            "label": "Resolution",
+            "value": "8K 60 Hz, 4K 120 Hz, 4K 60 Hz, 1080p 120 Hz pass-through",
+            "n": 33177600,
+            "better": "high"
+          },
+          {
+            "label": "HDR",
+            "value": "HDR10+, Dolby Vision"
+          },
+          {
+            "label": "Connectivity",
+            "value": "Bluetooth 5 for setup, Wi-Fi, HDMI CEC; works without Wi-Fi once set up"
+          }
+        ]
+      },
+      {
+        "group": "System",
+        "rows": [
+          {
+            "label": "Platforms",
+            "value": "Requires Hue Bridge; Alexa, Google Assistant, Apple Home, Matter, SmartThings, Sonos, IFTTT"
+          },
+          {
+            "label": "Size",
+            "value": "7-7/8 × 4-5/16 × 1 in"
+          },
+          {
+            "label": "Weight",
+            "value": "0.59 kg",
+            "n": 0.59,
+            "better": "low"
+          },
+          {
+            "label": "Build",
+            "value": "Synthetic and metal, black"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "philips-hue.com"
+    ],
     "notes": "Requires a Hue Bridge and Hue lights (sold separately; bundles with Bridge and TV lightstrips are listed). The voice-assistant and Apple Home compatibility is via the Hue system with the Bridge. eARC specifics and plug type not stated. Rating is 3.3 from 8 reviews on the maker's page.",
     "checkedAt": "2026-10-03"
   },
@@ -349,7 +903,12 @@
     "brand": "Ecovacs",
     "category": "Smart home",
     "tagline": "A cordless window-cleaning robot with a battery station, 5,500 Pa adsorption, six spray nozzles and 110 minutes per charge.",
-    "priceSource": { "amount": 399.00, "currency": "USD", "at": "ecovacs.com", "url": "https://www.ecovacs.com/us/winbot-window-cleaning-robot/winbot-w2-pro-omni" },
+    "priceSource": {
+      "amount": 399.0,
+      "currency": "USD",
+      "at": "ecovacs.com",
+      "url": "https://www.ecovacs.com/us/winbot-window-cleaning-robot/winbot-w2-pro-omni"
+    },
     "rating": null,
     "origin": "CN",
     "market": "US",
@@ -358,24 +917,82 @@
     "variants": [],
     "options": [],
     "facts": {},
-    "inBox": ["WINBOT × 1", "Station × 1", "Safety rope × 1", "Carabiner × 1", "Wiping pad × 2", "Cleaning solution bottle × 1 (empty)", "User manual × 1"],
-    "specs": [
-      { "group": "Cleaning", "rows": [
-        { "label": "Suction", "value": "5,500 Pa (+/-500) adsorption", "n": 5500, "better": "high" },
-        { "label": "Runtime", "value": "110 min (+/-10%) per charge, about 55 sq m", "n": 110, "better": "high" },
-        { "label": "Battery", "value": "4,500 mAh lithium (station)", "n": 4500, "better": "high" },
-        { "label": "Capacity", "value": "60 ml (+/-5) water tank, 6 spray nozzles", "n": 60, "better": "high" },
-        { "label": "Speed", "value": "1 min 45 s (+/-15 s) per window in fast mode" },
-        { "label": "Noise", "value": "63 dB", "n": 63, "better": "low" }
-      ] },
-      { "group": "Build and app", "rows": [
-        { "label": "Size", "value": "271 × 271 × 77 mm robot; 312 × 215 × 327 mm station" },
-        { "label": "Weight", "value": "1.6 kg robot; 5.5 kg station", "n": 1.6, "better": "low" },
-        { "label": "Safety", "value": "12-stage protection incl. 8 hardware fall-protection measures and a 100 kg-rated safety rope" },
-        { "label": "Platforms", "value": "ECOVACS HOME app with omnidirectional remote control" }
-      ] }
+    "inBox": [
+      "WINBOT × 1",
+      "Station × 1",
+      "Safety rope × 1",
+      "Carabiner × 1",
+      "Wiping pad × 2",
+      "Cleaning solution bottle × 1 (empty)",
+      "User manual × 1"
     ],
-    "sources": ["ecovacs.com"],
+    "specs": [
+      {
+        "group": "Cleaning",
+        "rows": [
+          {
+            "label": "Suction",
+            "value": "5,500 Pa (+/-500) adsorption",
+            "n": 5500,
+            "better": "high"
+          },
+          {
+            "label": "Runtime",
+            "value": "110 min (+/-10%) per charge, about 55 sq m",
+            "n": 110,
+            "better": "high"
+          },
+          {
+            "label": "Battery",
+            "value": "4,500 mAh lithium (station)",
+            "n": 4500,
+            "better": "high"
+          },
+          {
+            "label": "Capacity",
+            "value": "60 ml (+/-5) water tank, 6 spray nozzles",
+            "n": 60,
+            "better": "high"
+          },
+          {
+            "label": "Speed",
+            "value": "1 min 45 s (+/-15 s) per window in fast mode"
+          },
+          {
+            "label": "Noise",
+            "value": "63 dB",
+            "n": 63,
+            "better": "low"
+          }
+        ]
+      },
+      {
+        "group": "Build and app",
+        "rows": [
+          {
+            "label": "Size",
+            "value": "271 × 271 × 77 mm robot; 312 × 215 × 327 mm station"
+          },
+          {
+            "label": "Weight",
+            "value": "1.6 kg robot; 5.5 kg station",
+            "n": 1.6,
+            "better": "low"
+          },
+          {
+            "label": "Safety",
+            "value": "12-stage protection incl. 8 hardware fall-protection measures and a 100 kg-rated safety rope"
+          },
+          {
+            "label": "Platforms",
+            "value": "ECOVACS HOME app with omnidirectional remote control"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      "ecovacs.com"
+    ],
     "notes": "Substitute for the Winbot W2 Omni, which ecovacs.com (US) lists as sold out and points buyers to this model. Colour, voice-assistant support and plug type not stated on the page. Safety-rope rating taken from the W2 Omni page's description of the same three-layer rope.",
     "checkedAt": "2026-10-03"
   }

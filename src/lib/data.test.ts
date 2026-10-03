@@ -22,7 +22,7 @@ describe('catalogue', () => {
   it('converts overseas prices at the snapshot rate', () => {
     for (const p of products.filter((x) => x.priceSource)) {
       const rate = CURRENCIES[p.priceSource!.currency].rate
-      expect(p.price, p.id).toBeCloseTo(p.priceSource!.amount / rate, 1)
+      expect(Math.abs(p.price - p.priceSource!.amount / rate), p.id).toBeLessThan(1)   // converted prices round to whole dollars
     }
     expect(products.find((p) => p.id === 'anker-nebula-capsule-3-laser')?.priceSource?.currency).toBe('USD')
   })

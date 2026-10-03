@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { byId, NavSection } from '../lib/data'
 import { fmt } from '../lib/currency'
 import { useStore } from '../lib/store'
+import { navTarget } from '../lib/collections'
 import { ProductImage } from './ProductVisual'
 import { Tile } from './ui'
 
@@ -29,7 +30,7 @@ export function MegaMenu({ section, onClose }: { section: NavSection; onClose: (
               <ul className="space-y-1.5">
                 {col.items.map((item) => (
                   <li key={item}>
-                    <a href="#" onClick={(e) => { e.preventDefault(); onClose() }} className="block text-[15px] text-ink hover:underline underline-offset-4 decoration-signal decoration-2">
+                    <a href="#" onClick={(e) => { e.preventDefault(); onClose(); go(navTarget(item)) }} className="block text-[15px] text-ink hover:underline underline-offset-4 decoration-signal decoration-2">
                       {item}
                     </a>
                   </li>
