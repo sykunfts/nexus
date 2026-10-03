@@ -181,7 +181,7 @@ Candidates are sorted by score; ties by trend delta. `firstSeen` is carried from
 
 ## The Radar page
 
-A second entry in the same Vite app, `/radar/`, React with the shop's tokens and components (Button, Tile, ProductImage-style frame, sparkline). No router: one page with a filter rail and a ranked list; a candidate expands in place.
+A second entry in the same Vite app, `radar.html` (served as `/nexus/radar.html` on Pages), React with the shop's tokens and components (Button, Tile, ProductImage-style frame, sparkline). No router: one page with a filter rail and a ranked list; a candidate expands in place.
 
 - Header: "Trend Radar", generated time, sources that fed the run (with "Reddit: blocked this run" when so), rate used, candidate count. A link to the shop and to the novelty rail.
 - Filter rail: section (from terms), minimum margin (0 / 30 / 45 %), flags to exclude, "AU plug only", "hide skipped". Sort: score, margin, trend, demand, newest.
@@ -244,7 +244,7 @@ On `issues: opened` where `title` starts with `list:` and `issue.user.login == g
 1. Repository `sykunfts/nexus`, public, pushed (GitHub Desktop the first time).
 2. Settings → Secrets and variables → Actions → New repository secret: name `CJ_API_KEY`, value the key from CJ's developer page.
 3. Settings → Pages → Source: GitHub Actions.
-4. Actions tab → Trend Radar → Run workflow once; then the shop is at `https://sykunfts.github.io/nexus/` and the Radar at `https://sykunfts.github.io/nexus/radar/`.
+4. Actions tab → Trend Radar → Run workflow once; then the shop is at `https://sykunfts.github.io/nexus/` and the Radar at `https://sykunfts.github.io/nexus/radar.html`.
 5. Issues are how approvals work; leave Issues enabled.
 
 ## Later phases (not in this build)

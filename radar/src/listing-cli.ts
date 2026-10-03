@@ -16,9 +16,10 @@ async function main() {
   const trend = pre.ok ? trends?.terms.find((t) => t.id === pre.request.termId) : undefined
   const d = decide({ ...req, trend: trend ? { delta: trend.delta, label: trend.trendLabel, score: trend.score, confidence: trend.confidence, series: trend.series } : null })
   if (!d.ok) { console.log(`REASON=${d.reason}`); process.exit(2) }
-  const file = path.join(root, 'data', 'listings', `${d.request.pid}.json`)
+  const safe = d.request.pid.replace(/[^A-Za-z0-9_-]/g, '_')   // the pid names the file; keep it to plain characters
+  const file = path.join(root, 'data', 'listings', `${safe}.json`)
   await writeAtomic(file, d.product)
-  console.log(`LISTING_PATH=data/listings/${d.request.pid}.json`)
+  console.log(`LISTING_PATH=data/listings/${safe}.json`)
   console.log(`PRODUCT_ID=${d.product.id}`)
 }
 

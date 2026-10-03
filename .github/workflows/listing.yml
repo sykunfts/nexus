@@ -1,0 +1,63 @@
+# Approval flow: an issue titled "list: <pid>" opened by the repository owner becomes a draft shop
+# listing. Anyone else's issue is ignored by the condition below. Refusals are commented, not merged.
+name: Add a Radar listing
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  listing:
+    if: startsWith(github.event.issue.title, 'list:') && github.event.issue.user.login == github.repository_owner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Write the listing
+        id: write
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: |
+          set +e
+          out=$(npm run listing --silent)
+          code=$?
+          set -e
+          echo "$out"
+          echo "$out" | grep -E '^(LISTING_PATH|PRODUCT_ID|REASON)=' >> "$GITHUB_OUTPUT" || true
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+      - name: Commit and close
+        if: steps.write.outputs.code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          LISTING_PATH: ${{ steps.write.outputs.LISTING_PATH }}
+          PRODUCT_ID: ${{ steps.write.outputs.PRODUCT_ID }}
+        run: |
+          git config user.name "nexus-radar[bot]"
+          git config user.email "nexus-radar[bot]@users.noreply.github.com"
+          git add data/listings
+          git commit -m "Listing: $PRODUCT_ID (#$ISSUE_NUMBER)"
+          git push
+          gh issue close "$ISSUE_NUMBER" --comment "Added as $LISTING_PATH. The shop rebuilds in a few minutes; the product will be at #/p/$PRODUCT_ID on the site."
+      - name: Explain a refusal
+        if: steps.write.outputs.code != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REASON: ${{ steps.write.outputs.REASON }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "Not added: $REASON. Open the Radar again and use its Add to shop button for a fresh request."
