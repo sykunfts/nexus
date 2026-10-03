@@ -236,6 +236,22 @@ async def main():
             await page.goto(BASE + "#/orders"); await page.wait_for_timeout(800)
             assert await page.locator("table tbody tr").count() >= 1
         await run("orders-list", 1440, 900, orders_list)
+        async def guides_index(page):
+            await page.goto(BASE + "#/guides"); await page.wait_for_timeout(1000)
+            assert await page.locator("button:has-text('Movie night')").count() >= 1
+        await run("guides-index", 1440, 900, guides_index)
+        async def guide_movie(page):
+            await page.goto(BASE + "#/guides/movie-night"); await page.wait_for_timeout(1200)
+            await page.locator("input[type='range']").fill("2.7"); await page.wait_for_timeout(300)
+            d = await page.locator("[data-diagonal]").inner_text()
+            print("movie-night diagonal at 2.7 m:", d)
+            assert d.strip() in ("102″", "101″", "103″"), d
+            await page.evaluate("document.querySelector('input[type=range]').scrollIntoView({block:'center'})"); await page.wait_for_timeout(300)
+        await run("guide-movie-night", 1440, 900, guide_movie)
+        async def how_we_pick(page):
+            await page.goto(BASE + "#/how-we-pick"); await page.wait_for_timeout(1000)
+            assert await page.locator("table tbody tr").count() >= 60
+        await run("how-we-pick", 1440, 900, how_we_pick)
         await run("home-mobile", 400, 820)
         async def pdp_m(page):
             await page.click("text=See the MoGo 4 Laser")

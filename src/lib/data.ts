@@ -82,6 +82,7 @@ export interface Product {
   sources: string[]           // where the price and specs were checked
   notes?: string              // things we could not verify, shown as a note, never as a fact
   rating: Rating | null       // only where a value and a count were both visible
+  throwRatio?: { value: number; source: string }   // projectors: distance ÷ image width, verified at build time
   stock: 'in' | 'low' | 'out'
   stockCount?: number
   fulfil: Fulfil
@@ -149,6 +150,7 @@ const catalogue: Omit<Product, 'photos' | 'listedAt' | 'market'>[] = [
     sources: ['au.xgimi.com', 'jbhifi.com.au'],
     notes: 'HDMI version is not stated on the AU listing. No AirPlay; use Google Cast or HDMI from an iPhone.',
     rating: { value: 4.47, count: 17, at: 'au.xgimi.com' },
+    throwRatio: { value: 1.2, source: 'https://au.xgimi.com/products/mogo-4-laser' },
     stock: 'in',
     fulfil: WAREHOUSE,
     visual: 'projector-can',
@@ -199,6 +201,7 @@ const catalogue: Omit<Product, 'photos' | 'listedAt' | 'market'>[] = [
     sources: ['jbhifi.com.au', 'au.xgimi.com'],
     notes: 'HDMI version and the full port list are not stated on the AU listing.',
     rating: null,
+    throwRatio: { value: 1.3, source: 'https://www.projectorcentral.com/xgimi-vibe_one_battery_powered.htm' },
     stock: 'in',
     fulfil: WAREHOUSE,
     visual: 'projector',

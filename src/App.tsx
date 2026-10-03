@@ -11,6 +11,8 @@ import { CheckoutPage } from './pages/CheckoutPage'
 import { ConfirmedPage } from './pages/ConfirmedPage'
 import { AccountPage } from './pages/AccountPage'
 import { OrderPage, OrdersPage } from './pages/OrdersPage'
+import { GuidePage, GuidesPage } from './pages/GuidesPage'
+import { HowWePickPage } from './pages/HowWePickPage'
 import { collectionBySlug, FOOTER } from './lib/collections'
 import { cartCount, useStore } from './lib/store'
 import { Header } from './components/Header'
@@ -165,6 +167,9 @@ function Page({ route }: { route: Route }) {
     case 'account': return <AccountPage />
     case 'orders': return <OrdersPage />
     case 'order': return <OrderPage id={route.id} />
+    case 'guides': return <GuidesPage />
+    case 'guide': return <GuidePage slug={route.slug} />
+    case 'how-we-pick': return <HowWePickPage />
     case 'not-found': return <NotFoundPage hash={route.hash} />
     default: return <NotFoundPage hash={formatRoute(route)} />
   }
