@@ -2,7 +2,7 @@
   Collections are declared queries: every mega-menu item, footer link and category tile is one of
   these (or a guide / fixed route), so the whole menu is data and nothing can be a dead end.
 */
-import { nav } from './data'
+import { nav, TREND_NOTE } from './data'
 import { Filters, Route, Sort } from './routes'
 
 export interface Collection { slug: string; title: string; blurb: string; filters: Filters; sort?: Sort }
@@ -11,7 +11,7 @@ const c = (slug: string, title: string, blurb: string, filters: Filters, sort?: 
 
 export const COLLECTIONS: Collection[] = [
   // nav sections
-  c('trending', 'Trending', 'Everything in the catalogue, ranked by 7-day change in interest.', {}, 'trending'),
+  c('trending', 'Trending', `Everything in the catalogue, ranked by 7-day change in interest. ${TREND_NOTE}`, {}, 'trending'),
   c('wearables', 'Wearables', 'Rings, glasses, bands and watches, checked against your phone.', { category: ['Wearables'] }),
   c('smart-home', 'Smart home', 'Cameras, lights, robots, locks and hubs, checked against your home platform.', { category: ['Smart home'] }),
   c('cinema', 'Cinema', 'Projectors, screens and the sound to go with them.', { category: ['Home cinema', 'Audio'] }),
@@ -19,8 +19,8 @@ export const COLLECTIONS: Collection[] = [
   c('health', 'Health', 'Light therapy, recovery and measurement, with the maker\'s claims labelled as such.', { category: ['Health'] }),
   c('maker', 'Maker', 'Printers, boards, recorders, cameras and keyboards for the desk.', { category: ['Maker', 'Work'] }),
   // this week
-  c('viral-right-now', 'Viral right now', 'Interest more than tripled in seven days.', { badge: ['Viral'] }),
-  c('rising-fast', 'Rising fast', 'Climbing steadily this week.', { badge: ['Trending', 'Rising'] }),
+  c('viral-right-now', 'Viral right now', `Interest more than tripled in seven days. ${TREND_NOTE}`, { badge: ['Viral'] }),
+  c('rising-fast', 'Rising fast', `Climbing steadily this week. ${TREND_NOTE}`, { badge: ['Trending', 'Rising'] }),
   c('new-arrivals', 'New arrivals', 'Newest releases first, then the newest listings.', {}, 'newest'),
   // collections
   c('under-100', 'Under $100', 'Small, useful and under a hundred dollars.', { price: [0, 100] }),

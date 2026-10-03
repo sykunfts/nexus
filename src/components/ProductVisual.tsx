@@ -31,7 +31,7 @@ export function ProductImage({ product, index = 0, hue, swatch, glow = false, cl
   if (src) {
     return <img src={src} alt={`${product.brand} ${product.name}`} loading="lazy" decoding="async" className={cn('block h-full w-full object-cover', className)} />
   }
-  return <ProductVisual visual={product.visual} hue={hue ?? product.hue} swatch={swatch ?? product.variants[0]?.swatch} glow={glow} className={className} />
+  return <ProductVisual visual={product.visual} hue={hue ?? product.hue} swatch={swatch ?? product.variants[0]?.swatch} glow={glow} className={className} name={`${product.brand} ${product.name}`} />
 }
 
 interface Props {
@@ -40,9 +40,10 @@ interface Props {
   swatch?: string
   className?: string
   glow?: boolean
+  name?: string
 }
 
-export function ProductVisual({ visual, hue = 78, swatch = '#2b2b30', className, glow = true }: Props) {
+export function ProductVisual({ visual, hue = 78, swatch = '#2b2b30', className, glow = true, name }: Props) {
   const uid = useId().replace(/:/g, '')
   const g = (name: string) => `${uid}-${name}`
   const wall = `url(#${g('wall')})`
@@ -59,7 +60,7 @@ export function ProductVisual({ visual, hue = 78, swatch = '#2b2b30', className,
   const ink = light ? '#1b1b1f' : '#fafafa'
 
   return (
-    <svg viewBox="0 0 400 300" className={cn('block h-full w-full', className)} role="img" aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 400 300" className={cn('block h-full w-full', className)} role="img" aria-hidden="true" focusable="false" data-name={name}>
       <defs>
         <radialGradient id={g('glow')} cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#121820" stopOpacity="0.16" />

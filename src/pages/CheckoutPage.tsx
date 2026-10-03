@@ -8,7 +8,7 @@ import { byId, Origin } from '../lib/data'
 import { fmt, ShipMethod } from '../lib/currency'
 import { canExpress, COUNTRIES, Country, etaText, originLabel, regionOf, ZONE_LABEL, zoneOf } from '../lib/shipping'
 import { newOrderId, Order, orderTotals, splitShipments, toOrderLines } from '../lib/orders'
-import { AddressInput, validateAddress, validateCard, validEmail } from '../lib/validate'
+import { AddressInput, validateAddress, validateCard, validEmail, errorSummary } from '../lib/validate'
 import { checkBuild, resolveFacts } from '../lib/compat'
 import { useSetup, useStore } from '../lib/store'
 import { AddressForm, emptyAddress } from '../components/AddressForm'
@@ -58,10 +58,12 @@ export function CheckoutPage() {
   const [addressId, setAddressId] = useState<string | 'new'>(savedDefault ? savedDefault.id : 'new')
   const [address, setAddress] = useState<AddressInput>(emptyAddress(defaultCountry))
   const [addrErrors, setAddrErrors] = useState<Record<string, string>>({})
+  const [addrSubmitted, setAddrSubmitted] = useState(false)
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [methods, setMethods] = useState<Partial<Record<Origin, ShipMethod>>>({})
   const [card, setCard] = useState({ number: '', expiry: '', cvc: '', name: '' })
   const [cardErrors, setCardErrors] = useState<Record<string, string>>({})
+  const [cardSubmitted, setCardSubmitted] = useState(false)
   const [placing, setPlacing] = useState(false)
 
   const chosenAddress: AddressInput = addressId === 'new' ? address : (account?.addresses.find((a) => a.id === addressId) ?? address)
@@ -91,19 +93,23 @@ export function CheckoutPage() {
   const submitDelivery = () => {
     if (addressId === 'new') {
       const errs = validateAddress(address)
-      setAddrErrors(errs); setTouched({ name: true, line1: true, city: true, region: true, postcode: true, phone: true })
+      setAddrErrors(errs); setTouched({ name: true, line1: true, city: true, region: true, postcode: true, phone: true }); setAddrSubmitted(true)
       if (Object.keys(errs).length) return
     }
     next('delivery', 'shipping')
   }
-  const submitPayment = () => { const errs = validateCard(card, new Date()); setCardErrors(errs); if (Object.keys(errs).length) return; next('payment', 'review') }
+  const submitPayment = () => { const errs = validateCard(card, new Date()); setCardErrors(errs); setCardSubmitted(true); if (Object.keys(errs).length) return; next('payment', 'review') }
+  const ADDRESS_LABELS = { name: 'Name', line1: 'Street address', city: 'City', region: 'State or region', postcode: 'Postcode', phone: 'Phone' }
+  const CARD_LABELS = { number: 'Card number', expiry: 'Expiry', cvc: 'CVC', name: 'Name on card' }
+  const addrStepError = addrSubmitted ? errorSummary(addrErrors, ADDRESS_LABELS) : null
+  const cardStepError = cardSubmitted ? errorSummary(cardErrors, CARD_LABELS) : null
   const place = () => {
     setPlacing(true)
     if (!account || account.email !== email.trim().toLowerCase()) signIn(email)
     let saved = addressId === 'new' ? null : account?.addresses.find((a) => a.id === addressId) ?? null
     if (!saved) saved = addAddress({ ...address, isDefault: !account?.addresses.length })
     const order: Order = {
-      id: newOrderId(new Date(), cart.length), placedAt: new Date().toISOString(), email: email.trim().toLowerCase(), address: saved, lines, shipments, totals,
+      id: newOrderId(new Date(), cart.length, useStore.getState().orders.map((o) => o.id)), placedAt: new Date().toISOString(), email: email.trim().toLowerCase(), address: saved, lines, shipments, totals,
       compat: { status: compat.status, issues: compat.issues.map((i) => i.title) },
     }
     addOrder(order)
@@ -145,6 +151,7 @@ export function CheckoutPage() {
                 <button type="button" role="radio" aria-checked={addressId === 'new'} onClick={() => setAddressId('new')} className={cn('bg-sheet px-3 py-2.5 text-left text-[13.5px]', addressId === 'new' ? 'text-ink shadow-[inset_0_0_0_2px_var(--color-ink)]' : 'text-ink-2 hover:bg-paper')}>New address</button>
               </div>
             )}
+            {addrStepError && <p role="alert" className="mb-3 border border-fail bg-fail-tint px-3 py-2 text-[13px] text-fail">{addrStepError}</p>}
             {addressId === 'new' && (
               <AddressForm value={address} onChange={(v) => { setAddress(v); setAddrErrors(validateAddress(v)) }} errors={liveErrors} onBlurField={(f) => { setTouched((t) => ({ ...t, [f]: true })); setAddrErrors(validateAddress(address)) }} />
             )}
@@ -181,6 +188,7 @@ export function CheckoutPage() {
           </Section>
 
           <Section n={4} title="Payment" open={step === 'payment'} done={done.payment} summary={done.payment ? `Card ending ${card.number.replace(/\D/g, '').slice(-4)}, not charged` : undefined} onEdit={() => setStep('payment')}>
+            {cardStepError && <p role="alert" className="mb-3 border border-fail bg-fail-tint px-3 py-2 text-[13px] text-fail">{cardStepError}</p>}
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block sm:col-span-2"><span className="text-[12.5px] text-ink-2">Card number</span>
                 <input inputMode="numeric" autoComplete="cc-number" value={card.number} onChange={(e) => setCard({ ...card, number: e.target.value })} placeholder="4242 4242 4242 4242" aria-invalid={!!cardErrors.number} className={cn('reading mt-1 h-10 w-full border bg-sheet px-3 text-[14px] text-ink placeholder:text-ink-3', cardErrors.number ? 'border-fail' : 'border-rule-2 focus:border-ink')} />

@@ -104,7 +104,7 @@ export function FilterRail({ filters, facets, locked, onChange, header = true }:
       )}
 
       <ul className="py-3">
-        <Check label="In stock only" count={facets.route.reduce((n, r) => n + r.count, 0)} on={!!filters.inStock} onChange={() => onChange({ ...filters, inStock: filters.inStock ? undefined : true })} />
+        <Check label="In stock only" count={facets.inStock} on={!!filters.inStock} onChange={() => onChange({ ...filters, inStock: filters.inStock ? undefined : true })} />
       </ul>
     </div>
   )

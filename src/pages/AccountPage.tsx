@@ -68,6 +68,7 @@ export function AccountPage() {
           <div className="col-span-12 lg:col-span-6">
             <h1 className="display-md text-[34px] text-ink sm:text-[44px]">Sign in</h1>
             <p className="mt-2 text-[15px] text-ink-2">Your email is the account. No password, nothing is sent; it is remembered in this browser.</p>
+            {storageBlocked && <p className="mt-2 text-[12.5px] text-check">This browser is not keeping data between visits, so the account, cart and setup last until you close the tab.</p>}
             <label className="mt-6 block sm:max-w-[360px]">
               <span className="text-[12.5px] text-ink-2">Email</span>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { if (validEmail(email)) signIn(email); else setEmailErr('That email address does not look right.') } }} autoComplete="email" aria-invalid={!!emailErr} className={cn('mt-1 h-10 w-full border bg-sheet px-3 text-[14px] text-ink', emailErr ? 'border-fail' : 'border-rule-2 focus:border-ink')} />
@@ -97,7 +98,7 @@ export function AccountPage() {
               </div>
               <button type="button" onClick={signOut} className="text-[13px] text-ink-2 underline underline-offset-4 hover:text-ink">Sign out</button>
             </div>
-            {storageBlocked && <p className="mt-2 text-[12.5px] text-check">This browser is blocking storage, so the account lasts until you close the tab.</p>}
+            {storageBlocked && <p className="mt-2 text-[12.5px] text-check">This browser is not keeping data between visits, so the account lasts until you close the tab.</p>}
 
             <div className="mt-6 space-y-4">
               <Card title="My setup" action={<button type="button" onClick={() => go({ name: 'setup' })} className="text-[13px] text-ink-2 underline underline-offset-4 hover:text-ink">Edit</button>}>

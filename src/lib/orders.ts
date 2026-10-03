@@ -40,6 +40,9 @@ export interface Order {
 
 /* ---------- functions ---------- */
 
+/* A picture for an order line from its own snapshot, so a product that leaves the catalogue still shows as itself. */
+export const lineVisual = (l: OrderLine) => ({ photos: [], visual: l.visual, hue: l.hue, brand: l.brand, name: l.name, variants: [] })
+
 export function toOrderLines(cart: Line[]): OrderLine[] {
   return cart.map((l) => {
     const p = byId(l.productId)
@@ -70,9 +73,12 @@ export function orderTotals(lines: OrderLine[], shipments: Shipment[], country: 
   return { subtotal, shipping, tax: tax.amount, taxIncluded: tax.included, taxLabel: tax.label, total: r2(subtotal + shipping + (tax.included ? 0 : tax.amount)), currency }
 }
 
-export function newOrderId(now: Date, salt: number): string {
-  const n = (Math.floor(now.getTime() / 1000) * 31 + salt * 7919) % 1_000_000
-  return `NX-${String(n).padStart(6, '0')}`
+export function newOrderId(now: Date, salt: number, taken: string[] = []): string {
+  for (let i = 0; ; i++) {
+    const n = (Math.floor(now.getTime() / 1000) * 31 + (salt + i) * 7919) % 1_000_000
+    const id = `NX-${String(n).padStart(6, '0')}`
+    if (!taken.includes(id)) return id
+  }
 }
 
 const MIN = 60_000

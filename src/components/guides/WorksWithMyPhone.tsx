@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { byId, products } from '../../lib/data'
 import { DEVICES } from '../../lib/devices'
 import { checkBuild, resolveFacts } from '../../lib/compat'
-import { useSetup } from '../../lib/store'
+import { useSetup, useStore } from '../../lib/store'
 import { CollectionLink, H2, Live, Note, P, ProductLink } from './Prose'
 import { cn } from '../../lib/cn'
 
@@ -10,11 +10,16 @@ export function WorksWithMyPhone() {
   const setup = useSetup()
   const [productId, setProductId] = useState('anker-maggo-10k')
   const [phoneId, setPhoneId] = useState('pixel-9')
-  const phones = DEVICES.filter((d) => d.kind === 'phone')
+  const gear = useStore((s) => s.gear)
+  /* The catalogue's phones, then any phone typed into My setup, so the demo can run against the phone the user actually owns. */
+  const phones = useMemo(() => [
+    ...DEVICES.filter((d) => d.kind === 'phone').map((d) => ({ id: d.id, name: d.name, facts: d.facts })),
+    ...gear.filter((g) => g.kind === 'phone' && !g.deviceId && g.facts.phone).map((g) => ({ id: g.id, name: g.name, facts: g.facts })),
+  ], [gear])
   const result = useMemo(() => {
     const p = byId(productId)
-    const phone = phones.find((d) => d.id === phoneId)!
-    const build = [{ id: phone.id, name: phone.name, facts: phone.facts }, ...setup.filter((s) => !s.id.startsWith('g-iphone') && !s.id.startsWith('g-pixel') && !s.id.startsWith('d-iphone') && !s.id.startsWith('d-pixel') && !s.id.startsWith('d-galaxy'))]
+    const phone = phones.find((d) => d.id === phoneId) ?? phones[0]
+    const build = [{ id: phone.id, name: phone.name, facts: phone.facts }, ...setup.filter((s) => !s.facts.phone)]
     return checkBuild({ name: p.name, facts: resolveFacts(p, {}), product: p }, build)
   }, [productId, phoneId, setup, phones])
 

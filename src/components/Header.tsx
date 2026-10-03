@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, Search, ShoppingBag, User, X } from 'lucide-react'
-import { nav } from '../lib/data'
+import { nav, TREND_NOTE } from '../lib/data'
 import { CURRENCIES, Currency } from '../lib/currency'
 import { cartCount, useStore } from '../lib/store'
 import { navTarget } from '../lib/collections'
@@ -88,7 +88,7 @@ export function Header() {
         </div>
 
         <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-2">
-          <span className="hidden items-center gap-1.5 whitespace-nowrap pr-2 text-[12.5px] text-ink-3 xl:flex" title="Trend figures are sample data until the trend worker runs">
+          <span className="hidden items-center gap-1.5 whitespace-nowrap pr-2 text-[12.5px] text-ink-3 xl:flex" title={TREND_NOTE}>
             <span className="inline-block h-1.5 w-1.5 bg-check" aria-hidden />
             Trends: sample data
           </span>

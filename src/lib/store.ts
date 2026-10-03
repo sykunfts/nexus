@@ -8,7 +8,7 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { DEFAULT_GEAR, GearItem, Product, productById, Region, REGION_LABEL } from './data'
 import { Currency, detectCurrency, ShipMethod } from './currency'
-import { Route } from './routes'
+import { parseRoute, Route } from './routes'
 import { Account, Address } from './account'
 import { Order } from './orders'
 import { COUNTRIES, Country, Zone } from './shipping'
@@ -94,8 +94,11 @@ const safeStorage = {
 let toastId = 0
 const uid = () => Math.random().toString(36).slice(2, 10)
 
+/* The first paint is the page the link names; the hash is read here so no frame of the home page shows first. */
+const routeFromLocation = (): Route => { try { return typeof location === 'undefined' ? { name: 'home' } : parseRoute(location.hash) } catch { return { name: 'home' } } }
+
 const initial = () => ({
-  route: { name: 'home' } as Route,
+  route: routeFromLocation(),
   currency: detectCurrency(),
   shipMethod: 'standard' as ShipMethod,
   cart: [] as Line[],
@@ -174,9 +177,10 @@ export const useStore = create<State>()(
       },
       dismissToast: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
 
-      signIn: (email) => set((s) => ({ account: s.account?.email === email ? s.account : { email: email.trim().toLowerCase(), createdAt: new Date().toISOString(), addresses: s.account?.addresses ?? [] } })),
+      /* The same address in any casing is the same person and keeps their account; a different address starts a fresh one. */
+      signIn: (email) => set((s) => { const e = email.trim().toLowerCase(); return { account: s.account?.email === e ? s.account : { email: e, createdAt: new Date().toISOString(), addresses: [] } } }),
       signOut: () => set({ account: null }),
-      clearData: () => { set({ ...initial(), currency: get().currency }); try { safeStorage.removeItem('nexus.v1') } catch { /* noop */ } },
+      clearData: () => { set({ ...initial(), route: { name: 'home' }, currency: get().currency, storageBlocked }); try { safeStorage.removeItem('nexus.v1') } catch { /* noop */ } },
       addAddress: (a) => {
         const address: Address = { ...a, id: uid() }
         set((s) => {

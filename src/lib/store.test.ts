@@ -9,6 +9,8 @@ describe('store persistence', () => {
     useStore.getState().addRecentSearch('ring')
     useStore.getState().addRecentSearch('mask')
     expect(useStore.getState().recentSearches).toEqual(['mask', 'ring'])
+    useStore.getState().clearData()
+    expect(useStore.getState().storageBlocked).toBe(true)   // clearing data does not unblock the browser's storage
   })
   it('signIn creates an account and clearData wipes it', async () => {
     const { useStore } = await import('./store')
@@ -16,6 +18,26 @@ describe('store persistence', () => {
     expect(useStore.getState().account?.email).toBe('nick@example.com')
     useStore.getState().clearData()
     expect(useStore.getState().account).toBeNull()
+  })
+  it('signIn normalises the email and keeps the account when it is the same person', async () => {
+    const { useStore } = await import('./store')
+    useStore.getState().signIn('nick@example.com')
+    useStore.getState().addAddress({ name: 'Nick', line1: '1 Test St', city: 'Sydney', region: 'NSW', postcode: '2000', country: 'AU', isDefault: true })
+    const created = useStore.getState().account!.createdAt
+    useStore.getState().signIn('  Nick@Example.com ')
+    expect(useStore.getState().account?.email).toBe('nick@example.com')
+    expect(useStore.getState().account?.createdAt).toBe(created)
+    expect(useStore.getState().account?.addresses).toHaveLength(1)
+    // a different email is a different person: fresh account, no addresses carried over
+    useStore.getState().signIn('someone@else.com')
+    expect(useStore.getState().account?.addresses).toEqual([])
+    useStore.getState().clearData()
+  })
+  it('clearData returns to the home page as well as wiping data', async () => {
+    const { useStore } = await import('./store')
+    useStore.getState().go({ name: 'account' })
+    useStore.getState().clearData()
+    expect(useStore.getState().route).toEqual({ name: 'home' })
   })
   it('go sets the route and the region follows the gear', async () => {
     const { useStore } = await import('./store')

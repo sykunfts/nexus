@@ -289,6 +289,36 @@ async def main():
             await page.click("text=See the MoGo 4 Laser")
             await page.wait_for_timeout(2500)
         await run("pdp-mobile", 400, 820, pdp_m)
+        async def checkout_mobile(page):
+            await page.goto(BASE + "#/p/anker-maggo-10k"); await page.wait_for_timeout(1500)
+            await page.locator("div.fixed button:has-text('Add to cart')").click(); await page.wait_for_timeout(600)
+            await page.click("button:has-text('Full checkout')"); await page.wait_for_timeout(800)
+            await page.fill("input[type='email']", "nick@example.com")
+            await page.click("button:has-text('Continue to delivery')"); await page.wait_for_timeout(400)
+            await page.click("button:has-text('Continue to shipping')"); await page.wait_for_timeout(400)
+            # the step summary names the empty fields before the user scrolls
+            assert await page.locator("[role='alert']:has-text('fields need fixing')").count() == 1
+            assert "#/checkout" in page.url, page.url
+        await run("checkout-mobile", 390, 820, checkout_mobile)
+        async def account_mobile(page):
+            await page.goto(BASE + "#/account"); await page.wait_for_timeout(1000)
+            await page.fill("input[type='email']", "nick@example.com"); await page.keyboard.press("Enter"); await page.wait_for_timeout(600)
+            assert await page.locator("text=Signed in as").count() == 1
+        await run("account-mobile", 390, 820, account_mobile)
+        async def guide_mobile(page):
+            await page.goto(BASE + "#/guides/movie-night"); await page.wait_for_timeout(1200)
+            assert await page.locator("[data-diagonal]").count() == 1
+        await run("guide-mobile", 390, 820, guide_mobile)
+        async def back_button(page):
+            await page.goto(BASE + "#/"); await page.wait_for_timeout(1000)
+            await page.click("button:has-text('Cinema')"); await page.wait_for_timeout(800)
+            assert "#/c/cinema" in page.url, page.url
+            await page.click("label:has-text('Sydney stock')"); await page.wait_for_timeout(500)
+            assert "route" in page.url
+            await page.go_back(); await page.wait_for_timeout(800)
+            assert page.url.endswith("#/"), page.url   # Back skips the filter entry and returns to the previous page
+            assert await page.locator("text=The new thing").count() >= 1
+        await run("back-button", 1440, 900, back_button)
         await b.close()
         print("\n".join(errors[:40]) if errors else "no console errors")
 asyncio.run(main())
