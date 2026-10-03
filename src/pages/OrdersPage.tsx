@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { products } from '../lib/data'
 import { fmt } from '../lib/currency'
-import { Order, OrderStatus, orderStatus, shipmentStatus } from '../lib/orders'
+import { Order, OrderStatus, orderStatus, shipmentStatus, lineVisual } from '../lib/orders'
 import { COUNTRIES, originLabel } from '../lib/shipping'
 import { useStore } from '../lib/store'
 import { ProductImage } from '../components/ProductVisual'
@@ -115,7 +115,7 @@ export function OrderPage({ id }: { id: string }) {
                   const p = products.find((x) => x.id === l.productId)
                   return (
                     <li key={l.key} className="flex items-center gap-3 px-4 py-2.5">
-                      <div className="h-11 w-14 shrink-0 bg-paper">{p ? <ProductImage product={p} hue={l.hue} swatch={l.swatch} /> : null}</div>
+                      <div className="h-11 w-14 shrink-0 bg-paper"><ProductImage product={p ?? lineVisual(l)} hue={l.hue} swatch={l.swatch} /></div>
                       <div className="min-w-0 flex-1"><div className="truncate text-[13.5px] text-ink">{l.brand} {l.name}</div><div className="truncate text-[12px] text-ink-3">{l.variantLabel}, {l.qty} × {fmt(l.unitPrice, currency, { compact: true })}</div></div>
                     </li>
                   )

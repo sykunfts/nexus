@@ -1,6 +1,7 @@
-import { byId, nav, PRICE_CHECKED, priceCheckedText, products, trendTape } from '../lib/data'
+import { byId, nav, PRICE_CHECKED, priceCheckedText, products, TREND_NOTE, trendTape } from '../lib/data'
 import { fmt } from '../lib/currency'
-import { useStore } from '../lib/store'
+import { etaText } from '../lib/shipping'
+import { useStore, useZone } from '../lib/store'
 import { ProductImage } from './ProductVisual'
 import { ProductCard } from './ProductCard'
 import { FlipBoard } from './FlipBoard'
@@ -12,9 +13,9 @@ const LATEST_CHECK = products.map((p) => p.priceCheckedAt).sort().slice(-1)[0] ?
 
 /* Rails: slot order + reasons come from the edge; cards are cached per SKU. */
 const RAILS = [
-  { id: 'viral', title: 'Moving fastest this week', reason: 'Ranked by 7-day change in search and social interest', ids: ['omnilux-contour-face', 'plaud-notepin-s', 'ringconn-gen-3', 'rayban-meta-gen-3'] },
+  { id: 'viral', title: 'Moving fastest this week', reason: `Ranked by 7-day change in search and social interest. ${TREND_NOTE}`, ids: ['omnilux-contour-face', 'plaud-notepin-s', 'ringconn-gen-3', 'rayban-meta-gen-3'] },
   { id: 'setup', title: 'Works with your iPhone and Apple Home', reason: 'Filtered by the works-with check against your setup', ids: ['xgimi-mogo-4-laser', 'anker-maggo-10k', 'aqara-camera-e1', 'chipolo-pop'] },
-  { id: 'fast', title: 'On the shelf in Sydney', reason: 'Ships in 2 to 4 days', ids: ['segway-e3-pro', 'eufy-x10-pro-omni', 'elite-yard-master-2-100', 'anker-prime-100w'] },
+  { id: 'fast', title: 'On the shelf in Sydney', reason: 'Sydney stock, tracked', ids: ['segway-e3-pro', 'eufy-x10-pro-omni', 'elite-yard-master-2-100', 'anker-prime-100w'] },
 ]
 
 /*
@@ -107,6 +108,7 @@ function TestCard() {
 
 export function Home() {
   const go = useStore((s) => s.go)
+  const zone = useZone()
   const setAdvisor = useStore((s) => s.setAdvisor)
   const currency = useStore((s) => s.currency)
 
@@ -127,8 +129,8 @@ export function Home() {
           </div>
           <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-rule pt-5 text-[13.5px] sm:grid-cols-4">
             {[
-              ['2 to 4 days', 'Sydney stock, tracked'],
-              ['8 to 12 days', 'Supplier direct from China, priced lower'],
+              [etaText('AU', zone), 'Sydney stock, tracked'],
+              [etaText('CN', zone), 'Supplier direct from China, priced lower'],
               [`${products.length} products`, `Real, sold today, prices checked ${priceCheckedText(LATEST_CHECK)}`],
               ['30 days', 'Returns on both routes'],
             ].map(([v, l]) => (
@@ -204,7 +206,7 @@ export function Home() {
           </button>
         ))}
       </section>
-      <p className="mt-6 text-[12px] text-ink-3">{products.length} real products. Prices are AUD including GST, checked {priceCheckedText(PRICE_CHECKED)} to {priceCheckedText(LATEST_CHECK)} at the sources listed on each product page, shown in {currency}; shipping is estimated in the cart. Trend figures are sample data until the trend worker runs.</p>
+      <p className="mt-6 text-[12px] text-ink-3">{products.length} real products. Prices are AUD including GST, checked {priceCheckedText(PRICE_CHECKED)} to {priceCheckedText(LATEST_CHECK)} at the sources listed on each product page, shown in {currency}; shipping is estimated in the cart. {TREND_NOTE}</p>
     </div>
   )
 }

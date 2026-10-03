@@ -131,11 +131,15 @@ export function PredictiveSearch() {
               <div className="grid divide-y divide-rule sm:grid-cols-2 sm:divide-x sm:divide-y-0">
                 <div className="p-4">
                   <div className="mb-2 text-[12.5px] text-ink-3">Recent</div>
-                  <ul className="space-y-1">
-                    {(recent.length ? recent : ['magnetic power bank', 'smart ring']).map((r) => (
-                      <li key={r}><button type="button" onClick={() => setQ(r)} className="block w-full text-left text-[14px] text-ink hover:underline underline-offset-4">{r}</button></li>
-                    ))}
-                  </ul>
+                  {recent.length ? (
+                    <ul className="space-y-1">
+                      {recent.map((r) => (
+                        <li key={r}><button type="button" onClick={() => setQ(r)} className="block w-full text-left text-[14px] text-ink hover:underline underline-offset-4">{r}</button></li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-[13px] text-ink-3">Try a search; the last five you make will sit here.</p>
+                  )}
                 </div>
                 <div className="p-4">
                   <div className="mb-2 text-[12.5px] text-ink-3">People are searching</div>

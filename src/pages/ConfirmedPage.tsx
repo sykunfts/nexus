@@ -1,5 +1,6 @@
 /* Order confirmation: number, shipments with ETAs, the works-with summary, and a way to grow My setup. */
-import { byId, products } from '../lib/data'
+import { products } from '../lib/data'
+import { lineVisual } from '../lib/orders'
 import { fmt } from '../lib/currency'
 import { COUNTRIES, originLabel } from '../lib/shipping'
 import { useStore } from '../lib/store'
@@ -35,7 +36,7 @@ export function ConfirmedPage({ id }: { id: string }) {
                 <ul className="divide-y divide-rule">
                   {order.lines.filter((l) => s.lineKeys.includes(l.key)).map((l) => (
                     <li key={l.key} className="flex items-center gap-3 px-4 py-2.5">
-                      <div className="h-11 w-14 shrink-0 bg-paper"><ProductImage product={products.find((p) => p.id === l.productId) ?? byId('xgimi-mogo-4-laser')} hue={l.hue} swatch={l.swatch} /></div>
+                      <div className="h-11 w-14 shrink-0 bg-paper"><ProductImage product={products.find((p) => p.id === l.productId) ?? lineVisual(l)} hue={l.hue} swatch={l.swatch} /></div>
                       <div className="min-w-0 flex-1"><div className="truncate text-[13.5px] text-ink">{l.brand} {l.name}</div><div className="truncate text-[12px] text-ink-3">{l.variantLabel}, {l.qty} × {fmt(l.unitPrice, currency, { compact: true })}</div></div>
                     </li>
                   ))}

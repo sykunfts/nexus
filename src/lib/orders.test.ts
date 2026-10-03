@@ -45,5 +45,7 @@ describe('orders', () => {
   it('order ids are NX- plus six digits', () => {
     expect(newOrderId(new Date('2026-10-03T00:00:00Z'), 7)).toMatch(/^NX-\d{6}$/)
     expect(newOrderId(new Date('2026-10-03T00:00:00Z'), 7)).not.toBe(newOrderId(new Date('2026-10-03T00:00:01Z'), 8))
+    const taken = newOrderId(new Date('2026-10-03T00:00:00Z'), 7)
+    expect(newOrderId(new Date('2026-10-03T00:00:00Z'), 7, [taken])).not.toBe(taken)
   })
 })

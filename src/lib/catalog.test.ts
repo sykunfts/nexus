@@ -60,6 +60,22 @@ describe('facets', () => {
     expect(f.route.find((r) => r.value === 'supplier')?.count).toBe(supplier.length)
     expect(f.price.find((b) => b.label === 'Under $100')?.count).toBe(supplier.filter((p) => p.price < 100).length)
   })
+  it('keeps a checked brand or badge in the rail even when its count drops to zero', () => {
+    // a brand checked, then a price band that excludes all of it: the tick must stay visible so it can be unticked
+    const brand = products[0].brand
+    const f = facets(products, { brand: [brand], price: [1e9, Infinity] }, setup)
+    expect(f.brand.find((b) => b.value === brand)?.count).toBe(0)
+    expect(f.brand.filter((b) => b.count === 0).map((b) => b.value)).toEqual([brand])
+    const g = facets(products, { badge: ['Viral'], price: [1e9, Infinity] }, setup)
+    expect(g.badge.find((b) => b.value === 'Viral')?.count).toBe(0)
+  })
+  it('counts in-stock products within the current result set', () => {
+    const out = { ...products[0], stock: 'out' as const }
+    const all = [out, ...products.slice(1)]
+    const f = facets(all, { brand: [out.brand] }, setup)
+    expect(f.inStock).toBe(all.filter((p) => p.brand === out.brand && p.stock !== 'out').length)
+    expect(f.inStock).toBeLessThan(all.length)
+  })
 })
 
 describe('similar', () => {

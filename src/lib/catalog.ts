@@ -2,7 +2,7 @@
   Catalogue query engine: one `query` that every page, rail and menu item reads through, so a
   collection is a saved query rather than a hand-picked list. Pure and unit-tested.
 */
-import { CompatFacts, gear as DEFAULT_GEAR, Product } from './data'
+import { CompatFacts, DEFAULT_GEAR, Product } from './data'
 import { checkBuild, resolveFacts } from './compat'
 import { Badge, Filters, Platform, Sort } from './routes'
 
@@ -79,6 +79,7 @@ export interface Facets {
   badge: { value: Badge; count: number }[]
   price: { label: string; range: [number, number]; count: number }[]
   worksWithSetup: number
+  inStock: number
 }
 
 /** Counts per option, each computed on the result set with that facet's own filter removed. */
@@ -95,14 +96,18 @@ export function facets(all: Product[], f: Filters, setup: SetupItem[]): Facets {
   const badges: Badge[] = ['Viral', 'Trending', 'Rising', 'New', 'Limited stock']
   const pricePool = without('price')
   const wwPool = without('worksWithSetup')
+  const stockPool = without('inStock')
+  /* A value drops out of the rail at zero, unless it is ticked: a tick the user cannot see cannot be removed. */
+  const keep = <T,>(x: { value: T; count: number }, chosen: T[] | undefined) => x.count > 0 || !!chosen?.includes(x.value)
 
   return {
-    brand: count(brandPool, brands, (p, v) => p.brand === v).filter((x) => x.count > 0),
+    brand: count(brandPool, brands, (p, v) => p.brand === v).filter((x) => keep(x, f.brand)),
     platform: count(platPool, platforms, (p, v) => platformsOf(p).has(v)).map((x) => ({ ...x, label: PLATFORM_LABEL[x.value] })),
     route: count(routePool, ['warehouse', 'supplier'] as const, (p, v) => p.fulfil.route === v),
-    badge: count(badgePool, badges, (p, v) => badgesOf(p).has(v)).filter((x) => x.count > 0),
+    badge: count(badgePool, badges, (p, v) => badgesOf(p).has(v)).filter((x) => keep(x, f.badge)),
     price: PRICE_BANDS.map((b) => ({ ...b, count: pricePool.filter((p) => p.price >= b.range[0] && p.price < b.range[1]).length })),
     worksWithSetup: wwPool.filter((p) => statusFor(p, setup) === 'ok').length,
+    inStock: stockPool.filter((p) => p.stock !== 'out').length,
   }
 }
 

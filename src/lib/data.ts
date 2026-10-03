@@ -949,6 +949,9 @@ export const nav: NavSection[] = [
   ] },
 ]
 
+/* Where trend figures come from today. Flipped when the trend feed lands; every place that ranks on them cites it. */
+export const TREND_NOTE = 'Trend figures are sample data until the trend feed is live.'
+
 export const trendingSearches = ['smart ring', 'MoGo 4 Laser', 'open-ear buds', 'LED mask', 'Matter hub', 'AI recorder']
 
 /** Trend tape shown in the hero: category momentum over 7 days. Sample data until the trend worker runs. */

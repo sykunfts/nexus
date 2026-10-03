@@ -188,9 +188,16 @@ export default function App() {
     window.addEventListener('hashchange', fromHash)
     return () => window.removeEventListener('hashchange', fromHash)
   }, [])
+  /* A new page is a history entry, so Back returns to the previous page; a filter or sort change on the same page replaces the entry. */
   useEffect(() => {
     const next = formatRoute(route)
-    try { if (location.hash !== next) history.replaceState(null, '', next) } catch { /* sandboxed frame */ }
+    try {
+      if (location.hash === next) return
+      let prev: Route
+      try { prev = parseRoute(location.hash) } catch { prev = { name: 'not-found', hash: location.hash } }
+      if (pageKey(prev) === pageKey(route)) history.replaceState(null, '', next)
+      else history.pushState(null, '', next)
+    } catch { /* sandboxed frame */ }
   }, [route])
 
   return (

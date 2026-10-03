@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { COLLECTIONS, FOOTER, navTarget } from './collections'
 import { query } from './catalog'
-import { DEFAULT_GEAR, nav, products } from './data'
+import { DEFAULT_GEAR, nav, products, TREND_NOTE } from './data'
 
 const setup = DEFAULT_GEAR.filter((g) => g.defaultOn).map((g) => ({ id: g.id, name: g.name, facts: g.facts }))
 
@@ -24,5 +24,10 @@ describe('collections', () => {
   })
   it('an unknown label throws', () => {
     expect(() => navTarget('Flux capacitors')).toThrow(/No target/)
+  })
+  it('collections ranked on trend figures say where the figures come from', () => {
+    const ranked = COLLECTIONS.filter((c) => c.slug === 'trending' || c.filters.badge?.some((b) => b === 'Viral' || b === 'Trending' || b === 'Rising'))
+    expect(ranked.length).toBeGreaterThanOrEqual(3)
+    for (const c of ranked) expect(c.blurb).toContain(TREND_NOTE)
   })
 })

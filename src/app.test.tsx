@@ -46,4 +46,61 @@ describe('app resilience', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Cinema' })).toBe(heading)
     expect(window.location.hash).toContain('route%3Awarehouse')
   })
+  it('a deep link renders its page on first paint, not the home page', async () => {
+    await mount('#/guides')
+    expect(screen.queryByText(/The new thing/)).toBeNull()
+    expect(screen.getByRole('heading', { level: 1, name: /Guides/ })).toBeTruthy()
+  })
+  it('moving to another page adds a history entry so Back works; a filter change does not', async () => {
+    await mount('#/')
+    const { useStore } = await import('./lib/store')
+    const before = window.history.length
+    await act(async () => { useStore.getState().go({ name: 'collection', slug: 'cinema', filters: {} }) })
+    expect(window.history.length).toBe(before + 1)
+    await act(async () => { useStore.getState().go({ name: 'collection', slug: 'cinema', filters: { route: 'warehouse' } }) })
+    expect(window.history.length).toBe(before + 1)
+    expect(window.location.hash).toContain('route%3Awarehouse')
+  })
+  it('says so on the account page when the browser is not keeping data', async () => {
+    const real = window.localStorage
+    vi.stubGlobal('localStorage', { getItem: () => { throw new Error('blocked') }, setItem: () => { throw new Error('blocked') }, removeItem: () => { throw new Error('blocked') } })
+    try {
+      vi.resetModules()
+      window.location.hash = '#/account'
+      const { default: App } = await import('./App')
+      await act(async () => { render(<App />) })
+      expect(await screen.findByText(/This browser is not keeping/)).toBeTruthy()
+    } finally { vi.stubGlobal('localStorage', real) }
+  })
+  it('the search panel shows no recent searches until there are some', async () => {
+    await mount('#/')
+    const box = screen.getByLabelText('Search products')
+    await act(async () => { fireEvent.focus(box) })
+    expect(screen.queryByText('magnetic power bank')).toBeNull()
+    expect(screen.getByText(/Try a search/)).toBeTruthy()
+  })
+  it('the home page delivery times follow the setup region', async () => {
+    await mount('#/')
+    const { useStore } = await import('./lib/store')
+    const { etaText } = await import('./lib/shipping')
+    await act(async () => { useStore.getState().setRegion('UK') })
+    expect(screen.getAllByText(etaText('AU', 'UK')).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(etaText('CN', 'UK')).length).toBeGreaterThan(0)
+    expect(etaText('AU', 'UK')).not.toBe(etaText('AU', 'AU'))
+  })
+  it('a custom phone from My setup appears in the guide demo picker', async () => {
+    await mount('#/guides/works-with-my-phone', { gear: [{ id: 'c-abc', kind: 'phone', name: 'Galaxy A56', detail: 'Added by you', facts: { phone: { os: 'android', magnets: false, trackerNet: 'find-hub' } }, defaultOn: true }], gearOn: { 'c-abc': true } })
+    const picker = await screen.findByLabelText(/^Phone/)
+    expect(Array.from((picker as HTMLSelectElement).options).map((o) => o.textContent)).toContain('Galaxy A56')
+  })
+  it('the confirmation page names a line whose product has left the catalogue instead of showing another product', async () => {
+    const order = { id: 'NX-000001', placedAt: new Date().toISOString(), email: 'n@x.com', address: { id: 'a', name: 'N', line1: '1 St', city: 'Sydney', region: 'NSW', postcode: '2000', country: 'AU', isDefault: true },
+      lines: [{ key: 'gone:v:', productId: 'gone-product', variantId: 'v', selection: {}, qty: 1, unitPrice: 10, name: 'Vanished gadget', brand: 'Acme', variantLabel: 'Black', visual: 'device', hue: 0, swatch: '#000', origin: 'AU', route: 'warehouse' }],
+      shipments: [{ origin: 'AU', zone: 'AU', method: 'standard', cost: 0, etaDays: [2, 4], lineKeys: ['gone:v:'] }],
+      totals: { subtotal: 10, shipping: 0, tax: 1, taxIncluded: true, taxLabel: 'Includes GST 10 %', total: 10, currency: 'AUD' }, compat: { status: 'ok', issues: [] } }
+    await mount('#/orders/NX-000001/confirmed', { orders: [order] })
+    expect(await screen.findByText(/Vanished gadget/)).toBeTruthy()
+    expect(document.querySelector('[data-name="Acme Vanished gadget"]')).toBeTruthy()   // the picture is drawn from the order's own snapshot
+    expect(document.querySelector('[data-name*="MoGo"]')).toBeNull()
+  })
 })

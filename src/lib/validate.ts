@@ -90,3 +90,11 @@ export function validateCard(c: { number: string; expiry: string; cvc: string; n
   if (!c.name.trim()) e.name = 'Name on the card is needed.'
   return e
 }
+
+/* One line for the top of a step that failed, so the fields to fix are named before the user scrolls. */
+export function errorSummary(errs: Record<string, string>, labels: Record<string, string>): string | null {
+  const names = Object.keys(errs).map((k) => labels[k] ?? k)
+  if (!names.length) return null
+  if (names.length === 1) return `One field needs fixing: ${names[0]}.`
+  return `${names.length} fields need fixing: ${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}.`
+}
