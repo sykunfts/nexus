@@ -1,4 +1,4 @@
-import asyncio, sys, json
+import asyncio, os, sys, json
 from playwright.async_api import async_playwright
 
 async def main():
@@ -102,7 +102,7 @@ async def main():
             await page.wait_for_timeout(800)
             assert await page.locator("text=That link did not match").count() == 1, "404 page missing"
         await run("route-404", 1440, 900, route_404)
-        BASE = "file:///tmp/claude-0/-home-claude/257f0885-4cfa-5197-81c4-04d07b5fc765/scratchpad/nexus/dist/index.html"
+        BASE = "file://" + os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "index.html")
         async def collection(page):
             await page.goto(BASE + "#/c/cinema")
             await page.wait_for_timeout(1200)
