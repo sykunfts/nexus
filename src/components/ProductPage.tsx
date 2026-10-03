@@ -10,6 +10,7 @@ import { ProductCard, Sparkline } from './ProductCard'
 import { Button, Chip, Row, Stars, StockDot, Toggle } from './ui'
 import { PARTS, CanvasMode } from '../lib/parts'
 import { cn } from '../lib/cn'
+import { etaText, originLabel, originShort, useZone } from '../lib/shipping'
 
 const ProductCanvas = lazy(() => import('./ProductCanvas').then((m) => ({ default: m.ProductCanvas })))
 
@@ -41,6 +42,7 @@ export function ProductPage({ product }: { product: Product }) {
   const cart = useStore((s) => s.cart)
   const setAdvisor = useStore((s) => s.setAdvisor)
 
+  const zone = useZone()
   const variant = product.variants.find((v) => v.id === variantId)!
   const price = priceFor(product, selection, variantId)
   const facts = useMemo(() => resolveFacts(product, selection), [product, selection])
@@ -229,10 +231,10 @@ export function ProductPage({ product }: { product: Product }) {
 
                 <div className="flex items-center justify-between py-3 text-[13px]">
                   <StockDot stock={product.stock} count={product.stockCount} />
-                  <span className="text-ink-2">{local ? 'Sydney stock' : 'Supplier direct'}, {product.fulfil.eta}</span>
+                  <span className="text-ink-2">{originLabel(product.fulfil)}, {etaText(product.fulfil.origin, zone)}</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-rule py-2 text-[11.5px] text-ink-3">
-                  <span>Price checked {priceCheckedText(product.priceCheckedAt)} at {product.sources[0]}{product.compareAt ? `, RRP ${fmt(product.compareAt, currency, { compact: true })}` : ''}</span>
+                  <span>Price checked {priceCheckedText(product.priceCheckedAt)} at {product.sources[0]}{product.priceSource ? `, from ${new Intl.NumberFormat('en', { style: 'currency', currency: product.priceSource.currency, currencyDisplay: 'narrowSymbol' }).format(product.priceSource.amount)} at ${product.priceSource.at}` : ''}{product.compareAt ? `, RRP ${fmt(product.compareAt, currency, { compact: true })}` : ''}</span>
                   <span>AUD incl. GST</span>
                 </div>
               </div>
@@ -312,7 +314,7 @@ export function ProductPage({ product }: { product: Product }) {
                       </ul>
                     </div>
                     <div className="grid grid-cols-3 divide-x divide-rule border-t border-rule text-center">
-                      {[[local ? '2 to 4 d' : '8 to 12 d', local ? 'Sydney stock' : 'supplier direct'], ['30 d', 'returns'], ['2 yr', 'warranty']].map(([v, l]) => (
+                      {[[etaText(product.fulfil.origin, zone).replace(' days', ' d'), originShort(product.fulfil).toLowerCase()], ['30 d', 'returns'], ['2 yr', 'warranty']].map(([v, l]) => (
                         <div key={l} className="py-3"><div className="reading text-[14px] text-ink">{v}</div><div className="text-[11.5px] text-ink-3">{l}</div></div>
                       ))}
                     </div>

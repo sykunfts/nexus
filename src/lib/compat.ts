@@ -7,7 +7,7 @@
   Facets: companion-app OS · magnetic attach (Qi2/MagSafe) · finder network · smart-home protocol
   and Thread · plug type and voltage · physical inputs (HDMI) · charging power.
 */
-import { byId, CompatFacts, PORT_LABEL, PROTO_LABEL, PortKind, Product, REGION_LABEL } from './data'
+import { byId, CompatFacts, MAINS, PLUG_FAMILY, PORT_LABEL, PROTO_LABEL, PortKind, Product, REGION_LABEL } from './data'
 
 /** Fixes point at real SKUs in the catalogue; the label carries the live price. */
 const FIX = {
@@ -138,10 +138,10 @@ export function checkBuild(subject: { name: string; facts: CompatFacts; product?
   }
 
   // 5. Plug and voltage: match the shopper's region, or include an adapter.
-  if (region && f.plug && f.plug !== region) {
-    const adapter = build.some((b) => b.facts.adapterFor === region)
+  if (region && f.plug && PLUG_FAMILY[f.plug] !== PLUG_FAMILY[region]) {
+    const adapter = build.some((b) => b.facts.adapterFor && PLUG_FAMILY[b.facts.adapterFor] === PLUG_FAMILY[region])
     if (!adapter) {
-      const choice = option('plug')?.choices.find((c) => c.facts?.plug === region)
+      const choice = option('plug')?.choices.find((c) => c.facts?.plug && PLUG_FAMILY[c.facts.plug] === PLUG_FAMILY[region])
       issues.push({
         id: 'plug',
         severity: 'warn',
@@ -153,7 +153,7 @@ export function checkBuild(subject: { name: string; facts: CompatFacts; product?
       })
     }
   }
-  if (region && f.voltage === '110' && region !== 'US') {
+  if (region && f.voltage === '110' && MAINS[region] >= 200) {
     issues.push({ id: 'voltage', severity: 'bad', title: '110 V only', because: `${subject.name} is a 110 V device; ${REGION_LABEL[region]} mains would damage it. A plug adapter does not convert voltage.` })
   }
 

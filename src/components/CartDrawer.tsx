@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, Minus, Plus, X } from 'lucide-react'
 import { byId, gear } from '../lib/data'
-import { CURRENCIES, Currency, fmt, shippingCost, taxOf } from '../lib/currency'
+import { CURRENCIES, Currency, fmt } from '../lib/currency'
+import { canExpress, etaText, originShort, parcelCost, taxFor, useZone, Country, ZONE_LABEL } from '../lib/shipping'
 import { cartSubtotal, useStore } from '../lib/store'
 import { checkBuild, resolveFacts } from '../lib/compat'
 import { ProductImage } from './ProductVisual'
@@ -63,10 +64,18 @@ export function CartDrawer() {
 
   const subtotal = cartSubtotal(cart)
   const info = CURRENCIES[currency]
-  const shipping = cart.length ? shippingCost(subtotal, shipMethod, info.region) : 0
-  const tax = taxOf(subtotal + shipping, currency)
+  const zone = useZone()
+  const country: Country = 'AU'   // the checkout address decides this from Task 10
+  // one parcel per origin; express only where the lane offers it
+  const origins = [...new Set(cart.map((l) => byId(l.productId).fulfil.origin))]
+  const shipping = origins.reduce((sum, o) => {
+    const parcelSubtotal = cart.filter((l) => byId(l.productId).fulfil.origin === o).reduce((n, l) => n + l.qty * l.unitPrice, 0)
+    const method = shipMethod === 'express' && canExpress(o, zone) ? 'express' : 'standard'
+    return sum + parcelCost(o, zone, method, parcelSubtotal)
+  }, 0)
+  const tax = taxFor(country, subtotal + shipping)
   const total = subtotal + shipping + (tax.included ? 0 : tax.amount)
-  const parcels = new Set(cart.map((l) => byId(l.productId).fulfil.route)).size
+  const parcels = origins.length
 
   const compat = useMemo(() => {
     if (!cart.length) return null
@@ -159,7 +168,7 @@ export function CartDrawer() {
                               <div className="min-w-0">
                                 <div className="truncate text-[14px] font-medium text-ink">{p.brand} {p.name}</div>
                                 <div className="truncate text-[12.5px] text-ink-3">{[v.label, ...sel].join(', ')}</div>
-                                <div className={cn('text-[12px]', p.fulfil.route === 'warehouse' ? 'text-pass' : 'text-ink-3')}>{p.fulfil.route === 'warehouse' ? 'Sydney stock' : 'Supplier direct'}, {p.fulfil.eta}</div>
+                                <div className={cn('text-[12px]', p.fulfil.route === 'warehouse' ? 'text-pass' : 'text-ink-3')}>{originShort(p.fulfil)}, {etaText(p.fulfil.origin, zone)}</div>
                               </div>
                               <div className="reading shrink-0 text-[14px] text-ink">{fmt(l.unitPrice * l.qty, currency, { compact: true })}</div>
                             </div>
@@ -186,7 +195,7 @@ export function CartDrawer() {
                   <div className="flex border border-rule-2 bg-sheet" role="radiogroup" aria-label="Shipping method">
                     {(['standard', 'express'] as const).map((m) => (
                       <button key={m} type="button" role="radio" aria-checked={shipMethod === m} onClick={() => setShipMethod(m)} className={cn('px-2.5 py-1 text-[12.5px] transition-colors', shipMethod === m ? 'bg-ink text-paper' : 'text-ink-2 hover:text-ink')}>
-                        {m === 'standard' ? 'Standard, as listed' : 'Express, next day'}
+                        {m === 'standard' ? 'Standard, as listed' : 'Express where offered'}
                       </button>
                     ))}
                   </div>
@@ -201,8 +210,8 @@ export function CartDrawer() {
                 {/* receipt */}
                 <dl className="reading mt-3 text-[12.5px] text-ink-2">
                   <div className="flex justify-between py-0.5"><dt>Subtotal</dt><dd>{fmt(subtotal, currency)}</dd></div>
-                  <div className="flex justify-between py-0.5"><dt>Shipping to {info.region}{parcels > 1 ? `, ${parcels} parcels` : ''}</dt><dd>{shipping === 0 ? 'Free' : fmt(shipping, currency)}</dd></div>
-                  <div className="flex justify-between py-0.5"><dt>{info.taxLabel}</dt><dd>{fmt(tax.amount, currency)}</dd></div>
+                  <div className="flex justify-between py-0.5"><dt>Shipping to {ZONE_LABEL[zone]}{parcels > 1 ? `, ${parcels} parcels` : ''}</dt><dd>{shipping === 0 ? 'Free' : fmt(shipping, currency)}</dd></div>
+                  <div className="flex justify-between py-0.5"><dt>{tax.label}</dt><dd>{fmt(tax.amount, currency)}</dd></div>
                   <div className="mt-1 flex items-baseline justify-between border-t border-ink pt-2 text-ink">
                     <dt className="font-sans text-[14px] font-medium">Total</dt>
                     <dd className="text-[18px]" aria-live="polite">{fmt(total, currency)}</dd>

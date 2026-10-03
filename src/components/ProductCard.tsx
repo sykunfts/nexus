@@ -6,6 +6,7 @@ import { useStore } from '../lib/store'
 import { ProductImage } from './ProductVisual'
 import { Pill, Stars, StockDot, Tile } from './ui'
 import { cn } from '../lib/cn'
+import { etaText, originShort, useZone } from '../lib/shipping'
 
 /** 7-day trend sparkline, drawn in ink: a line, a faint baseline, the last point marked. */
 export function Sparkline({ series, width = 48, height = 16, className }: { series: number[]; width?: number; height?: number; className?: string }) {
@@ -38,6 +39,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
   const compare = useStore((s) => s.compare)
   const toggleCompare = useStore((s) => s.toggleCompare)
   const currency = useStore((s) => s.currency)
+  const zone = useZone()
   const variant = product.variants.find((v) => v.id === variantId)!
   const comparing = compare.includes(product.id)
   const out = product.stock === 'out'
@@ -120,7 +122,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
               </div>
             )}
             <StockDot stock={product.stock} count={product.stockCount} />
-            <span className={cn('text-[12px]', local ? 'text-ink-2' : 'text-ink-3')}>{local ? 'Sydney' : 'Supplier direct'}, {product.fulfil.eta}</span>
+            <span className={cn('text-[12px]', local ? 'text-ink-2' : 'text-ink-3')}>{originShort(product.fulfil)}, {etaText(product.fulfil.origin, zone)}</span>
           </div>
 
           <button

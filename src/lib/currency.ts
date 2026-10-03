@@ -58,20 +58,3 @@ export function fmt(amountAud: number, code: Currency, opts: { compact?: boolean
 }
 
 export type ShipMethod = 'standard' | 'express'
-
-/** Shipping in AUD. Free standard shipping in Australia from A$150. */
-export function shippingCost(subtotalAud: number, method: ShipMethod, region: string): number {
-  const far = region !== 'AU'
-  if (method === 'express') return far ? 59 : 14.95
-  if (!far && subtotalAud >= 150) return 0
-  return far ? 29 : 9.95
-}
-
-/** Tax in AUD: the GST portion of an inclusive AU total, or an estimate added on top elsewhere. */
-export function taxOf(amountAud: number, code: Currency): { amount: number; included: boolean } {
-  const info = CURRENCIES[code]
-  const amount = info.taxIncluded
-    ? Math.round((amountAud - amountAud / (1 + info.tax)) * 100) / 100
-    : Math.round(amountAud * info.tax * 100) / 100
-  return { amount, included: info.taxIncluded }
-}

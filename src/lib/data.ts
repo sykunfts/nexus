@@ -14,13 +14,19 @@ export type Visual =
 
 export type OS = 'ios' | 'android'
 export type HomeProto = 'matter' | 'thread' | 'homekit' | 'google' | 'alexa'
-export type Region = 'AU' | 'US' | 'EU' | 'UK'
+export type Region = 'AU' | 'NZ' | 'US' | 'CA' | 'UK' | 'EU' | 'JP'
+export type PlugFamily = 'I' | 'AB' | 'G' | 'CF'
+export const PLUG_FAMILY: Record<Region, PlugFamily> = { AU: 'I', NZ: 'I', US: 'AB', CA: 'AB', JP: 'AB', UK: 'G', EU: 'CF' }
+export const MAINS: Record<Region, number> = { AU: 230, NZ: 230, US: 120, CA: 120, JP: 100, UK: 230, EU: 230 }
 export type PortKind = 'hdmi' | 'usb-c' | 'usb-a' | 'jack' | 'dc'
 export type TrackerNet = 'find-my' | 'find-hub'
 
 export const PORT_LABEL: Record<PortKind, string> = { hdmi: 'HDMI', 'usb-c': 'USB-C', 'usb-a': 'USB-A', jack: '3.5 mm audio', dc: 'DC in' }
 export const PROTO_LABEL: Record<HomeProto, string> = { matter: 'Matter', thread: 'Thread', homekit: 'Apple Home', google: 'Google Home', alexa: 'Alexa' }
-export const REGION_LABEL: Record<Region, string> = { AU: 'Australia (Type I, 240 V)', US: 'United States (Type A/B, 120 V)', EU: 'Europe (Type C/F, 230 V)', UK: 'United Kingdom (Type G, 230 V)' }
+export const REGION_LABEL: Record<Region, string> = {
+  AU: 'Australia (Type I, 230 V)', NZ: 'New Zealand (Type I, 230 V)', US: 'United States (Type A/B, 120 V)', CA: 'Canada (Type A/B, 120 V)',
+  UK: 'United Kingdom (Type G, 230 V)', EU: 'Europe (Type C/F, 230 V)', JP: 'Japan (Type A/B, 100 V)',
+}
 
 export interface Port { kind: PortKind; count: number }
 export interface Requirement { anyOf: PortKind[]; label: string }
@@ -53,7 +59,7 @@ export interface SpecRow { label: string; value: string; n?: number; better?: 'h
 export interface SpecGroup { group: string; rows: SpecRow[] }
 export interface Trend { label: 'Viral' | 'Trending' | 'Rising' | 'Steady'; delta: number; series: number[]; source: string }
 export type Origin = 'AU' | 'CN' | 'US' | 'EU' | 'UK'
-export interface Fulfil { route: 'warehouse' | 'supplier'; origin: Origin; from: string; eta: string; days: [number, number] }
+export interface Fulfil { route: 'warehouse' | 'supplier'; origin: Origin }
 export interface Rating { value: number; count: number; at: string }
 export type Market = 'global' | 'AU' | 'US' | 'EU' | 'UK'
 export interface PriceSource { amount: number; currency: 'USD' | 'GBP' | 'EUR' | 'JPY' | 'AUD'; at: string }
@@ -100,8 +106,8 @@ export interface GearItem {
 export const PRICE_CHECKED = '2026-10-02'
 export const priceCheckedText = (iso: string) => new Date(`${iso}T00:00:00`).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })
 
-const WAREHOUSE: Fulfil = { route: 'warehouse', origin: 'AU', from: 'Sydney warehouse', eta: '2–4 days', days: [2, 4] }
-const SUPPLIER: Fulfil = { route: 'supplier', origin: 'CN', from: 'partner supplier', eta: '8–12 days', days: [8, 12] }
+const WAREHOUSE: Fulfil = { route: 'warehouse', origin: 'AU' }
+const SUPPLIER: Fulfil = { route: 'supplier', origin: 'CN' }
 const SAMPLE = 'Sample data until the trend worker runs'
 
 const PLUG_OPTIONS: OptionGroup = {
@@ -883,7 +889,7 @@ export const gear: GearItem[] = [
     facts: { hubs: ['google', 'matter'] } },
   { id: 'g-switch', name: 'Nintendo Switch', detail: 'HDMI source', defaultOn: true,
     facts: { requires: [{ anyOf: ['hdmi'], label: 'an HDMI input' }] } },
-  { id: 'g-region', name: 'Australia, 240 V, Type I', detail: 'Plug and voltage check', defaultOn: true,
+  { id: 'g-region', name: 'Australia, 230 V, Type I', detail: 'Plug and voltage check', defaultOn: true,
     facts: { region: 'AU' } },
   { id: 'g-charger', name: 'Anker 65 W charger', detail: 'USB-C PD charger you already own', defaultOn: true,
     facts: { pdOut: 65 } },

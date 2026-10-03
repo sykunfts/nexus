@@ -13,6 +13,7 @@ import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
 import { ProductImage } from './ProductVisual'
 import { Sparkline } from './ProductCard'
 import { Button, Tile } from './ui'
+import { etaText, useZone } from '../lib/shipping'
 import { cn } from '../lib/cn'
 
 interface Role { role: string; why: string; options: string[]; optional?: boolean }
@@ -107,6 +108,7 @@ function solve(kit: Kit, swaps: Record<string, number>) {
 
 function KitCard({ kit }: { kit: Kit }) {
   const currency = useStore((s) => s.currency)
+  const zone = useZone()
   const add = useStore((s) => s.add)
   const go = useStore((s) => s.go)
   const toast = useStore((s) => s.toast)
@@ -155,7 +157,7 @@ function KitCard({ kit }: { kit: Kit }) {
                   <span className="text-[11.5px] text-ink-3">{role.role}</span>
                   <button type="button" onClick={() => go({ name: 'pdp', id: product.id })} className="truncate text-[13.5px] font-medium text-ink hover:underline underline-offset-4">{product.brand} {product.name}</button>
                 </div>
-                <div className="truncate text-[12px] text-ink-2">{role.why}, {product.fulfil.eta}</div>
+                <div className="truncate text-[12px] text-ink-2">{role.why}, {etaText(product.fulfil.origin, zone)}</div>
               </div>
               <div className="shrink-0 text-right">
                 <div className="reading text-[12.5px] text-ink">{fmt(product.price, currency, { compact: true })}</div>
@@ -187,6 +189,7 @@ function KitCard({ kit }: { kit: Kit }) {
 function TrendCard({ ids }: { ids: string[] }) {
   const go = useStore((s) => s.go)
   const currency = useStore((s) => s.currency)
+  const zone = useZone()
   return (
     <ul className="mt-3 divide-y divide-rule border border-rule bg-sheet">
       {ids.map((id, i) => {
@@ -197,7 +200,7 @@ function TrendCard({ ids }: { ids: string[] }) {
             <div className="h-10 w-12 shrink-0 bg-paper"><ProductImage product={p} /></div>
             <div className="min-w-0 flex-1">
               <button type="button" onClick={() => go({ name: 'pdp', id })} className="block truncate text-[13.5px] font-medium text-ink hover:underline underline-offset-4">{p.brand} {p.name}</button>
-              <div className="truncate text-[12px] text-ink-3">{p.category}, {fmt(p.price, currency, { compact: true })}, {p.fulfil.eta}</div>
+              <div className="truncate text-[12px] text-ink-3">{p.category}, {fmt(p.price, currency, { compact: true })}, {etaText(p.fulfil.origin, zone)}</div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <Sparkline series={p.trend.series} />

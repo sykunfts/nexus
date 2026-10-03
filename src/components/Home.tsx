@@ -126,7 +126,7 @@ export function Home() {
           <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-rule pt-5 text-[13.5px] sm:grid-cols-4">
             {[
               ['2 to 4 days', 'Sydney stock, tracked'],
-              ['8 to 12 days', 'Supplier direct, priced lower'],
+              ['8 to 12 days', 'Supplier direct from China, priced lower'],
               [`${products.length} products`, `Real, sold today, prices checked ${priceCheckedText(PRICE_CHECKED)}`],
               ['30 days', 'Returns on both routes'],
             ].map(([v, l]) => (

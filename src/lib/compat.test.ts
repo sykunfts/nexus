@@ -12,3 +12,22 @@ describe('compat smoke', () => {
     expect(r.issues[0].fix?.price).toBe(26.38)
   })
 })
+
+describe('plug families and voltage', () => {
+  const region = (r: 'AU' | 'NZ' | 'US' | 'CA' | 'UK' | 'EU' | 'JP') => ({ id: 'g-region', name: 'Region', facts: { region: r } })
+  it('AU plug passes in NZ', () => {
+    const p = byId('xgimi-mogo-4-laser')
+    const r = checkBuild({ name: p.name, facts: resolveFacts(p, {}), product: p }, [region('NZ')])
+    expect(r.issues.find((i) => i.id === 'plug')).toBeUndefined()
+  })
+  it('US plug passes in JP', () => {
+    const p = byId('xgimi-mogo-4-laser')
+    const r = checkBuild({ name: p.name, facts: resolveFacts(p, { plug: 'US' }), product: p }, [region('JP')])
+    expect(r.issues.find((i) => i.id === 'plug')).toBeUndefined()
+  })
+  it('110 V device fails in UK', () => {
+    const p = byId('xgimi-mogo-4-laser')
+    const r = checkBuild({ name: 'Synthetic 110 V', facts: { voltage: '110', plug: 'US' }, product: p }, [region('UK')])
+    expect(r.issues.find((i) => i.id === 'voltage')?.severity).toBe('bad')
+  })
+})
