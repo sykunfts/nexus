@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, Minus, Plus, X } from 'lucide-react'
+import { Minus, Plus, X } from 'lucide-react'
 import { byId } from '../lib/data'
 import { CURRENCIES, Currency, fmt } from '../lib/currency'
 import { canExpress, etaText, originShort, parcelCost, taxFor, Country, ZONE_LABEL } from '../lib/shipping'
@@ -50,8 +50,7 @@ export function CartDrawer() {
   const shipMethod = useStore((s) => s.shipMethod)
   const setShipMethod = useStore((s) => s.setShipMethod)
   const owned = useSetup()
-  const toast = useStore((s) => s.toast)
-  const [placing, setPlacing] = useState<null | 'express' | 'oneclick' | 'done'>(null)
+  const go = useStore((s) => s.go)
   const trap = useFocusTrap(open)
 
   useEffect(() => {
@@ -86,18 +85,7 @@ export function CartDrawer() {
     return { status, issues, count: cart.length + owned.length } as const
   }, [cart, owned])
 
-  const placeOrder = (kind: 'express' | 'oneclick') => {
-    setPlacing(kind)
-    window.setTimeout(() => {
-      setPlacing('done')
-      window.setTimeout(() => {
-        useStore.setState({ cart: [] })
-        setPlacing(null)
-        close()
-        toast({ title: 'Order placed, NX-48213', body: 'Local items ship today; supplier items go to the partner. Undo within 5 seconds to cancel.', action: { label: 'Undo', onClick: () => toast({ title: 'Order cancelled', body: 'Nothing was charged.' }) } })
-      }, 900)
-    }, 1100)
-  }
+  const checkout = () => { close(); go({ name: 'checkout' }) }
 
   return (
     <AnimatePresence>
@@ -218,19 +206,16 @@ export function CartDrawer() {
                 </dl>
 
                 <div className="mt-3 grid grid-cols-3 gap-px bg-rule-2 border border-rule-2">
-                  <button type="button" onClick={() => placeOrder('express')} className="h-10 bg-ink text-[13px] font-medium text-paper">Apple Pay</button>
-                  <button type="button" onClick={() => placeOrder('express')} className="h-10 bg-sheet text-[13px] font-medium text-ink hover:bg-paper">Google Pay</button>
-                  <button type="button" onClick={() => placeOrder('express')} className="h-10 bg-sheet text-[13px] font-medium text-ink hover:bg-paper">Crypto</button>
+                  <button type="button" onClick={checkout} className="h-10 bg-ink text-[13px] font-medium text-paper">Apple Pay</button>
+                  <button type="button" onClick={checkout} className="h-10 bg-sheet text-[13px] font-medium text-ink hover:bg-paper">Google Pay</button>
+                  <button type="button" onClick={checkout} className="h-10 bg-sheet text-[13px] font-medium text-ink hover:bg-paper">Crypto</button>
                 </div>
 
-                <button type="button" onClick={() => placeOrder('oneclick')} disabled={placing !== null} className="mt-2 flex h-12 w-full items-center justify-between bg-ink px-4 text-paper hover:bg-[#1f2730] disabled:opacity-80">
-                  <span className="flex items-center gap-2 text-[14px] font-medium">
-                    {placing === 'done' && <Check size={16} strokeWidth={2.5} />}
-                    {placing === null ? 'Buy now' : placing === 'done' ? 'Order placed' : 'Authorising'}
-                  </span>
-                  <span className="text-[12px] opacity-80">Home address, Visa 4242</span>
+                <button type="button" onClick={checkout} className="mt-2 flex h-12 w-full items-center justify-between bg-ink px-4 text-paper hover:bg-[#1f2730]">
+                  <span className="text-[15px] font-medium">Buy now</span>
+                  <span className="text-[12px] text-paper/70">Checks out in one page</span>
                 </button>
-                <button type="button" className="mt-2 h-10 w-full border border-ink text-[13.5px] font-medium text-ink hover:bg-ink hover:text-paper">Full checkout</button>
+                <button type="button" onClick={checkout} className="mt-2 h-10 w-full border border-ink text-[13.5px] font-medium text-ink hover:bg-ink hover:text-paper">Full checkout</button>
                 <p className="mt-2 text-[11.5px] text-ink-3">Prices held in {currency} for this session. 30-day returns on both routes.</p>
               </div>
             )}

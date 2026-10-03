@@ -7,6 +7,8 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { CollectionPage } from './pages/CollectionPage'
 import { SetupPage } from './pages/SetupPage'
 import { ComparePage } from './pages/ComparePage'
+import { CheckoutPage } from './pages/CheckoutPage'
+import { ConfirmedPage } from './pages/ConfirmedPage'
 import { collectionBySlug, FOOTER } from './lib/collections'
 import { cartCount, useStore } from './lib/store'
 import { Header } from './components/Header'
@@ -156,6 +158,8 @@ function Page({ route }: { route: Route }) {
     case 'search': return <CollectionPage key={route.q} title={`Results for “${route.q}”`} base={{ text: route.q }} filters={route.filters} sort={route.sort} q={route.q} onChange={(filters, sort) => useStore.getState().go({ ...route, filters, sort })} />
     case 'setup': return <SetupPage />
     case 'compare': return <ComparePage ids={route.ids} />
+    case 'checkout': return <CheckoutPage />
+    case 'confirmed': return <ConfirmedPage id={route.id} />
     case 'not-found': return <NotFoundPage hash={route.hash} />
     default: return <NotFoundPage hash={formatRoute(route)} />
   }

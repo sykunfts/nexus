@@ -165,6 +165,48 @@ async def main():
             cells = row.locator("td[data-winner='true']")
             assert await cells.count() == 1 and "14" in (await cells.first.inner_text()), "RingConn should win Battery"
         await run("compare-rings", 1440, 900, compare_rings)
+        async def checkout_au(page):
+            await page.goto(BASE + "#/p/xgimi-mogo-4-laser"); await page.wait_for_timeout(1000)
+            await page.locator("button:has-text('Add to cart')").first.click(); await page.wait_for_timeout(600)
+            await page.keyboard.press("Escape"); await page.wait_for_timeout(300)
+            await page.goto(BASE + "#/p/anker-maggo-10k"); await page.wait_for_timeout(1000)
+            await page.locator("button:has-text('Add to cart')").first.click(); await page.wait_for_timeout(600)
+            await page.click("button:has-text('Full checkout')"); await page.wait_for_timeout(800)
+            await page.fill("input[type='email']", "nick@example.com")
+            await page.click("button:has-text('Continue to delivery')"); await page.wait_for_timeout(400)
+            await page.fill("input[name='name']", "Nick M")
+            await page.fill("input[name='line1']", "1 Test Street")
+            await page.fill("input[name='city']", "Melbourne")
+            await page.fill("input[name='postcode']", "3000")
+            await page.click("button:has-text('Continue to shipping')"); await page.wait_for_timeout(400)
+            err = await page.locator("text=/Postcode 3000 is in VIC/").count()
+            assert err == 1, "expected the VIC postcode error"
+            await page.select_option("select[autocomplete='address-level1']", "VIC")
+            await page.click("button:has-text('Continue to shipping')"); await page.wait_for_timeout(500)
+            assert await page.locator("text=/Shipment|shipments to Australia|Supplier, ships from China/").count() >= 1
+            await page.click("button:has-text('Continue to payment')"); await page.wait_for_timeout(400)
+            await page.fill("input[autocomplete='cc-number']", "4242 4242 4242 4242")
+            await page.fill("input[autocomplete='cc-exp']", "12/28")
+            await page.fill("input[autocomplete='cc-csc']", "123")
+            await page.fill("input[autocomplete='cc-name']", "Nick M")
+            await page.click("button:has-text('Review the order')"); await page.wait_for_timeout(500)
+            await page.screenshot(path="shots/checkout-review.png")
+            await page.click("button:has-text('Place order')"); await page.wait_for_timeout(1200)
+            assert "/confirmed" in page.url, page.url
+            assert await page.locator("text=Shipment 1 of 2").count() == 1, "expected two shipments"
+        await run("checkout-au", 1440, 900, checkout_au)
+        async def checkout_uk(page):
+            await page.goto(BASE + "#/p/xgimi-mogo-4-laser"); await page.wait_for_timeout(1000)
+            await page.locator("button:has-text('Add to cart')").first.click(); await page.wait_for_timeout(600)
+            await page.click("button:has-text('Full checkout')"); await page.wait_for_timeout(800)
+            await page.fill("input[type='email']", "nick@example.com")
+            await page.click("button:has-text('Continue to delivery')"); await page.wait_for_timeout(400)
+            if await page.locator("button[role='radio']:has-text('New address')").count(): await page.click("button[role='radio']:has-text('New address')")
+            await page.select_option("select[autocomplete='country']", "GB")
+            await page.fill("input[name='name']", "Nick M"); await page.fill("input[name='line1']", "10 Downing Street"); await page.fill("input[name='city']", "London"); await page.fill("input[name='postcode']", "SW1A 1AA")
+            await page.click("button:has-text('Continue to shipping')"); await page.wait_for_timeout(500)
+            assert await page.locator("text=VAT 20 %").count() >= 1, "VAT line missing"
+        await run("checkout-uk", 1440, 900, checkout_uk)
         await run("home-mobile", 400, 820)
         async def pdp_m(page):
             await page.click("text=See the MoGo 4 Laser")
