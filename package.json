@@ -1,13 +1,13 @@
 {
   "name": "nexus-marketplace",
   "version": "1.0.0",
-  "description": "NEXUS: a trend-tech dropshipping marketplace prototype (64 verified products, worldwide shipping, every page working) and the Trend Radar, a daily pipeline that matches rising tech trends to CJdropshipping stock, costs them to Australia and drafts listings.",
+  "description": "NEXUS: a trend-tech dropshipping storefront (64 verified products, worldwide shipping, every page working), the Trend Radar, a daily pipeline that matches rising tech trends to CJdropshipping stock, costs them to Australia and drafts listings, and a Cloudflare Worker back office that takes payment through Stripe and fulfils through CJ.",
   "main": "index.js",
   "scripts": {
     "test": "vitest run",
     "dev": "vite",
     "build": "vite build",
-    "typecheck": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json && tsc -p office/tsconfig.json",
     "preview": "vite preview",
     "photos": "node scripts/embed-photos.mjs",
     "fragment": "node scripts/fragment.mjs",
@@ -17,7 +17,11 @@
     "radar": "tsx radar/src/index.ts run",
     "radar:dry": "tsx radar/src/index.ts run --dry --skip-cj",
     "merge": "node scripts/merge-trends.mjs && node scripts/merge-listings.mjs",
-    "listing": "tsx radar/src/listing-cli.ts"
+    "listing": "tsx radar/src/listing-cli.ts",
+    "office:merge": "node scripts/merge-office.mjs",
+    "office:test": "vitest run office",
+    "office:check": "wrangler deploy --dry-run --outdir .wrangler/dry --config office/wrangler.toml",
+    "office:deploy": "wrangler deploy --config office/wrangler.toml"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +38,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250101.0",
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/react": "^16.3.3",
     "@types/js-yaml": "^4.0.9",
@@ -50,6 +55,7 @@
     "typescript": "^5.9.3",
     "vite": "^5.4.21",
     "vite-plugin-singlefile": "^2.3.3",
-    "vitest": "^2.1.9"
+    "vitest": "^2.1.9",
+    "wrangler": "^3.99.0"
   }
 }

@@ -1,0 +1,1 @@
+{ "code": 200, "result": true, "message": "Success", "data": { "orderId": "CJ-ORDER-1", "orderNum": "NX-123456", "orderStatus": "SHIPPED", "trackNumber": "CJPK123456789", "logisticName": "CJPacket Ordinary", "orderAmount": 68.5 } }

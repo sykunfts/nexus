@@ -8,7 +8,9 @@ import { CollectionPage } from './pages/CollectionPage'
 import { SetupPage } from './pages/SetupPage'
 import { ComparePage } from './pages/ComparePage'
 import { CheckoutPage } from './pages/CheckoutPage'
-import { ConfirmedPage } from './pages/ConfirmedPage'
+import { ConfirmedPage, ConfirmedSessionPage } from './pages/ConfirmedPage'
+import { PoliciesPage } from './pages/PoliciesPage'
+import { RETURNS_LINE } from './content/policies'
 import { AccountPage } from './pages/AccountPage'
 import { OrderPage, OrdersPage } from './pages/OrdersPage'
 import { GuidePage, GuidesPage } from './pages/GuidesPage'
@@ -124,10 +126,11 @@ function MobileTabBar() {
 function Footer() {
   return (
     <footer className="mt-16 border-t border-ink">
-      <div className="mx-auto grid max-w-[1440px] gap-8 px-4 py-10 md:grid-cols-5 md:px-6">
+      <div className="mx-auto grid max-w-[1440px] gap-8 px-4 py-10 md:grid-cols-6 md:px-6">
         <div className="md:col-span-2">
           <div className="display text-[28px] text-ink">Nexus</div>
           <p className="mt-2 max-w-[38ch] text-[13.5px] text-ink-2">Trending tech, specs and prices checked against the maker, checked against your phone, home and plug, and shipped from Sydney or straight from the maker.</p>
+          <p className="mt-2 max-w-[38ch] text-[12.5px] text-ink-3">{RETURNS_LINE[0].toUpperCase() + RETURNS_LINE.slice(1)}.</p>
           <div className="mt-4 flex items-center gap-2 text-[12.5px] text-ink-3"><span className="inline-block h-1.5 w-1.5 bg-pass" /> All systems operational, status.nexus.store</div>
         </div>
         {FOOTER.map((g) => (
@@ -142,7 +145,7 @@ function Footer() {
       <div className="border-t border-rule">
         <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-2 px-4 py-3 text-[12px] text-ink-3 md:px-6">
           <span>2026 Nexus Technologies Pty Ltd. Prototype.</span>
-          <span>Privacy, Terms, Accessibility (WCAG 2.1 AA)</span>
+          <span><a href="#/policies/privacy" onClick={(e) => { e.preventDefault(); useStore.getState().go({ name: 'policy', slug: 'privacy' }) }} className="hover:underline underline-offset-4">Privacy</a>, <a href="#/policies/terms" onClick={(e) => { e.preventDefault(); useStore.getState().go({ name: 'policy', slug: 'terms' }) }} className="hover:underline underline-offset-4">Terms</a>, Accessibility (WCAG 2.1 AA)</span>
         </div>
       </div>
     </footer>
@@ -164,12 +167,14 @@ function Page({ route }: { route: Route }) {
     case 'compare': return <ComparePage ids={route.ids} />
     case 'checkout': return <CheckoutPage />
     case 'confirmed': return <ConfirmedPage id={route.id} />
+    case 'confirmed-session': return <ConfirmedSessionPage sessionId={route.sessionId} />
     case 'account': return <AccountPage />
     case 'orders': return <OrdersPage />
     case 'order': return <OrderPage id={route.id} />
     case 'guides': return <GuidesPage />
     case 'guide': return <GuidePage slug={route.slug} />
     case 'how-we-pick': return <HowWePickPage />
+    case 'policy': return <PoliciesPage slug={route.slug} />
     case 'not-found': return <NotFoundPage hash={route.hash} />
     default: return <NotFoundPage hash={formatRoute(route)} />
   }

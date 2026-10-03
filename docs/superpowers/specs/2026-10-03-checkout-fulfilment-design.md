@@ -117,7 +117,7 @@ Any step throwing → `state 'needs_attention'` with the reason (`cj_create_fail
 
 ## Merchant view
 
-An **Orders** tab on the Radar page (`radar.html#orders`), gated by `ADMIN_TOKEN`: the page asks for the token once, keeps it in `localStorage['nexus.office.token']`, and sends `Authorization: Bearer`. Endpoints: `GET /admin/orders?state=` (newest first, 100 per page), `GET /admin/orders/:id`, `POST /admin/orders/:id/retry` (runs `fulfil` again), `POST /admin/orders/:id/refunded` (marks refunded after Nick refunds in Stripe; records the note), `GET /admin/notify` (counts per product with the emails), `GET /admin/health` (KV reachable, Stripe key mode, CJ auth ok, email enabled, last cron run). The view: a table of orders with state chips, the needs-attention queue first with the reason and the two buttons, and the notify list.
+An **Orders** tab on the Radar page (`radar.html#orders`), gated by `ADMIN_TOKEN`: the page asks for the token once, keeps it in `localStorage['nexus.office.token']`, and sends `Authorization: Bearer`. Endpoints: `GET /admin/orders?state=` (newest first, 100 per page), `GET /admin/orders/:id`, `POST /admin/orders/:id/retry` (runs `fulfil` again), `POST /admin/orders/:id/refunded` (marks refunded after Nick refunds in Stripe; records the note), `GET /admin/notify` (counts per product with the emails), `GET /admin/health` (KV reachable, Stripe key mode, CJ auth ok (cached 1 h), email enabled, dry run, last cron run, sellable count). Retry is accepted only from `paid` or `needs_attention` (409 otherwise), since `fulfil` would pay CJ again for an order it already holds. The view: a table of orders with state chips, the needs-attention queue first with the reason and the two buttons, and the notify list.
 
 ## Emails (Resend)
 
@@ -136,7 +136,7 @@ Footer links point at these routes; the "30-day returns on both routes" wording 
 
 ## Shop changes (summary)
 
-- `src/lib/office.ts`: `office.enabled`, `quote()`, `checkout()`, `order()`, `orderBySession()`, `notify()`, `admin.*` with the token; 10 s timeouts; errors typed.
+- `src/lib/office.ts`: `office.enabled`, `canBuy()`, `quoteFreight()`, `startCheckout()`, `fetchOrder()`, `fetchOrderBySession()`, `notifyMe()`, `admin.*` with the token, `toShopOrder()`; 10 s timeouts; errors typed (`OfficeClientError`). (Names as built.)
 - Sellable gating as above; `Product.sellable` is not stored, it is `!!product.supplier` through one helper `sellable()` in `data.ts`.
 - Checkout: card section removed; shipping section shows the live quote (loading, error, and "cannot ship there yet" states); Pay button; the local `addOrder` prototype path stays for `!office.enabled`.
 - A new route `#/orders/confirmed?session=<id>` (`{ name: 'confirmed-session', sessionId }`) is Stripe's return address; it polls `orderBySession` and then shows the same confirmation page as today's `#/orders/<id>/confirmed`. `ConfirmedPage` and `OrderPage` read the Worker when enabled; otherwise today's local orders.

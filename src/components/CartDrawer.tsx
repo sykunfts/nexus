@@ -217,7 +217,7 @@ export function CartDrawer() {
                   <span className="text-[12px] text-paper/70">Checks out in one page</span>
                 </button>
                 <button type="button" onClick={checkout} className="mt-2 h-10 w-full border border-ink text-[13.5px] font-medium text-ink hover:bg-ink hover:text-paper">Full checkout</button>
-                <p className="mt-2 text-[11.5px] text-ink-3">Prices held in {currency} for this session. 30-day returns on both routes.</p>
+                <p className="mt-2 text-[11.5px] text-ink-3">Prices held in {currency} for this session. 30-day change-of-mind returns on Australian stock; consumer guarantees on everything.</p>
               </div>
             )}
           </motion.aside>

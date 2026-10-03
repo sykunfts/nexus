@@ -65,7 +65,9 @@ export function validExpiry(mmyy: string, now: Date): boolean {
 
 export type AddressInput = Omit<Address, 'id' | 'isDefault'>
 
-export function validateAddress(a: AddressInput): Record<string, string> {
+export const validPhone = (s: string) => /^\+?[\d\s()-]{6,20}$/.test(s.trim())
+
+export function validateAddress(a: AddressInput, opts: { requirePhone?: boolean } = {}): Record<string, string> {
   const e: Record<string, string> = {}
   if (!a.name?.trim()) e.name = 'Who is it for?'
   if (!a.line1?.trim()) e.line1 = 'Street address is needed.'
@@ -78,7 +80,8 @@ export function validateAddress(a: AddressInput): Record<string, string> {
     if (!e.postcode && st && a.region && st !== a.region) e.postcode = `Postcode ${a.postcode.trim()} is in ${st}, not ${a.region}.`
   }
   if ((a.country === 'US' || a.country === 'CA') && !a.region) e.region = a.country === 'US' ? 'State is needed.' : 'Province is needed.'
-  if (a.phone && !/^\+?[\d\s()-]{6,20}$/.test(a.phone)) e.phone = 'That phone number does not look right.'
+  if (a.phone && !validPhone(a.phone)) e.phone = 'That phone number does not look right.'
+  if (!a.phone && opts.requirePhone) e.phone = 'The carrier needs a phone number for the parcel.'
   return e
 }
 

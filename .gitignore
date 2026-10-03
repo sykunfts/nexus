@@ -5,3 +5,6 @@ src-v1-backup
 *.log
 .env
 .env.*
+.wrangler
+office/.dev.vars
+dist-office

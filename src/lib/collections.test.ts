@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { COLLECTIONS, FOOTER, navTarget } from './collections'
+import { POLICIES } from '../content/policies'
 import { query } from './catalog'
 import { DEFAULT_GEAR, nav, products, TREND_NOTE } from './data'
 
@@ -29,5 +30,14 @@ describe('collections', () => {
     const ranked = COLLECTIONS.filter((c) => c.slug === 'trending' || c.filters.badge?.some((b) => b === 'Viral' || b === 'Trending' || b === 'Rising'))
     expect(ranked.length).toBeGreaterThanOrEqual(3)
     for (const c of ranked) expect(c.blurb).toContain(TREND_NOTE)
+  })
+  it('every FOOTER policy link resolves to a policy page', () => {
+    const group = FOOTER.find((g) => g.title === 'Policies')!
+    expect(group.items.map((i) => i.label)).toEqual(['Terms', 'Privacy', 'Shipping & Returns', 'Contact'])
+    for (const i of group.items) {
+      expect(i.route.name).toBe('policy')
+      expect(POLICIES.some((p) => i.route.name === 'policy' && p.slug === i.route.slug), i.label).toBe(true)
+    }
+    expect(POLICIES.map((p) => p.slug)).toEqual(['terms', 'privacy', 'shipping-returns', 'contact'])
   })
 })

@@ -1,20 +1,89 @@
-/* Order confirmation: number, shipments with ETAs, the works-with summary, and a way to grow My setup. */
+/*
+  Order confirmation: number, shipments with ETAs, the works-with summary, and a way to grow My setup.
+  Two ways in: a prototype order by id, or back from Stripe by checkout session, polled until the
+  office has recorded the payment.
+*/
+import { useEffect, useState } from 'react'
 import { products } from '../lib/data'
-import { lineVisual } from '../lib/orders'
+import { lineVisual, Order } from '../lib/orders'
 import { fmt } from '../lib/currency'
 import { COUNTRIES, originLabel } from '../lib/shipping'
 import { useStore } from '../lib/store'
+import { fetchOrderBySession, toShopOrder } from '../lib/office'
 import { ProductImage } from '../components/ProductVisual'
 import { Button } from '../components/ui'
 import { NotFoundPage } from './NotFoundPage'
 import { cn } from '../lib/cn'
 
+export const POLL_MS = 2000
+export const POLL_FOR_MS = 120_000   // KV can take up to a minute to show the webhook's write at the customer's edge
+
 export function ConfirmedPage({ id }: { id: string }) {
   const order = useStore((s) => s.orders.find((o) => o.id === id))
+  if (!order) return <NotFoundPage hash={`#/orders/${id}/confirmed`} />
+  return <ConfirmedView order={order} />
+}
+
+/* Back from Stripe: the webhook usually lands within a second or two; keep asking for a minute. */
+export function ConfirmedSessionPage({ sessionId }: { sessionId: string }) {
+  const known = useStore((s) => s.orders.find((o) => o.office?.sessionId === sessionId))
+  const [order, setOrder] = useState<Order | null>(known ?? null)
+  const [gaveUp, setGaveUp] = useState(false)
+  const [attempt, setAttempt] = useState(0)
+
+  /* Stripe only sends a customer here after taking payment: the cart is spent whatever the office says next. */
+  useEffect(() => { useStore.getState().clearCart() }, [])
+
+  useEffect(() => {
+    if (order) return
+    let cancelled = false
+    const started = Date.now()
+    const tick = async () => {
+      try {
+        const o = await fetchOrderBySession(sessionId)
+        if (cancelled) return
+        if (o) {
+          const shop = toShopOrder(o)
+          const st = useStore.getState()
+          if (!st.orders.some((x) => x.id === shop.id)) st.addOrder(shop)
+          setOrder(shop)
+          return
+        }
+      } catch { /* try again on the next tick */ }
+      if (cancelled) return
+      if (Date.now() - started >= POLL_FOR_MS) { setGaveUp(true); return }
+      timer = window.setTimeout(() => void tick(), POLL_MS)
+    }
+    let timer = 0
+    void tick()
+    return () => { cancelled = true; window.clearTimeout(timer) }
+  }, [sessionId, order, attempt])
+
+  if (order) return <ConfirmedView order={order} live />
+  return (
+    <div className="mx-auto max-w-[1440px] px-4 py-16 md:px-6">
+      <div className="reading text-[12px] text-ink-3">Back from Stripe</div>
+      {gaveUp ? (
+        <>
+          <h1 className="display-md mt-2 text-[34px] text-ink sm:text-[44px]">Your payment is recorded; the order is still being written up.</h1>
+          <p className="mt-2 max-w-[640px] text-[15px] text-ink-2">If Stripe showed you a receipt, the payment went through and the receipt is your proof. The order confirmation with its number follows by email as soon as the office catches up, usually within minutes.</p>
+          <Button variant="primary" className="mt-6" onClick={() => { setGaveUp(false); setAttempt((n) => n + 1) }}>Check again</Button>
+        </>
+      ) : (
+        <>
+          <h1 className="display-md mt-2 text-[34px] text-ink sm:text-[44px]">Confirming your payment…</h1>
+          <p className="mt-2 text-[15px] text-ink-2">Stripe has your card; the office is writing up the order. This takes a few seconds.</p>
+          <div className="mt-6 max-w-[520px] space-y-2" aria-busy="true"><div className="skeleton h-10" /><div className="skeleton h-10" /></div>
+        </>
+      )}
+    </div>
+  )
+}
+
+function ConfirmedView({ order, live = false }: { order: Order; live?: boolean }) {
   const go = useStore((s) => s.go)
   const addGear = useStore((s) => s.addGear)
   const gear = useStore((s) => s.gear)
-  if (!order) return <NotFoundPage hash={`#/orders/${id}/confirmed`} />
   const currency = order.totals.currency
   const addable = order.lines.map((l) => products.find((p) => p.id === l.productId)).filter((p): p is NonNullable<typeof p> => !!p && (!!p.facts.hubs || !!p.facts.pdOut)).filter((p) => !gear.some((g) => g.deviceId === p.id))
 
@@ -23,8 +92,10 @@ export function ConfirmedPage({ id }: { id: string }) {
       <div className="grid grid-cols-12 gap-x-8 gap-y-6 py-10">
         <div className="col-span-12 lg:col-span-7">
           <div className="reading text-[12px] text-ink-3">Order {order.id}</div>
-          <h1 className="display-md mt-2 text-[34px] text-ink sm:text-[44px]">Thanks, it is on its way.</h1>
-          <p className="mt-2 text-[15px] text-ink-2">A confirmation would go to {order.email}. Nothing was charged: this is a prototype.</p>
+          <h1 className="display-md mt-2 text-[34px] text-ink sm:text-[44px]">{order.office?.state === 'needs_attention' ? 'Paid. We are checking the details.' : 'Thanks, it is on its way.'}</h1>
+          <p className="mt-2 text-[15px] text-ink-2">{order.office?.state === 'needs_attention'
+            ? `Your payment went through. We are checking the details of this order with the supplier by hand; the confirmation with the full order goes to ${order.email} once that is done, usually within the day. Nothing more is needed from you.`
+            : live ? `Paid. A confirmation is on its way to ${order.email}; the supplier packs it next, and the tracking number follows when it ships.` : `A confirmation would go to ${order.email}. Nothing was charged: this is a prototype.`}</p>
 
           <div className="mt-6 space-y-3">
             {order.shipments.map((s, i) => (

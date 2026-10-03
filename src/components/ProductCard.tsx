@@ -6,6 +6,8 @@ import { useStore, useZone } from '../lib/store'
 import { ProductImage } from './ProductVisual'
 import { Pill, Stars, StockDot, Tile } from './ui'
 import { cn } from '../lib/cn'
+import { canBuy } from '../lib/office'
+import { NotifyMe } from './NotifyMe'
 import { etaText, originShort } from '../lib/shipping'
 
 /** 7-day trend sparkline, drawn in ink: a line, a faint baseline, the last point marked. */
@@ -125,7 +127,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
             <span className={cn('text-[12px]', local ? 'text-ink-2' : 'text-ink-3')}>{originShort(product.fulfil)}, {etaText(product.fulfil.origin, zone)}</span>
           </div>
 
-          <button
+          {!canBuy(product) ? <NotifyMe productId={product.id} compact className="h-10 shrink-0" /> : <button
             type="button"
             onClick={onAdd}
             disabled={out}
@@ -138,7 +140,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
           >
             {added ? <Check size={15} strokeWidth={2.5} /> : <Plus size={15} strokeWidth={2.25} />}
             {added ? 'Added' : 'Add'}
-          </button>
+          </button>}
         </div>
       </div>
     </article>

@@ -15,6 +15,7 @@ import { Sparkline } from './ProductCard'
 import { Button, Tile } from './ui'
 import { etaText } from '../lib/shipping'
 import { cn } from '../lib/cn'
+import { canBuy } from '../lib/office'
 
 interface Role { role: string; why: string; options: string[]; optional?: boolean }
 interface Kit { budget: number; roles: Role[] }
@@ -89,9 +90,11 @@ function plan(prompt: string, owned: { id: string; name: string; facts: Product[
   }
 }
 
-/* Deterministic budget solver: drop optional roles, then downgrade from the bottom, then drop. */
+/* Deterministic budget solver: keep only what can be bought, drop optional roles, then downgrade from the bottom, then drop. */
 function solve(kit: Kit, swaps: Record<string, number>) {
-  const choice = kit.roles.map((r) => ({ role: r, idx: swaps[r.role] ?? 0 }))
+  const stocked = kit.roles.map((r) => ({ ...r, options: r.options.filter((id) => canBuy(byId(id))) }))
+  const unstocked = stocked.filter((r) => r.options.length === 0).map((r) => r.role)
+  const choice = stocked.filter((r) => r.options.length > 0).map((r) => ({ role: r, idx: Math.min(swaps[r.role] ?? 0, r.options.length - 1) }))
   const total = () => choice.reduce((n, c) => n + (c.idx < 0 ? 0 : byId(c.role.options[c.idx]).price), 0)
   const pinned = (c: { role: Role }) => swaps[c.role.role] !== undefined
   for (let i = choice.length - 1; i >= 0 && total() > kit.budget; i--) if (choice[i].role.optional && !pinned(choice[i])) choice[i].idx = -1
@@ -102,7 +105,7 @@ function solve(kit: Kit, swaps: Record<string, number>) {
   }
   for (let i = choice.length - 1; i >= 0 && total() > kit.budget; i--) if (!pinned(choice[i])) choice[i].idx = -1
   const picks = choice.filter((c) => c.idx >= 0).map((c) => ({ role: c.role, product: byId(c.role.options[c.idx]) }))
-  return { picks, total: total(), dropped: choice.filter((c) => c.idx < 0).map((c) => c.role.role) }
+  return { picks, total: total(), dropped: choice.filter((c) => c.idx < 0).map((c) => c.role.role), unstocked }
 }
 
 function KitCard({ kit }: { kit: Kit }) {
@@ -115,7 +118,7 @@ function KitCard({ kit }: { kit: Kit }) {
   const [swaps, setSwaps] = useState<Record<string, number>>({})
   const [shown, setShown] = useState(0)
   const [added, setAdded] = useState(false)
-  const { picks, total, dropped } = useMemo(() => solve(kit, swaps), [kit, swaps])
+  const { picks, total, dropped, unstocked } = useMemo(() => solve(kit, swaps), [kit, swaps])
 
   useEffect(() => {
     if (shown >= picks.length) return
@@ -143,7 +146,7 @@ function KitCard({ kit }: { kit: Kit }) {
         <div className="mt-2 h-1.5 overflow-hidden bg-rule" role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100} aria-label="Budget used">
           <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ type: 'spring', stiffness: 120, damping: 20 }} className={cn('h-full', over ? 'bg-fail' : 'bg-signal')} />
         </div>
-        <div className="mt-1.5 text-[12px] text-ink-3">{over ? `${fmt(total - kit.budget, currency, { compact: true })} over budget` : `${fmt(kit.budget - total, currency, { compact: true })} under budget`}{dropped.length ? `, left out ${dropped.join(', ').toLowerCase()} to fit` : ''}</div>
+        <div className="mt-1.5 text-[12px] text-ink-3">{over ? `${fmt(total - kit.budget, currency, { compact: true })} over budget` : `${fmt(kit.budget - total, currency, { compact: true })} under budget`}{dropped.length ? `, left out ${dropped.join(', ').toLowerCase()} to fit` : ''}{unstocked.length ? `${picks.length ? ', ' : '. '}${unstocked.join(', ').toLowerCase()} not stocked yet` : ''}</div>
       </div>
       <ul className="divide-y divide-rule">
         <AnimatePresence initial={false}>
@@ -175,7 +178,7 @@ function KitCard({ kit }: { kit: Kit }) {
         </div>
       )}
       <div className="flex gap-2 border-t border-rule p-3">
-        <Button variant="primary" className="flex-1" disabled={shown < picks.length} onClick={() => { picks.forEach((p) => add(p.product, p.product.variants[0].id)); useStore.getState().openCart(false); setAdded(true); toast({ title: `Added ${picks.length} items to your cart`, body: 'Each item was re-checked against your setup.' }) }}>
+        <Button variant="primary" className="flex-1" disabled={shown < picks.length || picks.length === 0} onClick={() => { picks.forEach((p) => add(p.product, p.product.variants[0].id)); useStore.getState().openCart(false); setAdded(true); toast({ title: `Added ${picks.length} items to your cart`, body: 'Each item was re-checked against your setup.' }) }}>
           {added ? <><Check size={15} strokeWidth={2.5} /> Kit added</> : 'Add kit to cart'}
         </Button>
         <Button variant="secondary" onClick={() => toast({ title: 'Kit saved', body: 'nexus.store/k/7Qx2 copied to clipboard.' })}>Save</Button>

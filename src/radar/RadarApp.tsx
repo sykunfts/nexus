@@ -15,8 +15,11 @@ import { CandidateCard } from './components/CandidateCard'
 import { NoveltyRail } from './components/NoveltyRail'
 import { EmptyState } from './components/EmptyState'
 import { TermsTable } from './components/TermsTable'
+import { OrdersTab } from './components/OrdersTab'
 
 const SKIP_KEY = 'nexus.radar.skipped'
+export type RadarTab = 'radar' | 'orders'
+const tabFromHash = (): RadarTab => (typeof location !== 'undefined' && location.hash === '#orders' ? 'orders' : 'radar')
 
 /* Why a run that scored its terms has nothing to rank: the most likely first-run state. */
 function noCandidatesReason(f: RadarFile): string {
@@ -35,7 +38,9 @@ export function RadarApp() {
   const [sort, setSort] = useState<RadarSort>('score')
   const [skipped, setSkipped] = useState<Set<string>>(() => readSkipped())
   const [open, setOpen] = useState<string | null>(null)
-  useEffect(() => { document.title = demo ? 'Trend Radar, demo data' : 'Trend Radar' }, [demo])
+  const [tab, setTab] = useState<RadarTab>(() => tabFromHash())
+  useEffect(() => { const on = () => setTab(tabFromHash()); window.addEventListener('hashchange', on); return () => window.removeEventListener('hashchange', on) }, [])
+  useEffect(() => { document.title = tab === 'orders' ? 'Orders, Nexus office' : demo ? 'Trend Radar, demo data' : 'Trend Radar' }, [demo, tab])
 
   const deltas = useMemo(() => termDeltas(file), [file])
   const sections = useMemo(() => [...new Set(file.candidates.map((c) => c.section))].sort(), [file])
@@ -48,10 +53,12 @@ export function RadarApp() {
 
   return (
     <div className="min-h-screen bg-paper text-ink">
-      <RadarHeader file={file} count={visible.length} total={file.candidates.length} demo={demo} />
-      {stale && <div className="border-b border-check bg-check-tint px-4 py-2 text-[13px] text-check md:px-6">{stale}</div>}
+      <RadarHeader file={file} count={visible.length} total={file.candidates.length} demo={demo} tab={tab} />
+      {tab === 'radar' && stale && <div className="border-b border-check bg-check-tint px-4 py-2 text-[13px] text-check md:px-6">{stale}</div>}
       <main id="main" className="mx-auto max-w-[1440px] px-4 pb-16 md:px-6">
-        {!hasRun ? (
+        {tab === 'orders' ? (
+          <OrdersTab />
+        ) : !hasRun ? (
           <EmptyState file={file} />
         ) : (
           <div className="grid gap-6 pt-6 lg:grid-cols-[240px_1fr]">
@@ -82,7 +89,9 @@ export function RadarApp() {
         )}
       </main>
       <footer className="border-t border-rule px-4 py-4 text-[12px] text-ink-3 md:px-6">
-        Trend figures are growth in interest, never sales. Costs use CJ's listed price and cheapest freight; GST, card fees and the 45 % target margin are in the spec. Compliance notes are prompts to check, not legal advice.
+        {tab === 'orders'
+          ? 'Order states come from the office; CJ status is synced every two hours. Refund the card in Stripe before marking an order refunded here.'
+          : "Trend figures are growth in interest, never sales. Costs use CJ's listed price and cheapest freight; GST, card fees and the 45 % target margin are in the spec. Compliance notes are prompts to check, not legal advice."}
       </footer>
     </div>
   )

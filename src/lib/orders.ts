@@ -36,7 +36,12 @@ export interface Order {
   shipments: Shipment[]
   totals: Totals
   compat: { status: 'ok' | 'warn' | 'bad'; issues: string[] }
+  office?: OfficeStatus   // present when the order lives in the back office; its state replaces the time-based status
 }
+
+/* What the back office knows about a real order. */
+export type OfficeState = 'paid' | 'placed_with_supplier' | 'shipped' | 'delivered' | 'needs_attention' | 'refunded'
+export interface OfficeStatus { state: OfficeState; sessionId: string; cjOrderId?: string; trackNumber?: string; logisticName?: string; attention?: string }
 
 /* ---------- functions ---------- */
 

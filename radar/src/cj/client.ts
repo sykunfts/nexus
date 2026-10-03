@@ -15,12 +15,18 @@ export class CjError extends Error {
 
 export interface CjClient {
   auth(): Promise<void>
+  /* The access token in use (set by auth() or passed in), for callers that cache it. */
+  token(): string | null
   get<T>(path: string, params: Record<string, string | number>): Promise<T>
   post<T>(path: string, body: unknown): Promise<T>
+  patch<T>(path: string, body: unknown): Promise<T>
 }
 
-export function createCjClient(o: { apiKey: string; http: Http }): CjClient {
-  let token: string | null = null
+/* CJ answers an expired or wrong token with 401 or its own 16002xx codes. */
+export const isAuthError = (e: unknown) => e instanceof CjError && (String(e.code) === '401' || /^16002/.test(String(e.code)) || /token|unauthori[sz]ed/i.test(e.message))
+
+export function createCjClient(o: { apiKey: string; http: Http; token?: string | null }): CjClient {
+  let token: string | null = o.token ?? null
   const headers = () => ({ 'Content-Type': 'application/json', ...(token ? { 'CJ-Access-Token': token } : {}) })
 
   const unwrap = async <T,>(res: Response, path: string): Promise<T> => {
@@ -36,13 +42,18 @@ export function createCjClient(o: { apiKey: string; http: Http }): CjClient {
       if (!body.data?.accessToken) throw new CjError('auth', 'no access token in the reply')
       token = body.data.accessToken
     },
+    token() { return token },
     async get<T>(path: string, params: Record<string, string | number>) {
-      const qs = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)])).toString()
+      const qs = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)] as [string, string])).toString()
       const res = await o.http(`${CJ_BASE}${path}${qs ? `?${qs}` : ''}`, { headers: headers() })
       return unwrap<T>(res, path)
     },
     async post<T>(path: string, body: unknown) {
       const res = await o.http(`${CJ_BASE}${path}`, { method: 'POST', headers: headers(), body: JSON.stringify(body) })
+      return unwrap<T>(res, path)
+    },
+    async patch<T>(path: string, body: unknown) {
+      const res = await o.http(`${CJ_BASE}${path}`, { method: 'PATCH', headers: headers(), body: JSON.stringify(body) })
       return unwrap<T>(res, path)
     },
   }

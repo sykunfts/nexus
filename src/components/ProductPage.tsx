@@ -11,6 +11,8 @@ import { Button, Chip, Row, Stars, StockDot, Toggle } from './ui'
 import { PARTS, CanvasMode } from '../lib/parts'
 import { cn } from '../lib/cn'
 import { etaText, originLabel, originShort } from '../lib/shipping'
+import { canBuy } from '../lib/office'
+import { NOTIFY_INPUT_ID, NotifyMe } from './NotifyMe'
 
 const ProductCanvas = lazy(() => import('./ProductCanvas').then((m) => ({ default: m.ProductCanvas })))
 
@@ -65,6 +67,7 @@ export function ProductPage({ product }: { product: Product }) {
     setAdded(true)
     window.setTimeout(() => setAdded(false), 1600)
   }
+  const buyable = canBuy(product)
 
   const other = compareWith ? byId(compareWith) : null
   const related = product.id === HERO
@@ -240,16 +243,22 @@ export function ProductPage({ product }: { product: Product }) {
                 </div>
               </div>
 
-              <div className="hidden gap-px border-t border-ink bg-ink lg:grid lg:grid-cols-[1fr_auto]">
-                <button type="button" onClick={onAdd} className="flex h-14 items-center justify-center gap-2 bg-ink px-5 text-[15px] font-medium text-paper hover:bg-[#1f2730]" aria-live="polite">
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.span key={added ? 'ok' : 'add'} initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.14 }} className="flex items-center gap-2">
-                      {added ? <><Check size={16} strokeWidth={2.5} /> Added to cart</> : <>Add to cart, {fmt(price, currency, { compact: true })}</>}
-                    </motion.span>
-                  </AnimatePresence>
-                </button>
-                <button type="button" onClick={() => add(product, variantId, selection)} className="h-14 bg-sheet px-5 text-[15px] font-medium text-ink hover:bg-paper">Buy now</button>
-              </div>
+              {buyable ? (
+                <div className="hidden gap-px border-t border-ink bg-ink lg:grid lg:grid-cols-[1fr_auto]">
+                  <button type="button" onClick={onAdd} className="flex h-14 items-center justify-center gap-2 bg-ink px-5 text-[15px] font-medium text-paper hover:bg-[#1f2730]" aria-live="polite">
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.span key={added ? 'ok' : 'add'} initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.14 }} className="flex items-center gap-2">
+                        {added ? <><Check size={16} strokeWidth={2.5} /> Added to cart</> : <>Add to cart, {fmt(price, currency, { compact: true })}</>}
+                      </motion.span>
+                    </AnimatePresence>
+                  </button>
+                  <button type="button" onClick={() => add(product, variantId, selection)} className="h-14 bg-sheet px-5 text-[15px] font-medium text-ink hover:bg-paper">Buy now</button>
+                </div>
+              ) : (
+                <div className="border-t border-ink pt-3">
+                  <NotifyMe productId={product.id} />
+                </div>
+              )}
             </div>
 
             <button type="button" onClick={() => setAdvisor(true)} className="mt-3 text-[13px] text-ink-2 underline underline-offset-4 hover:text-ink">
@@ -430,9 +439,11 @@ export function ProductPage({ product }: { product: Product }) {
         <div className="flex items-center gap-3">
           <div className="min-w-0">
             <div className="reading text-[17px] text-ink">{fmt(price, currency, { compact: true })}</div>
-            <div className={cn('truncate text-[12px]', st.text)}>{compat.status === 'ok' ? 'Works with your setup' : compat.summary}</div>
+            <div className={cn('truncate text-[12px]', buyable ? st.text : 'text-ink-3')}>{!buyable ? 'Not yet stocked' : compat.status === 'ok' ? 'Works with your setup' : compat.summary}</div>
           </div>
-          <Button variant="primary" size="lg" onClick={onAdd} className="ml-auto h-12 flex-1 max-w-[240px]">{added ? 'Added' : 'Add to cart'}</Button>
+          {buyable
+            ? <Button variant="primary" size="lg" onClick={onAdd} className="ml-auto h-12 flex-1 max-w-[240px]">{added ? 'Added' : 'Add to cart'}</Button>
+            : <Button variant="secondary" size="lg" onClick={() => { document.getElementById(NOTIFY_INPUT_ID)?.scrollIntoView({ block: 'center' }); document.getElementById(NOTIFY_INPUT_ID)?.focus() }} className="ml-auto h-12 flex-1 max-w-[240px]">Tell me when</Button>}
         </div>
       </div>
     </div>

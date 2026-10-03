@@ -105,12 +105,18 @@ export const FOOTER: { title: string; items: { label: string; route: Route }[] }
   { title: 'Help', items: [
     { label: 'My setup', route: { name: 'setup' } },
     { label: 'Works-with checker', route: guide('works-with-my-phone') },
-    { label: 'Delivery and returns', route: { name: 'how-we-pick' } },
+    { label: 'Delivery and returns', route: { name: 'policy', slug: 'shipping-returns' } },
     { label: 'Orders', route: { name: 'orders' } },
     { label: 'Account', route: { name: 'account' } },
   ] },
   { title: 'Company', items: [
     { label: 'How we pick', route: { name: 'how-we-pick' } },
     { label: 'Guides', route: { name: 'guides' } },
+  ] },
+  { title: 'Policies', items: [
+    { label: 'Terms', route: { name: 'policy', slug: 'terms' } },
+    { label: 'Privacy', route: { name: 'policy', slug: 'privacy' } },
+    { label: 'Shipping & Returns', route: { name: 'policy', slug: 'shipping-returns' } },
+    { label: 'Contact', route: { name: 'policy', slug: 'contact' } },
   ] },
 ]

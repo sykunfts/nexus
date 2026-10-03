@@ -23,7 +23,7 @@ export function HowWePickPage() {
         <H2>Ratings only where they exist</H2>
         <P>{rated} products show a rating. Each one is a maker's or retailer's figure where both the value and the review count were visible on one page, and the page names where. The rest say "No reviews yet". We do not write reviews and we do not invent bench numbers.</P>
         <H2>Two routes, one standard</H2>
-        <P>"Sydney stock" ships from our warehouse in two to four days within Australia. "Supplier direct" ships from the maker's region, mostly China, and takes longer and usually costs less. Both are tracked, both carry the same returns window, and the destination decides shipping and tax: GST included for Australia, VAT added for the UK and Europe, duties on delivery where we cannot estimate them.</P>
+        <P>"Sydney stock" ships from our warehouse in two to four days within Australia. "Supplier direct" ships from the maker's region, mostly China, and takes longer and usually costs less. Both are tracked; Sydney stock can come back within 30 days for a change of mind, and the consumer guarantees cover everything on both routes. The destination decides shipping and tax: GST included for Australia, VAT added for the UK and Europe, duties on delivery where we cannot estimate them.</P>
         <Note>Prices move. The date on each page is the day we last looked, and a product whose price we can no longer verify comes off the shelf rather than staying at a stale number.</Note>
       </article>
 

@@ -34,7 +34,7 @@ function TextField({ k, label, span, autoComplete, value, error, onChange, onBlu
   )
 }
 
-export function AddressForm({ value, onChange, errors, onBlurField }: Props) {
+export function AddressForm({ value, onChange, errors, onBlurField, requirePhone = false }: Props & { requirePhone?: boolean }) {
   const set = (k: keyof AddressInput, v: string) => onChange({ ...value, [k]: v })
   const c = value.country
   const regionOptions = c === 'AU' ? AU_STATES : c === 'US' ? US_STATES : c === 'CA' ? CA_PROVINCES : c === 'JP' ? JP_PREFECTURES : null
@@ -73,7 +73,7 @@ export function AddressForm({ value, onChange, errors, onBlurField }: Props) {
       )}
       {field('postcode', postcodeLabel, 1, 'postal-code')}
       <label className="block">
-        <span className="text-[12.5px] text-ink-2">Phone (optional{dial ? `, ${dial}` : ''})</span>
+        <span className="text-[12.5px] text-ink-2">{requirePhone ? `Phone, for the carrier${dial ? ` (${dial})` : ''}` : `Phone (optional${dial ? `, ${dial}` : ''})`}</span>
         <input type="tel" value={value.phone ?? ''} onChange={(e) => set('phone', e.target.value)} onBlur={() => onBlurField?.('phone')} autoComplete="tel" aria-invalid={!!errors.phone} className={cn('mt-1 h-10 w-full border bg-sheet px-3 text-[14px] text-ink', errors.phone ? 'border-fail' : 'border-rule-2 focus:border-ink')} />
         {errors.phone && <span className="mt-1 block text-[12px] text-fail">{errors.phone}</span>}
       </label>

@@ -3,17 +3,46 @@ from playwright.async_api import async_playwright
 
 # dist/ is a multi-asset build with module scripts, which Chromium refuses from file://; serve it locally.
 PORT = 4173
+OFFICE_PORT = 4174
 ROOT = os.path.dirname(os.path.abspath(__file__))
 BASE = f"http://127.0.0.1:{PORT}/index.html"
 RADAR = f"http://127.0.0.1:{PORT}/radar.html"
+# A second build with the office configured (and one demo listing), for the checkout, confirmation and merchant scenarios.
+OFFICE_URL = "https://office.test"
+OFFICE_BASE = f"http://127.0.0.1:{OFFICE_PORT}/index.html"
+OFFICE_RADAR = f"http://127.0.0.1:{OFFICE_PORT}/radar.html"
+
+def build_office():
+    env = dict(os.environ, VITE_OFFICE_URL=OFFICE_URL, DEMO_LISTINGS="1")
+    r = subprocess.run(["npx", "vite", "build", "--outDir", "dist-office"], cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    if r.returncode != 0:
+        print(r.stdout); raise SystemExit("office build failed")
 
 async def main():
+    build_office()
     server = subprocess.Popen([sys.executable, "-m", "http.server", str(PORT), "--directory", os.path.join(ROOT, "dist")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    office = subprocess.Popen([sys.executable, "-m", "http.server", str(OFFICE_PORT), "--directory", os.path.join(ROOT, "dist-office")], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(1)
     try:
         await scenarios()
     finally:
-        server.terminate()
+        server.terminate(); office.terminate()
+
+FREIGHT = {"shipping": {"origin": "CN", "method": "standard", "logisticName": "CJPacket Ordinary", "aud": 33.95, "days": [8, 15], "fellBack": False}, "fellBack": False, "tax": {"amount": 11.81, "included": True, "label": "Includes GST 10 %"}, "total": 129.9}
+EXPRESS = {**FREIGHT, "shipping": {**FREIGHT["shipping"], "method": "express", "logisticName": "DHL Express", "aud": 73.95, "days": [3, 6]}, "total": 169.9}
+OFFICE_ORDER = {"id": "NX-654321", "createdAt": "2026-10-05T00:00:00.000Z", "email": "nick@example.com", "address": {"name": "Nick M", "line1": "1 Test Street", "city": "Melbourne", "region": "VIC", "postcode": "3000", "country": "AU"}, "lines": [{"productId": "cj-DEMO-P-A1", "variantId": "cj-DEMO-V-AU", "name": "Mini Laser Projector (demo listing)", "qty": 1, "unitPrice": 95.95, "vid": "DEMO-V-AU", "origin": "CN"}], "shipping": FREIGHT["shipping"], "tax": FREIGHT["tax"], "subtotal": 95.95, "total": 129.9, "currency": "AUD", "stripe": {"sessionId": "cs_test_demo", "paymentIntentId": "pi_demo", "paid": True}, "state": "placed_with_supplier", "supplier": {"cjOrderId": "CJ-DEMO-1", "placedAt": "2026-10-05T00:01:00.000Z"}, "history": []}
+
+async def mock_office(page, routes):
+    # routes: {path-or-prefix: (status, body) | callable(request) -> (status, body)}
+    async def handle(route, request):
+        path = request.url.replace(OFFICE_URL, "").split("?")[0]
+        for key, val in routes.items():
+            if path == key or (key.endswith("*") and path.startswith(key[:-1])):
+                status, body = val(request) if callable(val) else val
+                await route.fulfill(status=status, content_type="application/json", headers={"access-control-allow-origin": "*", "access-control-allow-headers": "content-type, authorization"}, body=json.dumps(body))
+                return
+        await route.fulfill(status=404, content_type="application/json", headers={"access-control-allow-origin": "*"}, body='{"error":"not_found"}')
+    await page.route(OFFICE_URL + "/**", handle)
 
 async def scenarios():
     async with async_playwright() as p:
@@ -289,7 +318,7 @@ async def scenarios():
                 visited += 1
                 if await page.locator("text=That link did not match").count(): dead.append(f"footer {h}")
             # every route shape
-            for h in ["#/", "#/c/cinema", "#/search?q=ring", "#/p/xgimi-mogo-4-laser", "#/compare?ids=ringconn-gen-3%2Coura-ring-5", "#/setup", "#/guides", "#/guides/movie-night", "#/how-we-pick", "#/account", "#/orders", "#/checkout"]:
+            for h in ["#/", "#/c/cinema", "#/search?q=ring", "#/p/xgimi-mogo-4-laser", "#/compare?ids=ringconn-gen-3%2Coura-ring-5", "#/setup", "#/guides", "#/guides/movie-night", "#/how-we-pick", "#/account", "#/orders", "#/checkout", "#/policies/terms", "#/policies/privacy", "#/policies/shipping-returns", "#/policies/contact"]:
                 await page.goto(BASE + h); await page.wait_for_timeout(500)
                 visited += 1
                 if await page.locator("text=That link did not match").count(): dead.append(f"route {h}")
@@ -363,6 +392,120 @@ async def scenarios():
             await page.goto(RADAR + "?demo=1"); await page.wait_for_timeout(1200)
             await page.click("button:has-text('Filters and sort')"); await page.wait_for_timeout(300)
         await run("radar-mobile", 390, 820, radar_mobile)
+        async def policy_shipping(page):
+            await page.goto(BASE + "#/policies/shipping-returns"); await page.wait_for_timeout(800)
+            assert await page.locator("h1:has-text('Shipping and returns')").count() == 1
+            assert await page.locator("text=Draft, pending professional review").count() == 1
+            assert await page.locator("table tbody tr").count() == 5, "one row per origin"
+            assert await page.locator("text=30-day change-of-mind returns on Australian stock").count() >= 1
+            assert await page.locator("text=returns on both routes").count() == 0
+        await run("policy-shipping", 1440, 900, policy_shipping)
+        await run("policy-shipping-mobile", 390, 820, policy_shipping)
+        async def policy_footer(page):
+            await page.locator("footer a:has-text('Privacy')").first.click(); await page.wait_for_timeout(600)
+            assert "#/policies/privacy" in page.url, page.url
+            assert await page.locator("h1:has-text('Privacy')").count() == 1
+        await run("policy-footer", 1440, 900, policy_footer)
+
+        # ---- the office build: live checkout, confirmation by session, order lookup ----
+        async def checkout_pay(page):
+            posted = []
+            def checkout(request):
+                posted.append(json.loads(request.post_data))
+                return (200, {"url": OFFICE_BASE + "#/orders/confirmed?session=cs_test_demo"})
+            await mock_office(page, {"/freight": lambda r: (200, EXPRESS if json.loads(r.post_data).get("method") == "express" else FREIGHT), "/checkout": checkout, "/orders/by-session/*": (200, OFFICE_ORDER)})
+            await page.goto(OFFICE_BASE + "#/p/cj-DEMO-P-A1"); await page.wait_for_timeout(1000)
+            assert await page.locator("text=Not yet stocked").count() == 0
+            await page.locator("button:has-text('Add to cart')").first.click(); await page.wait_for_timeout(600)
+            await page.keyboard.press("Escape"); await page.wait_for_timeout(300)
+            await page.goto(OFFICE_BASE + "#/p/oura-ring-5"); await page.wait_for_timeout(1000)
+            assert await page.locator("button:text-is('Not yet stocked, tell me when')").count() == 1, "branded product should offer the stock alert"
+            assert await page.locator("button:has-text('Add to cart')").count() == 0
+            await page.screenshot(path="shots/office-tell-me-when.png")
+            await page.goto(OFFICE_BASE + "#/checkout"); await page.wait_for_timeout(800)
+            assert await page.locator("text=No payment is taken").count() == 0
+            await page.fill("input[type='email']", "nick@example.com")
+            await page.click("button:has-text('Continue to delivery')"); await page.wait_for_timeout(400)
+            await page.fill("input[name='name']", "Nick M")
+            await page.fill("input[name='line1']", "1 Test Street")
+            await page.fill("input[name='city']", "Melbourne")
+            await page.select_option("select[autocomplete='address-level1']", "VIC")
+            await page.fill("input[name='postcode']", "3000")
+            await page.click("button:has-text('Continue to shipping')"); await page.wait_for_timeout(400)
+            assert await page.locator("text=/carrier needs a phone/").count() >= 1, "the office path requires a phone"
+            await page.fill("input[type='tel']", "0400 000 000")
+            await page.click("button:has-text('Continue to shipping')"); await page.wait_for_timeout(800)
+            assert await page.locator("role=radio[name=/Express/]").count() == 1, "expected the express lane from the quote"
+            assert await page.locator("text=DHL Express").count() >= 1
+            await page.click("role=radio[name=/Express/]"); await page.wait_for_timeout(200)
+            await page.screenshot(path="shots/office-shipping-quote.png")
+            await page.click("button:has-text('Review the order')"); await page.wait_for_timeout(500)
+            assert await page.locator("input[autocomplete='cc-number']").count() == 0, "no card form on the office path"
+            btn = page.locator("button:has-text('Pay with Stripe')")
+            assert await btn.count() == 1 and "$169.90" in (await btn.inner_text()), await btn.inner_text()
+            await page.screenshot(path="shots/office-review-pay.png")
+            await btn.click(); await page.wait_for_timeout(1500)
+            assert posted and posted[0]["method"] == "express" and posted[0]["lines"][0]["productId"] == "cj-DEMO-P-A1" and "unitPrice" not in posted[0]["lines"][0], posted
+            assert posted[0]["address"]["phone"] == "0400 000 000", posted[0]["address"]
+            assert "session=cs_test_demo" in page.url, page.url
+            assert await page.locator("text=NX-654321").count() >= 1
+            assert await page.locator("text=Nothing was charged").count() == 0
+        await run("checkout-pay", 1440, 900, checkout_pay)
+        async def confirmed_remote(page):
+            n = {"calls": 0}
+            def by_session(request):
+                n["calls"] += 1
+                return (202, {"pending": True}) if n["calls"] < 2 else (200, OFFICE_ORDER)
+            await mock_office(page, {"/orders/by-session/*": by_session})
+            await page.goto(OFFICE_BASE + "#/orders/confirmed?session=cs_test_demo"); await page.wait_for_timeout(600)
+            assert await page.locator("text=Confirming your payment").count() == 1
+            await page.wait_for_timeout(2600)
+            assert await page.locator("text=Thanks, it is on its way").count() == 1, "order should appear after the second poll"
+            assert n["calls"] == 2, n
+        await run("confirmed-remote", 1440, 900, confirmed_remote)
+        async def order_lookup(page):
+            await mock_office(page, {"/orders/NX-654321": (200, {**OFFICE_ORDER, "state": "shipped", "supplier": {**OFFICE_ORDER["supplier"], "trackNumber": "LX123456789CN", "logisticName": "CJPacket Ordinary"}})})
+            await page.goto(OFFICE_BASE + "#/orders/NX-654321"); await page.wait_for_timeout(800)
+            await page.fill("input[type='email']", "nick@example.com")
+            await page.click("button:has-text('Find my order')"); await page.wait_for_timeout(800)
+            assert await page.locator("text=LX123456789CN").count() >= 1
+            assert await page.locator("a[href*='17track']").count() == 1
+        await run("order-lookup", 1440, 900, order_lookup)
+        async def radar_orders(page):
+            health = {"ok": True, "kv": True, "stripeMode": "test", "cjAuth": True, "emailEnabled": False, "dryRun": True, "cronLast": {"at": "2026-10-05T04:00:00.000Z", "synced": 2, "retried": 0, "errors": []}, "catalogueSellable": 1}
+            stuck = {**OFFICE_ORDER, "id": "NX-000002", "state": "needs_attention", "attention": {"reason": "cj_pay_failed", "at": "2026-10-05T02:00:10.000Z", "lastError": "insufficient balance", "attempts": 1, "nextRetryAt": "2026-10-06T02:00:10.000Z"}}
+            shipped = {**OFFICE_ORDER, "id": "NX-000001", "state": "shipped", "supplier": {**OFFICE_ORDER["supplier"], "trackNumber": "LX123456789CN", "logisticName": "CJPacket Ordinary"}}
+            posted = []
+            def guard(fn):
+                def h(request):
+                    if request.headers.get("authorization") != "Bearer shot-token": return (401, {"error": "unauthorised"})
+                    return fn(request)
+                return h
+            await mock_office(page, {
+                "/admin/health": guard(lambda r: (200, health)),
+                "/admin/orders": guard(lambda r: (200, {"orders": [OFFICE_ORDER, stuck, shipped]})),
+                "/admin/notify": guard(lambda r: (200, {"products": [{"productId": "oura-ring-5", "count": 2, "emails": ["a@b.co", "c@d.co"]}]})),
+                "/admin/orders/NX-000002/retry": guard(lambda r: (posted.append("retry"), (200, {**stuck, "state": "placed_with_supplier"}))[1]),
+            })
+            await page.goto(OFFICE_RADAR + "#orders"); await page.wait_for_timeout(800)
+            assert await page.locator("label:has-text('Admin token')").count() == 1
+            await page.fill("input[type='password']", "shot-token")
+            await page.click("button:text-is('Open')"); await page.wait_for_timeout(800)
+            rows = page.locator("tbody tr[aria-label^='NX-']")
+            assert await rows.count() == 3, await rows.count()
+            assert "NX-000002" in (await rows.first.inner_text()), "needs-attention first"
+            assert await page.locator("text=Stripe test mode").count() == 1
+            assert await page.locator("a[href*='17track']").count() == 1
+            await page.screenshot(path="shots/radar-orders.png")
+            await page.click("button:text-is('Retry')"); await page.wait_for_timeout(600)
+            assert posted == ["retry"], posted
+            assert await page.locator("text=Retried NX-000002").count() == 1
+        await run("radar-orders", 1440, 900, radar_orders)
+        async def radar_orders_unconfigured(page):
+            await page.goto(RADAR + "#orders"); await page.wait_for_timeout(600)
+            assert await page.locator("text=not configured").count() == 1
+            assert await page.locator("a[href$='#back-office']").count() == 1
+        await run("radar-orders-unconfigured", 1440, 900, radar_orders_unconfigured)
         await b.close()
         print("\n".join(errors[:40]) if errors else "no console errors")
 asyncio.run(main())

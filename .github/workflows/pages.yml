@@ -36,6 +36,9 @@ jobs:
       - run: npm run merge
       - run: npm run typecheck
       - run: npm run build
+        env:
+          # the Worker's address once it is deployed (repository variable); empty keeps the shop in prototype mode
+          VITE_OFFICE_URL: ${{ vars.OFFICE_URL }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -137,7 +137,7 @@ export function Home() {
               [etaText('AU', zone), 'Sydney stock, tracked'],
               [etaText('CN', zone), 'Supplier direct from China, priced lower'],
               [`${products.length} products`, `Real, sold today, prices checked ${priceCheckedText(LATEST_CHECK)}`],
-              ['30 days', 'Returns on both routes'],
+              ['30 days', 'Change-of-mind returns on Sydney stock; consumer guarantees on everything'],
             ].map(([v, l]) => (
               <div key={l}>
                 <dt className="reading text-[15px] text-ink">{v}</dt>

@@ -7,6 +7,8 @@ import { useStore } from '../lib/store'
 import { ProductImage } from './ProductVisual'
 import { Button, Row, Stars, StockDot, Tile } from './ui'
 import { cn } from '../lib/cn'
+import { canBuy } from '../lib/office'
+import { NotifyMe } from './NotifyMe'
 
 export function QuickView() {
   const id = useStore((s) => s.quickViewId)
@@ -80,9 +82,11 @@ export function QuickView() {
                   <StockDot stock={product.stock} count={product.stockCount} />
                 </div>
                 <div className="grid grid-cols-[1fr_auto] gap-2">
-                  <Button variant="primary" size="lg" onClick={() => { add(product, variant.id); setAdded(true); window.setTimeout(close, 500) }}>
-                    {added ? <><Check size={16} strokeWidth={2.5} /> Added</> : 'Add to cart'}
-                  </Button>
+                  {canBuy(product) ? (
+                    <Button variant="primary" size="lg" onClick={() => { add(product, variant.id); setAdded(true); window.setTimeout(close, 500) }}>
+                      {added ? <><Check size={16} strokeWidth={2.5} /> Added</> : 'Add to cart'}
+                    </Button>
+                  ) : <NotifyMe productId={product.id} compact className="h-12" />}
                   <Button variant="secondary" size="lg" onClick={() => { close(); go({ name: 'product', id: product.id }) }}>Full details</Button>
                 </div>
               </div>

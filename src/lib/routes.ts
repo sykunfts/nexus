@@ -37,6 +37,8 @@ export type Route =
   | { name: 'order'; id: string }
   | { name: 'checkout' }
   | { name: 'confirmed'; id: string }
+  | { name: 'confirmed-session'; sessionId: string }   // back from Stripe: the order is looked up by its checkout session
+  | { name: 'policy'; slug: string }
   | { name: 'not-found'; hash: string }
 
 const SORTS: Sort[] = ['trending', 'price-asc', 'price-desc', 'rating', 'newest']
@@ -115,6 +117,8 @@ export function formatRoute(r: Route): string {
     case 'order': return `#/orders/${encodeURIComponent(r.id)}`
     case 'checkout': return '#/checkout'
     case 'confirmed': return `#/orders/${encodeURIComponent(r.id)}/confirmed`
+    case 'confirmed-session': return `#/orders/confirmed${q({ session: r.sessionId })}`
+    case 'policy': return `#/policies/${encodeURIComponent(r.slug)}`
     case 'not-found': return r.hash
   }
 }
@@ -129,6 +133,8 @@ export function pageKey(r: Route): string {
     case 'guide': return `guide:${r.slug}`
     case 'order': return `order:${r.id}`
     case 'confirmed': return `confirmed:${r.id}`
+    case 'confirmed-session': return `confirmed-session:${r.sessionId}`
+    case 'policy': return `policy:${r.slug}`
     case 'not-found': return `not-found:${r.hash}`
     default: return r.name
   }
@@ -159,8 +165,10 @@ export function parseRoute(hash: string): Route {
   if (a === 'how-we-pick' && seg.length === 1) return { name: 'how-we-pick' }
   if (a === 'account' && seg.length === 1) return { name: 'account' }
   if (a === 'orders' && seg.length === 1) return { name: 'orders' }
+  if (a === 'orders' && b === 'confirmed' && seg.length === 2) { const sid = (sp.get('session') ?? '').trim(); return sid ? { name: 'confirmed-session', sessionId: sid } : { name: 'not-found', hash } }
   if (a === 'orders' && b && seg.length === 2) return { name: 'order', id: b }
   if (a === 'orders' && b && c === 'confirmed' && seg.length === 3) return { name: 'confirmed', id: b }
   if (a === 'checkout' && seg.length === 1) return { name: 'checkout' }
+  if (a === 'policies' && b && seg.length === 2) return { name: 'policy', slug: b }
   return { name: 'not-found', hash }
 }

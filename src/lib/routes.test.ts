@@ -16,6 +16,8 @@ const cases: [string, Route][] = [
   ['#/orders/NX-123456', { name: 'order', id: 'NX-123456' }],
   ['#/checkout', { name: 'checkout' }],
   ['#/orders/NX-123456/confirmed', { name: 'confirmed', id: 'NX-123456' }],
+  ['#/orders/confirmed?session=cs_test_a1', { name: 'confirmed-session', sessionId: 'cs_test_a1' }],
+  ['#/policies/terms', { name: 'policy', slug: 'terms' }],
 ]
 
 describe('routes', () => {

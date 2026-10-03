@@ -1,0 +1,19 @@
+# The NEXUS back office. Secrets (Stripe, CJ, Resend, admin token) are set by the deploy workflow, never here.
+name = "nexus-office"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[kv_namespaces]]
+binding = "ORDERS"
+id = "KV_NAMESPACE_ID_PLACEHOLDER"
+
+[triggers]
+crons = ["0 */2 * * *"]
+
+[vars]
+SITE_URL = "https://sykunfts.github.io/nexus/"
+FROM_EMAIL = "orders@example.com"
+EMAIL_ENABLED = "0"
+ADMIN_EMAIL = ""
+CJ_DRY_RUN = "1"

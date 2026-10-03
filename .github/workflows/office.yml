@@ -1,0 +1,78 @@
+# Deploys the back office (the Cloudflare Worker in office/) whenever its code or the catalogue it
+# sells from changes, and after each approved listing so the new product is sellable within minutes.
+# Secrets live in GitHub and Cloudflare only; the Worker bundle carries none of them.
+name: Deploy the office
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'office/**'
+      - 'src/lib/data.ts'
+      - 'src/lib/data.expansion.ts'
+      - 'src/lib/data.listings.ts'
+      - 'src/lib/shipping.ts'
+      - 'src/lib/orders.ts'
+      - 'src/lib/validate.ts'
+      - 'scripts/merge-office.mjs'
+      - 'radar/src/**'
+      - '.github/workflows/office.yml'
+  workflow_run:
+    workflows: ['Add a Radar listing']
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: office
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # a push, a manual run, or a listing job that finished successfully
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run merge
+      - run: npm run office:merge
+      - run: npm run typecheck
+      - run: npm run office:test
+      - name: Point the Worker at the KV namespace
+        run: |
+          test -n "${{ vars.KV_NAMESPACE_ID }}" || { echo "Set the repository variable KV_NAMESPACE_ID (Settings → Secrets and variables → Actions → Variables)."; exit 1; }
+          sed -i "s/KV_NAMESPACE_ID_PLACEHOLDER/${{ vars.KV_NAMESPACE_ID }}/" office/wrangler.toml
+      - name: Deploy with wrangler
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: office
+          command: deploy
+          secrets: |
+            STRIPE_SECRET_KEY
+            STRIPE_WEBHOOK_SECRET
+            CJ_API_KEY
+            RESEND_API_KEY
+            ADMIN_TOKEN
+        env:
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          CJ_API_KEY: ${{ secrets.CJ_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+      - name: Where it went
+        run: |
+          echo "Worker deployed: ${{ steps.deploy.outputs.deployment-url }}"
+          echo "Put that address (without a trailing slash) in the repository variable OFFICE_URL, then run 'Publish to GitHub Pages' so the shop is built against it."
+          echo "Stripe webhook endpoint: ${{ steps.deploy.outputs.deployment-url }}/stripe/webhook (event checkout.session.completed)."

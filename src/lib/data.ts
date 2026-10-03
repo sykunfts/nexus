@@ -897,6 +897,8 @@ export const byId = (id: string) => {
   return p
 }
 export const productById = (id: string): Product | undefined => products.find((x) => x.id === id)
+/* Only Radar listings carry a supplier the office can order from; everything else is a reference listing until it is stocked. */
+export const sellable = (p: Product) => !!p.supplier
 
 /** Default "My setup": what a new shopper is assumed to own until they edit it. Checked live on every PDP and in the cart. */
 export const DEFAULT_GEAR: GearItem[] = [
