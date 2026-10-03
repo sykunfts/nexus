@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUp, Check, X } from 'lucide-react'
-import { byId, Product, productById, products } from '../lib/data'
+import { byId, Product, productById, products, trendNote } from '../lib/data'
 import { fmt } from '../lib/currency'
 import { useSetup, useStore, useZone } from '../lib/store'
 import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
@@ -51,7 +51,7 @@ function plan(prompt: string, owned: { id: string; name: string; facts: Product[
     return {
       text: cat
         ? `${cat} this week, ranked by 7-day search and social velocity. Figures are growth in interest, not sales.`
-        : 'Across the catalogue this week, ranked by 7-day search and social velocity. The Omnilux mask and the Plaud NotePin S are the breakouts; smart rings are still climbing. Sample figures until the trend worker runs.',
+        : `Across the catalogue this week, ranked by 7-day search and social velocity. ${trendNote()}`,
       trends: top,
     }
   }
