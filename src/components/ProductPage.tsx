@@ -377,7 +377,7 @@ export function ProductPage({ product }: { product: Product }) {
                   <CompatPanel compat={compat} onFix={applyFix} />
                 </div>
                 <div className="md:col-span-2">
-                  <div className="mb-2 text-[13px] text-ink-2">My setup, checked live</div>
+                  <div className="mb-2 flex items-center justify-between text-[13px] text-ink-2"><span>My setup, checked live</span><button type="button" onClick={() => go({ name: 'setup' })} className="underline underline-offset-4 hover:text-ink">Edit</button></div>
                   <ul className="border border-rule bg-sheet">
                     {gear.map((g) => (
                       <li key={g.id} className="flex items-center justify-between gap-3 border-b border-rule px-4 py-2.5 last:border-b-0">

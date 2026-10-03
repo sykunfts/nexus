@@ -145,6 +145,18 @@ async def main():
             await page.click("button:has-text('Filters')")
             await page.wait_for_timeout(500)
         await run("collection-mobile", 390, 820, collection_mobile)
+        async def setup_page(page):
+            await page.goto(BASE + "#/setup")
+            await page.wait_for_timeout(1200)
+            await page.select_option("select >> nth=0", "UK")
+            await page.wait_for_timeout(400)
+            await page.goto(BASE + "#/p/xgimi-mogo-4-laser")
+            await page.wait_for_timeout(1500)
+            txt = await page.locator("button:has-text('Needs attention')").count()
+            assert txt >= 1, "UK region should flag the AU plug"
+            await page.goto(BASE + "#/setup")
+            await page.wait_for_timeout(1000)
+        await run("setup-desktop", 1440, 900, setup_page)
         await run("home-mobile", 400, 820)
         async def pdp_m(page):
             await page.click("text=See the MoGo 4 Laser")

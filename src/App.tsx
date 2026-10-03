@@ -5,6 +5,7 @@ import { byId, products } from './lib/data'
 import { formatRoute, parseRoute, Route } from './lib/routes'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { CollectionPage } from './pages/CollectionPage'
+import { SetupPage } from './pages/SetupPage'
 import { collectionBySlug, FOOTER } from './lib/collections'
 import { cartCount, useStore } from './lib/store'
 import { Header } from './components/Header'
@@ -152,6 +153,7 @@ function Page({ route }: { route: Route }) {
       return <CollectionPage key={c.slug} title={c.title} blurb={c.blurb} base={c.filters} filters={route.filters} sort={route.sort} defaultSort={c.sort} onChange={(filters, sort) => useStore.getState().go({ ...route, filters, sort })} />
     }
     case 'search': return <CollectionPage key={route.q} title={`Results for “${route.q}”`} base={{ text: route.q }} filters={route.filters} sort={route.sort} q={route.q} onChange={(filters, sort) => useStore.getState().go({ ...route, filters, sort })} />
+    case 'setup': return <SetupPage />
     case 'not-found': return <NotFoundPage hash={route.hash} />
     default: return <NotFoundPage hash={formatRoute(route)} />
   }
