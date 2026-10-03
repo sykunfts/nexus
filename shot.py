@@ -252,6 +252,37 @@ async def main():
             await page.goto(BASE + "#/how-we-pick"); await page.wait_for_timeout(1000)
             assert await page.locator("table tbody tr").count() >= 60
         await run("how-we-pick", 1440, 900, how_we_pick)
+        async def crawl(page):
+            dead = []
+            visited = 0
+            # every mega-menu item
+            for section in ["Trending", "Wearables", "Smart home", "Cinema", "Power", "Health", "Maker"]:
+                await page.goto(BASE + "#/"); await page.wait_for_timeout(600)
+                await page.hover(f"nav[aria-label='Primary'] button:has-text('{section}')"); await page.wait_for_timeout(400)
+                labels = await page.locator("[role='region'] a").all_inner_texts()
+                for label in labels:
+                    await page.goto(BASE + "#/"); await page.wait_for_timeout(500)
+                    await page.hover(f"nav[aria-label='Primary'] button:has-text('{section}')"); await page.wait_for_timeout(350)
+                    await page.click(f"[role='region'] a:text-is('{label}')"); await page.wait_for_timeout(600)
+                    visited += 1
+                    if await page.locator("text=That link did not match").count(): dead.append(f"{section} > {label} → {page.url}")
+                    if await page.locator("text=Nothing matches that yet").count(): dead.append(f"{section} > {label} is empty → {page.url}")
+            # footer links
+            await page.goto(BASE + "#/"); await page.wait_for_timeout(500)
+            hrefs = await page.locator("footer a").evaluate_all("els => els.map(e => e.getAttribute('href'))")
+            for h in hrefs:
+                await page.goto(BASE + h); await page.wait_for_timeout(500)
+                visited += 1
+                if await page.locator("text=That link did not match").count(): dead.append(f"footer {h}")
+            # every route shape
+            for h in ["#/", "#/c/cinema", "#/search?q=ring", "#/p/xgimi-mogo-4-laser", "#/compare?ids=ringconn-gen-3%2Coura-ring-5", "#/setup", "#/guides", "#/guides/movie-night", "#/how-we-pick", "#/account", "#/orders", "#/checkout"]:
+                await page.goto(BASE + h); await page.wait_for_timeout(500)
+                visited += 1
+                if await page.locator("text=That link did not match").count(): dead.append(f"route {h}")
+            print(f"crawl: {len(dead)} dead links of {visited} visited")
+            for d in dead: print("  DEAD:", d)
+            assert not dead
+        await run("crawl", 1440, 900, crawl)
         await run("home-mobile", 400, 820)
         async def pdp_m(page):
             await page.click("text=See the MoGo 4 Laser")

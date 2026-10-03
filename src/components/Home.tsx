@@ -8,6 +8,7 @@ import { Button, Tile } from './ui'
 import { navTarget } from '../lib/collections'
 
 const HERO = 'xgimi-mogo-4-laser'
+const LATEST_CHECK = products.map((p) => p.priceCheckedAt).sort().slice(-1)[0] ?? PRICE_CHECKED
 
 /* Rails: slot order + reasons come from the edge; cards are cached per SKU. */
 const RAILS = [
@@ -128,7 +129,7 @@ export function Home() {
             {[
               ['2 to 4 days', 'Sydney stock, tracked'],
               ['8 to 12 days', 'Supplier direct from China, priced lower'],
-              [`${products.length} products`, `Real, sold today, prices checked ${priceCheckedText(PRICE_CHECKED)}`],
+              [`${products.length} products`, `Real, sold today, prices checked ${priceCheckedText(LATEST_CHECK)}`],
               ['30 days', 'Returns on both routes'],
             ].map(([v, l]) => (
               <div key={l}>
@@ -203,7 +204,7 @@ export function Home() {
           </button>
         ))}
       </section>
-      <p className="mt-6 text-[12px] text-ink-3">{products.length} real products. Prices are AUD including GST, checked {priceCheckedText(PRICE_CHECKED)} at the sources listed on each product page, shown in {currency}; shipping is estimated in the cart. Trend figures are sample data until the trend worker runs.</p>
+      <p className="mt-6 text-[12px] text-ink-3">{products.length} real products. Prices are AUD including GST, checked {priceCheckedText(PRICE_CHECKED)} to {priceCheckedText(LATEST_CHECK)} at the sources listed on each product page, shown in {currency}; shipping is estimated in the cart. Trend figures are sample data until the trend worker runs.</p>
     </div>
   )
 }
