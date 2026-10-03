@@ -3,3 +3,5 @@ dist
 shots
 src-v1-backup
 *.log
+.env
+.env.*
