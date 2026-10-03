@@ -882,11 +882,13 @@ export const products: Product[] = [
   ...EXPANSION.map((p) => ({ ...p, photos: PHOTOS[p.id] })),
 ]
 
+/** Strict lookup for code that holds a known id (tests, data wiring). Render paths that dereference a route or persisted id use `productById`. */
 export const byId = (id: string) => {
   const p = products.find((x) => x.id === id)
   if (!p) throw new Error(`Unknown product ${id}`)
   return p
 }
+export const productById = (id: string): Product | undefined => products.find((x) => x.id === id)
 
 /** Default "My setup": what a new shopper is assumed to own until they edit it. Checked live on every PDP and in the cart. */
 export const DEFAULT_GEAR: GearItem[] = [

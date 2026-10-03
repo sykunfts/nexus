@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Minus, Plus, X } from 'lucide-react'
-import { byId } from '../lib/data'
+import { productById } from '../lib/data'
 import { CURRENCIES, Currency, fmt } from '../lib/currency'
-import { canExpress, etaText, originShort, parcelCost, taxFor, Country, ZONE_LABEL } from '../lib/shipping'
-import { cartSubtotal, useSetup, useStore, useZone } from '../lib/store'
+import { canExpress, etaText, originShort, parcelCost, taxFor, zoneOf, ZONE_LABEL } from '../lib/shipping'
+import { cartSubtotal, useDeliveryCountry, useSetup, useStore } from '../lib/store'
 import { checkBuild, resolveFacts } from '../lib/compat'
 import { ProductImage } from './ProductVisual'
 import { Button } from './ui'
@@ -63,12 +63,14 @@ export function CartDrawer() {
 
   const subtotal = cartSubtotal(cart)
   const info = CURRENCIES[currency]
-  const zone = useZone()
-  const country: Country = 'AU'   // the checkout address decides this from Task 10
+  const country = useDeliveryCountry()
+  const zone = zoneOf(country)
+  /* A line whose product left the catalogue is skipped rather than crashing the drawer; the store drops such lines on hydration too. */
+  const items = useMemo(() => cart.flatMap((l) => { const product = productById(l.productId); return product ? [{ line: l, product }] : [] }), [cart])
   // one parcel per origin; express only where the lane offers it
-  const origins = [...new Set(cart.map((l) => byId(l.productId).fulfil.origin))]
+  const origins = [...new Set(items.map((i) => i.product.fulfil.origin))]
   const shipping = origins.reduce((sum, o) => {
-    const parcelSubtotal = cart.filter((l) => byId(l.productId).fulfil.origin === o).reduce((n, l) => n + l.qty * l.unitPrice, 0)
+    const parcelSubtotal = items.filter((i) => i.product.fulfil.origin === o).reduce((n, i) => n + i.line.qty * i.line.unitPrice, 0)
     const method = shipMethod === 'express' && canExpress(o, zone) ? 'express' : 'standard'
     return sum + parcelCost(o, zone, method, parcelSubtotal)
   }, 0)
@@ -77,13 +79,13 @@ export function CartDrawer() {
   const parcels = origins.length
 
   const compat = useMemo(() => {
-    if (!cart.length) return null
-    const lines = cart.map((l) => ({ id: l.key, name: byId(l.productId).name, facts: resolveFacts(byId(l.productId), l.selection), product: byId(l.productId) }))
+    if (!items.length) return null
+    const lines = items.map(({ line, product }) => ({ id: line.key, name: product.name, facts: resolveFacts(product, line.selection), product }))
     const results = lines.map((subject) => checkBuild({ name: subject.name, facts: subject.facts, product: subject.product }, [...owned, ...lines.filter((x) => x.id !== subject.id)]))
     const issues = results.flatMap((r) => r.issues)
     const status = issues.some((i) => i.severity === 'bad') ? 'bad' : issues.length ? 'warn' : 'ok'
-    return { status, issues, count: cart.length + owned.length } as const
-  }, [cart, owned])
+    return { status, issues, count: items.length + owned.length } as const
+  }, [items, owned])
 
   const checkout = () => { close(); go({ name: 'checkout' }) }
 
@@ -107,7 +109,7 @@ export function CartDrawer() {
             <div className="flex items-center justify-between border-b border-ink px-5 py-3.5">
               <div>
                 <h2 id="cart-title" className="text-[18px] font-medium text-ink">Cart</h2>
-                <div className="text-[12.5px] text-ink-3">{cart.reduce((n, l) => n + l.qty, 0)} items, held for 15 minutes</div>
+                <div className="text-[12.5px] text-ink-3">{items.reduce((n, i) => n + i.line.qty, 0)} items, held for 15 minutes</div>
               </div>
               <button type="button" onClick={close} aria-label="Close cart" className="p-2 text-ink"><X size={18} /></button>
             </div>
@@ -125,7 +127,7 @@ export function CartDrawer() {
             )}
 
             <div className="panel-scroll flex-1 overflow-y-auto">
-              {cart.length === 0 ? (
+              {items.length === 0 ? (
                 <div className="flex h-full flex-col items-start justify-center gap-3 px-6 py-16">
                   <div className="display-md text-[26px] text-ink">Nothing in the cart yet.</div>
                   <p className="max-w-[30ch] text-[14px] text-ink-2">Add something, or ask the Trend Scout what is taking off this week.</p>
@@ -134,8 +136,7 @@ export function CartDrawer() {
               ) : (
                 <ul>
                   <AnimatePresence initial={false}>
-                    {cart.map((l) => {
-                      const p = byId(l.productId)
+                    {items.map(({ line: l, product: p }) => {
                       const v = p.variants.find((x) => x.id === l.variantId) ?? p.variants[0]
                       const sel = (p.options ?? []).map((g) => g.choices.find((c) => c.id === l.selection[g.id])?.label).filter(Boolean)
                       const hot = lastAdded === l.key
@@ -176,7 +177,7 @@ export function CartDrawer() {
               )}
             </div>
 
-            {cart.length > 0 && (
+            {items.length > 0 && (
               <div className="border-t border-ink bg-paper px-5 pb-4 pt-3">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex border border-rule-2 bg-sheet" role="radiogroup" aria-label="Shipping method">

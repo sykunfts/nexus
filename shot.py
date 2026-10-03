@@ -111,18 +111,19 @@ async def main():
             assert "#/c/cinema?f=route" in page.url, page.url
         await run("collection-desktop", 1440, 900, collection)
         async def collection_zero(page):
-            await page.goto(BASE + "#/c/alexa")
+            # a price floor no cinema product reaches: the zero state, three suggestions, and Clear filters restores the shelf
+            await page.goto(BASE + "#/c/cinema?f=price:2000-inf")
             await page.wait_for_timeout(1200)
-            n0 = await page.locator("article").count()
-            await page.click("role=switch[name=/Only show products that work/]")
+            assert await page.locator("text=Nothing matches that yet").count() == 1
+            n_suggest = await page.locator("article").count()
+            print("collection-zero: cinema ≥ $2000 → 0 results,", n_suggest, "suggestions")
+            assert n_suggest == 3, n_suggest
+            await page.click("button:has-text('Clear filters')")
             await page.wait_for_timeout(600)
-            n1 = await page.locator("article").count()
-            print("collection-zero: alexa", n0, "→ works-with", n1)
-            if n1 == 0:
-                assert await page.locator("text=Nothing matches that yet").count() == 1
-            await page.click("role=switch[name=/Only show products that work/]")
-            await page.wait_for_timeout(400)
-            assert await page.locator("article").count() == n0
+            assert "price" not in page.url, page.url
+            n = await page.locator("article").count()
+            assert n > 3, n
+            assert await page.locator("text=Nothing matches that yet").count() == 0
         await run("collection-zero", 1440, 900, collection_zero)
         async def search_results(page):
             await page.click("#site-search")

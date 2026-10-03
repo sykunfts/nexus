@@ -1,7 +1,7 @@
 {
   "name": "nexus-marketplace",
   "version": "1.0.0",
-  "description": "NEXUS: a trend-tech dropshipping storefront prototype with a real 21-product catalogue, works-with-your-setup checker and Trend Scout.",
+  "description": "NEXUS: a trend-tech dropshipping storefront prototype with a verified 64-product catalogue shipped worldwide, collection, product, compare, setup, checkout, account, order and guide pages, a works-with-your-setup checker and the Trend Scout.",
   "main": "index.js",
   "scripts": {
     "test": "vitest run",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/react": "^16.3.3",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@types/three": "^0.169.0",

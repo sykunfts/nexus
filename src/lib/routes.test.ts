@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatRoute, parseFilters, parseRoute, serialiseFilters, Route } from './routes'
+import { formatRoute, pageKey, parseFilters, parseRoute, serialiseFilters, Route } from './routes'
 
 const cases: [string, Route][] = [
   ['#/', { name: 'home' }],
@@ -37,5 +37,11 @@ describe('routes', () => {
   })
   it('serialises price inf and text', () => {
     expect(serialiseFilters({ price: [800, Infinity], text: 'power bank' })).toBe('price:800-inf;text:power%20bank')
+  })
+  it('pageKey ignores filters and sort so a filter change does not remount the page', () => {
+    expect(pageKey(parseRoute('#/c/cinema'))).toBe(pageKey(parseRoute('#/c/cinema?f=route:warehouse&sort=newest')))
+    expect(pageKey(parseRoute('#/c/cinema'))).not.toBe(pageKey(parseRoute('#/c/alexa')))
+    expect(pageKey(parseRoute('#/search?q=ring'))).not.toBe(pageKey(parseRoute('#/search?q=lamp')))
+    expect(pageKey(parseRoute('#/p/oura-ring-5'))).not.toBe(pageKey(parseRoute('#/p/anker-maggo-10k')))
   })
 })

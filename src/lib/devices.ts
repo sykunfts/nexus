@@ -11,6 +11,7 @@ const APPLE_MAGSAFE = 'https://www.apple.com/iphone/compare/'
 const IPHONE_16E = 'https://www.apple.com/iphone-16e/specs/'          // Qi wireless charging, no MagSafe
 const PIXEL_10 = 'https://store.google.com/product/pixel_10_specs'     // Pixelsnap: Qi2 magnets built in
 const PIXEL_9 = 'https://store.google.com/product/pixel_9_specs'
+const PIXEL_8 = 'https://store.google.com/product/pixel_8_specs'
 const GALAXY_S26 = 'https://www.techadvisor.com/article/3068758/galaxy-s26-doesnt-have-qi2-magnets-samsung-explains-why.html'
 const SAMSUNG_QI2_READY = 'https://www.androidcentral.com/phones/samsung-galaxy/samsung-galaxy-s26-qi2-magnetic-charging'
 const THREAD_LIST = 'https://www.matteralpha.com/frequently-asked-questions/complete-list-thread-border-routers'
@@ -40,7 +41,7 @@ export const DEVICES: Device[] = [
   phone('pixel-10-pro', 'Pixel 10 Pro', 'android', true, PIXEL_10),
   phone('pixel-10', 'Pixel 10', 'android', true, PIXEL_10),
   phone('pixel-9', 'Pixel 9', 'android', false, PIXEL_9),
-  phone('pixel-8', 'Pixel 8', 'android', false, PIXEL_9),
+  phone('pixel-8', 'Pixel 8', 'android', false, PIXEL_8),
   phone('galaxy-s26', 'Galaxy S26', 'android', false, GALAXY_S26),
   phone('galaxy-s25', 'Galaxy S25', 'android', false, SAMSUNG_QI2_READY),
   phone('galaxy-s24', 'Galaxy S24', 'android', false, SAMSUNG_QI2_READY),
@@ -69,4 +70,10 @@ export const deviceById = (id: string) => DEVICES.find((d) => d.id === id)
 
 export function toGear(d: Device): GearItem {
   return { id: d.kind === 'region' ? 'g-region' : `d-${d.id}`, kind: d.kind, name: d.name, detail: d.detail, facts: d.facts, defaultOn: true, deviceId: d.id }
+}
+
+/* A device the user typed in. A source always demands an HDMI input on what it plugs into; other kinds carry the facts the form ticked. */
+export function customGear(kind: GearKind, name: string, facts: CompatFacts, token: string = Date.now().toString(36)): GearItem {
+  const f: CompatFacts = kind === 'source' ? { requires: [{ anyOf: ['hdmi'], label: 'an HDMI input' }] } : facts
+  return { id: `c-${token}`, kind, name: name.trim(), detail: 'Added by you', facts: f, defaultOn: true }
 }

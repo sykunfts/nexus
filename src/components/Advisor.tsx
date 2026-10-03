@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUp, Check, X } from 'lucide-react'
-import { byId, Product, products } from '../lib/data'
+import { byId, Product, productById, products } from '../lib/data'
 import { fmt } from '../lib/currency'
 import { useSetup, useStore, useZone } from '../lib/store'
 import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
@@ -268,7 +268,8 @@ export function Advisor() {
     }, 900)
   }
 
-  const context = route.name === 'product' ? `Viewing ${byId(route.id).brand} ${byId(route.id).name}` : 'Home'
+  const viewing = route.name === 'product' ? productById(route.id) : undefined
+  const context = viewing ? `Viewing ${viewing.brand} ${viewing.name}` : 'Home'
 
   return (
     <AnimatePresence>

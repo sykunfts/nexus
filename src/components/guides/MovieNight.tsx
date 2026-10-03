@@ -19,7 +19,7 @@ export function MovieNight() {
     <div>
       <P>A projector is sold on lumens and a screen on inches, and neither tells you what you will see on the night. What matters is how far the lens sits from the wall, how much light is in the room, and whether the sound and the power are sorted before the film starts. This guide does the arithmetic and then builds the kit.</P>
       <H2>How big the picture gets</H2>
-      <P>Every projector has a throw ratio: the distance to the wall divided by the width of the picture. The <ProductLink id="xgimi-mogo-4-laser">MoGo 4 Laser</ProductLink> is 1.2:1, so at 2.4 metres the picture is 2 metres wide, which is a 100-inch diagonal. The <ProductLink id="xgimi-vibe-one">Vibe One</ProductLink> is 1.3:1 and needs a little more room for the same size. Makers that do not publish the ratio get an honest blank below rather than a guess.</P>
+      <P>Every projector has a throw ratio: the distance to the wall divided by the width of the picture. The <ProductLink id="xgimi-mogo-4-laser">MoGo 4 Laser</ProductLink> is 1.2:1, so at 2.4 metres the picture is 2 metres wide, which is a 90-inch diagonal; a 100-inch picture needs about 2.7 metres. The <ProductLink id="xgimi-vibe-one">Vibe One</ProductLink> is 1.3:1 and needs a little more room for the same size. Makers that do not publish the ratio get an honest blank below rather than a guess.</P>
 
       <Live title="throw distance calculator">
         <div className="flex flex-wrap items-end gap-4 text-[13px]">

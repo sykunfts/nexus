@@ -44,6 +44,8 @@ const PLATFORMS: Platform[] = ['ios', 'android', 'homekit', 'google', 'alexa', '
 const BADGES: Badge[] = ['Viral', 'Trending', 'Rising', 'New', 'Limited stock']
 
 const isSort = (s: string | null): s is Sort => !!s && (SORTS as string[]).includes(s)
+/* A hand-typed or truncated hash can carry a bad percent-encoding; keep the raw text rather than throw. */
+const safeDecode = (s: string) => { try { return decodeURIComponent(s) } catch { return s } }
 
 export function serialiseFilters(f: Filters): string {
   const out: string[] = []
@@ -69,7 +71,7 @@ export function parseFilters(s: string): Filters {
     const key = pair.slice(0, i)
     const raw = pair.slice(i + 1)
     if (!raw) continue
-    const list = () => raw.split(',').map((x) => decodeURIComponent(x)).filter(Boolean)
+    const list = () => raw.split(',').map((x) => safeDecode(x)).filter(Boolean)
     switch (key) {
       case 'category': { const v = list(); if (v.length) f.category = v; break }
       case 'brand': { const v = list(); if (v.length) f.brand = v; break }
@@ -83,8 +85,8 @@ export function parseFilters(s: string): Filters {
       case 'route': if (raw === 'warehouse' || raw === 'supplier') f.route = raw; break
       case 'inStock': if (raw === '1') f.inStock = true; break
       case 'worksWithSetup': if (raw === '1') f.worksWithSetup = true; break
-      case 'setupItem': f.setupItem = decodeURIComponent(raw); break
-      case 'text': { const t = decodeURIComponent(raw).trim(); if (t) f.text = t; break }
+      case 'setupItem': f.setupItem = safeDecode(raw); break
+      case 'text': { const t = safeDecode(raw).trim(); if (t) f.text = t; break }
       default: break
     }
   }
@@ -117,6 +119,21 @@ export function formatRoute(r: Route): string {
   }
 }
 
+/* The identity of the page a route renders: filters and sort change what a page shows, not which page it is. */
+export function pageKey(r: Route): string {
+  switch (r.name) {
+    case 'collection': return `collection:${r.slug}`
+    case 'search': return `search:${r.q}`
+    case 'product': return `product:${r.id}`
+    case 'compare': return `compare:${r.ids.join(',')}`
+    case 'guide': return `guide:${r.slug}`
+    case 'order': return `order:${r.id}`
+    case 'confirmed': return `confirmed:${r.id}`
+    case 'not-found': return `not-found:${r.hash}`
+    default: return r.name
+  }
+}
+
 export function parseRoute(hash: string): Route {
   const h = (hash || '').replace(/^#/, '')
   if (h === '' || h === 'home' || h === '/') return { name: 'home' }
@@ -125,9 +142,10 @@ export function parseRoute(hash: string): Route {
   }
   const qi = h.indexOf('?')
   const path = qi >= 0 ? h.slice(0, qi) : h
-  const sp = new URLSearchParams(qi >= 0 ? h.slice(qi + 1) : '')
+  let sp: URLSearchParams
+  try { sp = new URLSearchParams(qi >= 0 ? h.slice(qi + 1) : '') } catch { return { name: 'not-found', hash } }
   const sort = isSort(sp.get('sort')) ? (sp.get('sort') as Sort) : undefined
-  const seg = path.split('/').filter(Boolean).map((s) => decodeURIComponent(s))
+  const seg = path.split('/').filter(Boolean).map((s) => safeDecode(s))
 
   if (seg.length === 0) return { name: 'home' }
   const [a, b, c] = seg

@@ -4,7 +4,7 @@
 import { useMemo, useState } from 'react'
 import { Plus, X } from 'lucide-react'
 import { CompatFacts, GearItem, GearKind, products, Region, REGION_LABEL } from '../lib/data'
-import { DEVICES, toGear } from '../lib/devices'
+import { customGear, DEVICES, toGear } from '../lib/devices'
 import { query } from '../lib/catalog'
 import { useRegion, useSetup, useStore } from '../lib/store'
 import { ProductCard } from '../components/ProductCard'
@@ -46,7 +46,7 @@ function AddDevice({ kind, onDone }: { kind: GearKind; onDone: () => void }) {
 
   const addCustom = () => {
     if (!name.trim()) return
-    addGear({ id: `c-${Date.now().toString(36)}`, kind, name: name.trim(), detail: 'Added by you', facts, defaultOn: true })
+    addGear(customGear(kind, name, facts))
     onDone()
   }
   const tick = (key: 'ios' | 'android' | 'magnets' | 'find-my' | 'find-hub' | 'homekit' | 'google' | 'alexa' | 'matter' | 'thread') => {
@@ -98,7 +98,7 @@ function AddDevice({ kind, onDone }: { kind: GearKind; onDone: () => void }) {
             <div className="text-[13px] text-ink-2">A source needs an HDMI input on the product it plugs into.</div>
           )}
           <div className="flex gap-2">
-            <Button size="sm" variant="primary" onClick={() => { if (kind === 'source') setFacts({ requires: [{ anyOf: ['hdmi'], label: 'an HDMI input' }] }); addCustom() }} disabled={!name.trim()}>Add</Button>
+            <Button size="sm" variant="primary" onClick={addCustom} disabled={!name.trim()}>Add</Button>
             <Button size="sm" variant="ghost" onClick={onDone}>Cancel</Button>
           </div>
         </div>

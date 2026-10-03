@@ -6,12 +6,12 @@
 import { useMemo } from 'react'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { byId, DEFAULT_GEAR, GearItem, Product, Region, REGION_LABEL } from './data'
+import { DEFAULT_GEAR, GearItem, Product, productById, Region, REGION_LABEL } from './data'
 import { Currency, detectCurrency, ShipMethod } from './currency'
 import { Route } from './routes'
 import { Account, Address } from './account'
 import { Order } from './orders'
-import { COUNTRIES, Zone } from './shipping'
+import { COUNTRIES, Country, Zone } from './shipping'
 
 export interface Line {
   key: string
@@ -120,8 +120,11 @@ export const useStore = create<State>()(
       ...initial(),
 
       go: (route) => {
+        const prev = get().route
         set({ route, quickViewId: null, searchOpen: false })
-        try { window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }) } catch { /* noop */ }
+        // a filter or sort change on the same collection or search keeps the scroll position
+        const samePage = prev.name === route.name && ((route.name === 'collection' && prev.name === 'collection' && prev.slug === route.slug) || (route.name === 'search' && prev.name === 'search' && prev.q === route.q))
+        if (!samePage) { try { window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior }) } catch { /* noop */ } }
       },
       setCurrency: (currency) => set({ currency }),
       setShipMethod: (shipMethod) => set({ shipMethod }),
@@ -145,7 +148,7 @@ export const useStore = create<State>()(
         set((s) => ({ cart: s.cart.filter((l) => l.key !== key) }))
         if (line) {
           get().toast({
-            title: `Removed ${byId(line.productId).name}`,
+            title: `Removed ${productById(line.productId)?.name ?? 'item'}`,
             action: { label: 'Undo', onClick: () => set((s) => ({ cart: [...s.cart, line] })) },
           })
         }
@@ -198,6 +201,18 @@ export const useStore = create<State>()(
       storage: createJSONStorage(() => safeStorage),
       partialize: (s) => ({ gear: s.gear, gearOn: s.gearOn, cart: s.cart, account: s.account, orders: s.orders, recentSearches: s.recentSearches, currency: s.currency, compare: s.compare }),
       migrate: (persisted) => persisted as State,
+      // a persisted cart or compare list can name a product the catalogue no longer carries; drop those rather than crash
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<State>
+        return {
+          ...current,
+          ...p,
+          cart: (p.cart ?? []).filter((l) => !!productById(l.productId)),
+          compare: (p.compare ?? []).filter((id) => !!productById(id)),
+          gear: p.gear?.length ? p.gear : current.gear,
+          gearOn: p.gearOn ?? current.gearOn,
+        }
+      },
       onRehydrateStorage: () => (state) => { if (state && storageBlocked) state.storageBlocked = true },
     },
   ),
@@ -209,6 +224,14 @@ export const useZone = (): Zone => useStore((s) => {
   return COUNTRIES.find((c) => c.region === r)?.zone ?? 'AU'
 })
 export const useRegion = (): Region => useStore((s) => s.gear.find((g) => g.kind === 'region')?.facts.region ?? 'AU')
+/** The country the cart prices tax and shipping for: the default saved address, else the region's own country. */
+export const deliveryCountry = (s: Pick<State, 'account' | 'gear'>): Country => {
+  const saved = s.account?.addresses.find((a) => a.isDefault) ?? s.account?.addresses[0]
+  if (saved) return saved.country
+  const r = s.gear.find((g) => g.kind === 'region')?.facts.region ?? 'AU'
+  return COUNTRIES.find((c) => c.region === r)?.code ?? 'AU'
+}
+export const useDeliveryCountry = (): Country => useStore(deliveryCountry)
 /** The setup items that are switched on, as the compat engine wants them. Memoised so selectors stay stable. */
 export const useSetup = () => {
   const gear = useStore((s) => s.gear)

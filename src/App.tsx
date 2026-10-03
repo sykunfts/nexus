@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Home as HomeIcon, Search, ShoppingBag, TrendingUp, User, X } from 'lucide-react'
-import { byId, products } from './lib/data'
-import { formatRoute, parseRoute, Route } from './lib/routes'
+import { productById } from './lib/data'
+import { formatRoute, pageKey, parseRoute, Route } from './lib/routes'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { CollectionPage } from './pages/CollectionPage'
 import { SetupPage } from './pages/SetupPage'
@@ -73,9 +73,9 @@ function CompareTray() {
         >
           <span className="text-[13px] text-ink-2">Comparing {compare.length} of 4</span>
           <div className="flex gap-1">
-            {compare.map((id) => (
-              <button key={id} type="button" onClick={() => toggle(id)} aria-label={`Remove ${byId(id).name} from compare`} className="h-9 w-11 border border-rule bg-paper hover:border-ink">
-                <ProductImage product={byId(id)} />
+            {compare.flatMap((id) => { const p = productById(id); return p ? [p] : [] }).map((p) => (
+              <button key={p.id} type="button" onClick={() => toggle(p.id)} aria-label={`Remove ${p.name} from compare`} className="h-9 w-11 border border-rule bg-paper hover:border-ink">
+                <ProductImage product={p} />
               </button>
             ))}
           </div>
@@ -153,7 +153,7 @@ function Footer() {
 function Page({ route }: { route: Route }) {
   switch (route.name) {
     case 'home': return <Home />
-    case 'product': return products.some((p) => p.id === route.id) ? <ProductPage key={route.id} product={byId(route.id)} /> : <NotFoundPage hash={formatRoute(route)} />
+    case 'product': { const p = productById(route.id); return p ? <ProductPage key={p.id} product={p} /> : <NotFoundPage hash={formatRoute(route)} /> }
     case 'collection': {
       const c = collectionBySlug(route.slug)
       if (!c) return <NotFoundPage hash={formatRoute(route)} />
@@ -180,7 +180,8 @@ export default function App() {
 
   useEffect(() => {
     const fromHash = () => {
-      const next = parseRoute(location.hash)
+      let next: Route
+      try { next = parseRoute(location.hash) } catch { next = { name: 'not-found', hash: location.hash } }
       if (formatRoute(next) !== formatRoute(useStore.getState().route)) useStore.getState().go(next)
     }
     if (location.hash) fromHash()
@@ -198,7 +199,7 @@ export default function App() {
       <Header />
       <main id="main">
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div key={formatRoute(route)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.1 } }} transition={{ duration: 0.16 }}>
+          <motion.div key={pageKey(route)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.1 } }} transition={{ duration: 0.16 }}>
             <Page route={route} />
           </motion.div>
         </AnimatePresence>
