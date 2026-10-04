@@ -214,7 +214,7 @@ export function CheckoutPage() {
             <Button variant="primary" className="mt-4" onClick={submitDelivery}>Continue to shipping</Button>
           </Section>
 
-          <Section n={3} title="Shipping" open={step === 'shipping'} done={done.shipping} summary={done.shipping ? (quote ? `${quote.shipping.logisticName}, ${quote.shipping.days[0]}–${quote.shipping.days[1]} days, ${money(quote.shipping.aud)}` : `${shipments.length} ${shipments.length === 1 ? 'shipment' : 'shipments'} to ${ZONE_LABEL[zoneOf(country)]}`) : undefined} onEdit={() => setStep('shipping')}>
+          <Section n={3} title="Shipping" open={step === 'shipping'} done={done.shipping} summary={done.shipping ? (quote ? `${quote.shipping.logisticName}, ${quote.shipping.days[0]}-${quote.shipping.days[1]} days, ${money(quote.shipping.aud)}` : `${shipments.length} ${shipments.length === 1 ? 'shipment' : 'shipments'} to ${ZONE_LABEL[zoneOf(country)]}`) : undefined} onEdit={() => setStep('shipping')}>
             {live ? (
               <LiveShipping status={quoteStatus} quotes={quotes} method={method} onMethod={setMethod} country={country} estimate={localTotals.shipping} money={money} lines={lines} onEditAddress={() => setStep('delivery')} />
             ) : (
@@ -305,7 +305,7 @@ export function CheckoutPage() {
         </div>
 
         <aside className="col-span-12 lg:col-span-5">
-          <div className="border border-ink bg-sheet lg:sticky lg:top-[72px]">
+          <div className="border border-ink bg-sheet lg:sticky lg:top-[88px]">
             <div className="border-b border-rule px-4 py-2.5 text-[13.5px] text-ink">Order summary</div>
             <ul className="divide-y divide-rule px-4 text-[13px] text-ink-2">
               {lines.map((l) => <li key={l.key} className="flex justify-between py-2"><span className="truncate pr-3">{l.qty} × {l.brand} {l.name}</span><span className="reading text-ink">{money(l.unitPrice * l.qty)}</span></li>)}
@@ -353,7 +353,7 @@ function LiveShipping({ status, quotes, method, onMethod, country, estimate, mon
     const on = method === m
     return (
       <button key={m} type="button" role="radio" aria-checked={on} onClick={() => onMethod(m)} className={cn('flex items-center justify-between bg-sheet px-3 py-2.5 text-left text-[13.5px]', on ? 'text-ink shadow-[inset_0_0_0_2px_var(--color-ink)]' : 'text-ink-2 hover:bg-paper')}>
-        <span>{m === 'standard' ? 'Standard' : 'Express'}<span className="block text-[12px] text-ink-3">{q.shipping.logisticName}, {q.shipping.days[0]}–{q.shipping.days[1]} days</span></span>
+        <span>{m === 'standard' ? 'Standard' : 'Express'}<span className="block text-[12px] text-ink-3">{q.shipping.logisticName}, {q.shipping.days[0]}-{q.shipping.days[1]} days</span></span>
         <span className="reading">{money(q.shipping.aud)}</span>
       </button>
     )

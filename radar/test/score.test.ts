@@ -4,7 +4,7 @@ import { seriesFrom, windowEnding } from '../src/window'
 import type { DailySeries, SourceId, Term } from '../src/types'
 
 const w = windowEnding(new Date('2026-10-04T03:00:00Z'))
-const mk = (id: string, products: string[] = []): Term => ({ id, label: id, section: 'Wearables', wikipedia: id, phrases: [id], cj: { category: id, keyword: id }, products })
+const mk = (id: string, products: string[] = []): Term => ({ id, label: id, section: 'Wearables', wikipedia: id, phrases: [id], cj: { category: id, keyword: id }, match: { all: [[id]] }, products })
 /* a series whose first week sums to prior and second week to last, spread evenly */
 const series = (source: SourceId, prior: number, last: number): DailySeries => {
   const days = [...Array(7).fill(prior / 7), ...Array(7).fill(last / 7)]

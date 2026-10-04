@@ -46,7 +46,7 @@ export function NotifyMe({ productId, compact = false, className }: { productId:
 
   return (
     <form className={cn('flex flex-col gap-1.5', className)} onSubmit={(e) => { e.preventDefault(); void submit() }} aria-label="Stock alert">
-      <div className="flex gap-px">
+      <div className="flex flex-wrap gap-2">
         <input
           id={inputId}
           type="email"
@@ -56,9 +56,9 @@ export function NotifyMe({ productId, compact = false, className }: { productId:
           autoComplete="email"
           aria-label="Email for a stock alert"
           aria-invalid={!!error}
-          className={cn('h-10 min-w-0 flex-1 border bg-sheet px-3 text-[14px] text-ink', error ? 'border-fail' : 'border-rule-2 focus:border-ink')}
+          className={cn('h-10 min-w-[200px] flex-1 rounded-[2px] border bg-sheet px-3 text-[14px] text-ink', error ? 'border-fail' : 'border-rule-2 focus:border-ink')}
         />
-        <Button type="submit" variant="primary" size="md" disabled={busy} className="shrink-0">{compact ? 'Tell me when' : NOTIFY_LABEL}</Button>
+        <Button type="submit" variant="primary" size="md" disabled={busy} className="shrink-0 grow sm:grow-0">{compact ? 'Tell me when' : NOTIFY_LABEL}</Button>
       </div>
       {error ? <span className="text-[12px] text-fail" role="alert">{error}</span> : compact ? null : <span className="text-[12px] text-ink-3">Reference listing. We are not stocking this one yet; leave an email and we will tell you when we do.</span>}
     </form>

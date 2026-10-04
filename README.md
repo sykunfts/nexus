@@ -1,6 +1,6 @@
 # NEXUS — trend-tech storefront and Trend Radar
 
-Test Bench design system, a real 64-product catalogue sold worldwide, and every page working on it:
+Test Bench design system (v3: oversized display type, product-of-the-week on a bench slab, big mono numerals, one bento and one ledger on the home page), a real 64-product catalogue sold worldwide, and every page working on it:
 collections with filters, search, compare, an editable My setup that every works-with check reads,
 six guides with live elements, account, orders, international checkout and confirmation. Static page,
 browser-persisted state, no payment taken until the back office below is configured.

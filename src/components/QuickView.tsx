@@ -9,6 +9,7 @@ import { Button, Row, Stars, StockDot, Tile } from './ui'
 import { cn } from '../lib/cn'
 import { canBuy } from '../lib/office'
 import { NotifyMe } from './NotifyMe'
+import { signedPct } from '../lib/text'
 
 export function QuickView() {
   const id = useStore((s) => s.quickViewId)
@@ -53,7 +54,7 @@ export function QuickView() {
             <div className="flex flex-col p-6">
               <div className="text-[13px] text-ink-2">{product.brand}, {product.category.toLowerCase()}</div>
               <h2 id="qv-title" className="display-md mt-1 text-[30px] text-ink">{product.name}</h2>
-              <div className="mt-2 flex items-center gap-3"><Stars rating={product.rating} /><Tile>+{product.trend.delta}%</Tile></div>
+              <div className="mt-2 flex items-center gap-3"><Stars rating={product.rating} /><Tile>{signedPct(product.trend.delta)}</Tile></div>
               <p className="mt-3 text-[14px] leading-relaxed text-ink-2">{product.tagline}</p>
 
               {product.variants.length > 1 && (

@@ -1,18 +1,21 @@
 /*
-  The Trend Radar: Nick's instrument panel. One ranked list of CJ candidates with the numbers that
-  decide a listing (landed cost, retail, margin), the trend behind each, freight, flags, and two
-  actions: Skip (this browser) and Add to shop (a prefilled GitHub issue the listing job acts on).
+  The Trend Radar: Nick's instrument panel. One ranked list of CJ candidates led by profit per sale,
+  with the trend behind each, freight, flags, and two actions: Skip (this browser) and Add to shop (a
+  prefilled GitHub issue the listing job acts on). Anything under A$20 a sale sits in its own group,
+  and what the match rules threw out is listed underneath.
   Data is baked at build from data/radar.json; `?demo=1` shows made-up candidates for the layout.
 */
 import { useEffect, useMemo, useState } from 'react'
 import radarJson from '../../data/radar.json'
 import sampleJson from './fixtures/radar.sample.json'
 import type { Candidate, Flag, RadarFile } from '../../radar/src/types'
-import { DEFAULT_FILTERS, filterCandidates, RadarFilters, RadarSort, REPO, sortCandidates, staleBanner, termDeltas } from './lib'
+import { DEFAULT_FILTERS, filterCandidates, isThin, noCandidatesReason, RadarFilters, RadarSort, REPO, sortCandidates, staleBanner, termDeltas } from './lib'
+import { PROFIT_FLOOR } from '../../radar/src/rank'
 import { RadarHeader } from './components/RadarHeader'
 import { RadarRail } from './components/RadarRail'
 import { CandidateCard } from './components/CandidateCard'
 import { NoveltyRail } from './components/NoveltyRail'
+import { RejectedList } from './components/RejectedList'
 import { EmptyState } from './components/EmptyState'
 import { TermsTable } from './components/TermsTable'
 import { OrdersTab } from './components/OrdersTab'
@@ -21,13 +24,6 @@ const SKIP_KEY = 'nexus.radar.skipped'
 export type RadarTab = 'radar' | 'orders'
 const tabFromHash = (): RadarTab => (typeof location !== 'undefined' && location.hash === '#orders' ? 'orders' : 'radar')
 
-/* Why a run that scored its terms has nothing to rank: the most likely first-run state. */
-function noCandidatesReason(f: RadarFile): string {
-  const cj = f.sources.cj
-  if (cj === 'skipped') return 'No CJ candidates: the run had no CJ_API_KEY. Add it under Settings → Secrets and variables → Actions, then run the Radar again.'
-  if (cj.startsWith('failed')) return `CJ could not be read this run (${cj.replace(/^failed:\s*/, '')}). The trends below are current; candidates return on the next successful run.`
-  return 'CJ returned nothing usable for the rising terms this run.'
-}
 const readSkipped = (): Set<string> => { try { return new Set(JSON.parse(localStorage.getItem(SKIP_KEY) ?? '[]') as string[]) } catch { return new Set() } }
 const writeSkipped = (s: Set<string>) => { try { localStorage.setItem(SKIP_KEY, JSON.stringify([...s])) } catch { /* storage blocked: skips last for this page only */ } }
 
@@ -46,9 +42,18 @@ export function RadarApp() {
   const sections = useMemo(() => [...new Set(file.candidates.map((c) => c.section))].sort(), [file])
   const flagsPresent = useMemo(() => [...new Set(file.candidates.flatMap((c) => c.flags))] as Flag[], [file])
   const visible = useMemo(() => sortCandidates(filterCandidates(file.candidates, filters, skipped), sort, deltas), [file, filters, skipped, sort, deltas])
+  const clear = visible.filter((c) => !isThin(c))
+  const thin = visible.filter(isThin)
   const skippedCount = file.candidates.filter((c) => skipped.has(c.pid)).length
   const toggleSkip = (c: Candidate) => { const next = new Set(skipped); if (next.has(c.pid)) next.delete(c.pid); else next.add(c.pid); setSkipped(next); writeSkipped(next) }
   const stale = staleBanner(file)
+  const card = (c: Candidate, rank: number) => (
+    <CandidateCard
+      key={c.pid} c={c} rank={rank} delta={deltas[c.termId] ?? 0} term={file.terms.find((t) => t.id === c.termId)}
+      generatedAt={file.generatedAt} open={open === c.pid} onToggle={() => setOpen(open === c.pid ? null : c.pid)}
+      skipped={skipped.has(c.pid)} onSkip={() => toggleSkip(c)} issueHref={`https://github.com/${REPO}/issues/new`} repo={REPO}
+    />
+  )
   const hasRun = file.terms.length > 0
 
   return (
@@ -73,17 +78,19 @@ export function RadarApp() {
               ) : visible.length === 0 ? (
                 <div className="border border-rule bg-sheet px-5 py-10 text-[15px] text-ink-2">Nothing clears these filters. Loosen the net-per-sale or flag filters to see more.</div>
               ) : (
-                <ol className="border-t border-ink">
-                  {visible.map((c, i) => (
-                    <CandidateCard
-                      key={c.pid} c={c} rank={i + 1} delta={deltas[c.termId] ?? 0} term={file.terms.find((t) => t.id === c.termId)}
-                      generatedAt={file.generatedAt} open={open === c.pid} onToggle={() => setOpen(open === c.pid ? null : c.pid)}
-                      skipped={skipped.has(c.pid)} onSkip={() => toggleSkip(c)} issueHref={`https://github.com/${REPO}/issues/new`} repo={REPO}
-                    />
-                  ))}
-                </ol>
+                <>
+                  {clear.length > 0 && <ol className="border-t border-ink">{clear.map((c, i) => card(c, i + 1))}</ol>}
+                  {thin.length > 0 && (
+                    <details className="group mt-6" open={clear.length === 0}>
+                      <summary className="cursor-pointer list-none text-[15px] font-medium text-ink underline decoration-rule-2 underline-offset-[5px] hover:decoration-ink [&::-webkit-details-marker]:hidden">{`Under A$${PROFIT_FLOOR} a sale (${thin.length})`}</summary>
+                      <p className="mt-1.5 text-[12.5px] text-ink-3">{`Less than A$${PROFIT_FLOOR} profit a sale at the suggested price: rarely enough to pay for the ads that sell it.`}</p>
+                      <ol className="mt-3 border-t border-ink">{thin.map((c, i) => card(c, clear.length + i + 1))}</ol>
+                    </details>
+                  )}
+                </>
               )}
-              <NoveltyRail items={file.novelty} terms={file.terms} />
+              {file.rejected?.length ? <RejectedList items={file.rejected} terms={file.terms} total={file.rejectedTotal} /> : null}
+              <NoveltyRail items={file.novelty} terms={file.terms} hiddenInFile={file.noveltyHidden ?? 0} />
             </div>
           </div>
         )}

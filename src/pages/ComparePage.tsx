@@ -109,7 +109,7 @@ export function ComparePage({ ids }: { ids: string[] }) {
               {rows.map((r) => (
                 <tr key={r.label} className="border-t border-rule bg-sheet">
                   <td className="px-4 py-2 text-ink-2">{r.label}</td>
-                  {r.cells.map((c, i) => <td key={i} className={cn('reading px-4 py-2 text-[12.5px]', r.winner === i ? 'text-pass' : c ? 'text-ink' : 'text-ink-3')} data-winner={r.winner === i ? 'true' : undefined}>{c?.value ?? '—'}</td>)}
+                  {r.cells.map((c, i) => <td key={i} className={cn('reading px-4 py-2 text-[12.5px]', r.winner === i ? 'text-pass' : c ? 'text-ink' : 'text-ink-3')} data-winner={r.winner === i ? 'true' : undefined}>{c?.value ?? 'not listed'}</td>)}
                 </tr>
               ))}
             </tbody>

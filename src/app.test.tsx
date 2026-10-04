@@ -103,6 +103,15 @@ describe('app resilience', () => {
     expect(document.querySelector('[data-name="Acme Vanished gadget"]')).toBeTruthy()   // the picture is drawn from the order's own snapshot
     expect(document.querySelector('[data-name*="MoGo"]')).toBeNull()
   })
+  it('the home page still deep-links the product of the week', async () => {
+    await mount('#/')
+    fireEvent.click(screen.getByRole('button', { name: 'See the MoGo 4 Laser' }))
+    expect(await screen.findByRole('heading', { level: 1, name: /MoGo 4 Laser/ })).toBeTruthy()
+  })
+  it('the footer no longer claims a status page', async () => {
+    await mount('#/')
+    expect(screen.queryByText(/All systems operational/)).toBeNull()
+  })
   it('the header shows the refresh date when trends are real', async () => {
     vi.doMock('./lib/trends.generated', () => ({ TRENDS: { 'oura-ring-5': { label: 'Viral', delta: 212, series: [1, 2, 3, 4, 5, 6, 7, 8], source: 'Wikipedia' } }, TRENDS_GENERATED_AT: '2026-10-04T20:05:10.000Z', TRENDS_SOURCES: ['Wikipedia'] }))
     try {

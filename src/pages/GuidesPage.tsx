@@ -53,7 +53,7 @@ export function GuidePage({ slug }: { slug: string }) {
           <g.Component />
         </article>
         <aside className="col-span-12 mt-10 lg:col-span-4 lg:mt-0">
-          <div className="border border-rule bg-sheet lg:sticky lg:top-[72px]">
+          <div className="border border-rule bg-sheet lg:sticky lg:top-[88px]">
             <div className="border-b border-rule px-4 py-2.5 text-[13px] text-ink-3">More guides</div>
             <ul className="divide-y divide-rule">
               {others.map((o) => <li key={o.slug}><button type="button" onClick={() => go({ name: 'guide', slug: o.slug })} className="block w-full px-4 py-2.5 text-left text-[14px] text-ink hover:bg-paper">{o.title}<span className="block text-[12px] text-ink-3">{o.minutes} min</span></button></li>)}

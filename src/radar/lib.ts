@@ -1,5 +1,6 @@
-/* Pure helpers for the Radar page: filtering, sorting, the approval link and the header's wording. */
+/* Pure helpers for the Radar page: filtering, sorting, the approval link and the page's wording. */
 import type { Candidate, Flag, RadarFile, Rate, SourceId } from '../../radar/src/types'
+import { PROFIT_FLOOR } from '../../radar/src/rank'
 import { longDate } from '../lib/data'
 
 /* The suggested price always earns the 45 % target, so margin cannot separate candidates; net dollars per sale can. */
@@ -11,6 +12,19 @@ export const REPO = 'sykunfts/nexus'
 
 const SOURCE_NAME: Record<SourceId | 'cj', string> = { wikipedia: 'Wikipedia', hackernews: 'Hacker News', reddit: 'Reddit', tiwib: 'TIWIB', cj: 'CJ' }
 const join = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`)
+
+/* Files from before Radar v2 have no `thin` or `match`: thin is worked out from the net, and an unknown match reads as close. */
+export const isThin = (c: Candidate): boolean => c.thin ?? c.money.netAud < PROFIT_FLOOR
+export const matchLabel = (c: Candidate): 'exact match' | 'close match' => (c.match === 1 ? 'exact match' : 'close match')
+
+/* Why a run that scored its terms has nothing to rank. */
+export function noCandidatesReason(f: RadarFile): string {
+  const cj = f.sources.cj
+  if (cj === 'skipped') return 'No CJ candidates: the run had no CJ_API_KEY. Add it under Settings → Secrets and variables → Actions, then run the Radar again.'
+  if (cj.startsWith('failed')) return `CJ could not be read this run (${cj.replace(/^failed:\s*/, '')}). The trends below are current; candidates return on the next successful run.`
+  if (f.rejected?.length) return `CJ answered, but none of its ${f.rejectedTotal ?? f.rejected.length} products matched the watch terms. See "Thrown out today" below.`
+  return 'CJ returned nothing usable for the rising terms this run.'
+}
 
 export function filterCandidates(c: Candidate[], f: RadarFilters, skipped: Set<string>): Candidate[] {
   return c.filter((x) =>

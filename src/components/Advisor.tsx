@@ -16,6 +16,7 @@ import { Button, Tile } from './ui'
 import { etaText } from '../lib/shipping'
 import { cn } from '../lib/cn'
 import { canBuy } from '../lib/office'
+import { signedPct } from '../lib/text'
 
 interface Role { role: string; why: string; options: string[]; optional?: boolean }
 interface Kit { budget: number; roles: Role[] }
@@ -205,7 +206,7 @@ function TrendCard({ ids }: { ids: string[] }) {
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <Sparkline series={p.trend.series} />
-              <Tile>+{p.trend.delta}%</Tile>
+              <Tile>{signedPct(p.trend.delta)}</Tile>
             </div>
           </li>
         )
@@ -287,7 +288,7 @@ export function Advisor() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 40, opacity: 0, transition: { duration: 0.16 } }}
             transition={{ type: 'spring', stiffness: 400, damping: 36 }}
-            className="fixed bottom-0 right-0 top-0 z-50 flex w-full max-w-[420px] flex-col border-l border-ink bg-sheet lg:top-[72px] lg:bottom-4 lg:right-4 lg:border"
+            className="fixed bottom-0 right-0 top-0 z-50 flex w-full max-w-[420px] flex-col border-l border-ink bg-sheet lg:top-[88px] lg:bottom-4 lg:right-4 lg:border"
             style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
           >
             <div className="flex items-center justify-between border-b border-ink px-4 py-3">

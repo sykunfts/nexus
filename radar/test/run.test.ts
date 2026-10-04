@@ -53,7 +53,7 @@ describe('runRadar', () => {
     expect(radar.generatedAt).toBe('2026-10-04T20:05:10.000Z')
     expect(radar.sources.cj).toBe('skipped')
     expect(radar.sources.wikipedia).toBe('ok')
-    expect(radar.novelty.length).toBe(15)
+    expect(radar.novelty.length).toBe(14)   // 15 in the feed, "Beer Can Grill" hidden
     expect(radar.novelty.find((n) => n.title.includes('Smart Ring'))?.termId).toBe('smart-ring')
     expect(radar.rate).toEqual({ usdAud: 1.515, source: 'ecb', date: '2026-10-03' })
   })
@@ -90,6 +90,8 @@ describe('runRadar', () => {
     expect(c.score).toBeGreaterThan(0)
     expect(c.firstSeen).toBe('2026-10-04')
     expect(c.why).toContain('Laser projectors')
+    expect(typeof c.thin).toBe('boolean')
+    expect([0.6, 1]).toContain(c.match)
     expect(radar.cjGeneratedAt).toBe(radar.generatedAt)
   })
   it('a cj failure mid-run keeps trends and marks cj failed', async () => {
@@ -131,5 +133,77 @@ describe('runRadar', () => {
     const none = { id: 'z', label: 'z', section: 'x', delta: 0, trendLabel: 'Steady' as const, score: 0, confidence: 'none' as const, series: [], sources: { wikipedia: null, hackernews: null, reddit: null, tiwib: null } }
     const low = { ...none, id: 'y', score: -1.5, confidence: 'low' as const }
     expect(selectTerms([none, low]).map((t) => t.id)).toEqual(['y'])
+  })
+  it('a detail name that fails the rules is rejected and the next item takes the slot', async () => {
+    let queries = 0
+    const http = fakeHttp({ cj: (url) => {
+      if (url.includes('getAccessToken')) return json({ result: true, data: { accessToken: 't' } })
+      if (url.includes('getCategory')) return json(cats)
+      if (url.includes('/product/list')) return json(list)
+      if (url.includes('/product/query')) { queries++; return queries === 1 ? json({ ...query, data: { ...query.data, pid: 'P-A1', productNameEn: 'Projector Lens Cap' } }) : json(query) }
+      if (url.includes('freightCalculate')) return json(freight)
+      return json({}, 500)
+    } })
+    const { radar } = await runRadar({ ...base, http, env: { CJ_API_KEY: 'k' }, cj: true, only: ['laser-projector'], limit: 1 })
+    expect(radar.rejected).toContainEqual({ pid: 'P-A1', termId: 'laser-projector', name: 'Projector Lens Cap', reason: 'detail: has "lens cap"' })
+    expect(radar.candidates.map((c) => c.pid)).toEqual(['P-B2'])   // the fixture list has two passing items; the second takes the slot
+  })
+  it('rejections are capped at 60', async () => {
+    let lists = 0
+    const http = fakeHttp({ cj: (url) => {
+      if (url.includes('getAccessToken')) return json({ result: true, data: { accessToken: 't' } })
+      if (url.includes('getCategory')) return json(cats)
+      if (url.includes('/product/list')) { lists++; return json({ code: 200, result: true, data: { list: Array.from({ length: 40 }, (_, i) => ({ pid: `J-${lists}-${i}`, productNameEn: `Plastic Storage Box ${i}`, sellPrice: 9, listedNum: i })) } }) }
+      return json({}, 500)
+    } })
+    const { radar } = await runRadar({ ...base, http, env: { CJ_API_KEY: 'k' }, cj: true, only: ['laser-projector', 'smart-lock'], limit: 2 })
+    expect(lists).toBeGreaterThan(2)
+    expect(radar.candidates).toEqual([])
+    expect(radar.rejected!.length).toBe(60)
+    expect(radar.rejected![0].reason).toMatch(/^no "/)
+  })
+  it('novelty is filtered and the hidden count recorded', async () => {
+    const { radar } = await runRadar({ ...base, http: fakeHttp(), env: {}, cj: false })
+    expect(radar.novelty.map((n) => n.title)).not.toContain('Beer Can Grill')
+    expect(radar.noveltyHidden).toBe(1)
+    const firstNull = radar.novelty.findIndex((n) => !n.termId)
+    expect(radar.novelty.slice(firstNull).every((n) => !n.termId)).toBe(true)   // matched items first
+  })
+  it('the 60 kept rejections are shared across terms, detail ones first, and the full count is recorded', async () => {
+    let lists = 0
+    const http = fakeHttp({ cj: (url) => {
+      if (url.includes('getAccessToken')) return json({ result: true, data: { accessToken: 't' } })
+      if (url.includes('getCategory')) return json(cats)
+      if (url.includes('/product/list')) {
+        lists++
+        const junk = Array.from({ length: 40 }, (_, i) => ({ pid: `J-${lists}-${i}`, productNameEn: `Plastic Storage Box ${i}`, sellPrice: 9, listedNum: i }))
+        return json({ code: 200, result: true, data: { list: [...junk, { pid: `OK-${lists}`, productNameEn: 'Mini Projector Smart Door Lock', sellPrice: 20, listedNum: 999 }] } })
+      }
+      if (url.includes('/product/query')) return json({ ...query, data: { ...query.data, productNameEn: 'Projector Lens Cap Lock Box' } })
+      return json({}, 500)
+    } })
+    const { radar } = await runRadar({ ...base, http, env: { CJ_API_KEY: 'k' }, cj: true, only: ['laser-projector', 'smart-lock'], limit: 2 })
+    const rejected = radar.rejected!
+    expect(rejected.length).toBe(60)
+    expect(radar.rejectedTotal).toBe(lists * 41)   // 40 search rejections per search, and its one passing item fails at detail
+    const per = (id: string) => rejected.filter((r) => r.termId === id)
+    expect(per('laser-projector').length).toBe(30)
+    expect(per('smart-lock').length).toBe(30)
+    expect(per('laser-projector')[0].reason).toMatch(/^detail: /)
+    expect(per('smart-lock')[0].reason).toMatch(/^detail: /)
+    expect(rejected.findIndex((r) => r.termId !== rejected[0].termId)).toBe(30)   // still grouped by term, terms in run order
+  })
+  it('a term tries at most nine products for detail, however many pass the list names', async () => {
+    let queries = 0
+    const http = fakeHttp({ cj: (url) => {
+      if (url.includes('getAccessToken')) return json({ result: true, data: { accessToken: 't' } })
+      if (url.includes('getCategory')) return json(cats)
+      if (url.includes('/product/list')) return json({ code: 200, result: true, data: { list: Array.from({ length: 30 }, (_, i) => ({ pid: `P-${i}`, productNameEn: `Mini Projector ${i}`, sellPrice: 20, listedNum: i })) } })
+      if (url.includes('/product/query')) { queries++; return json({ result: true, data: { pid: 'x', productNameEn: 'Mini Projector', variants: [] } }) }   // no usable variant
+      return json({}, 500)
+    } })
+    const { radar } = await runRadar({ ...base, http, env: { CJ_API_KEY: 'k' }, cj: true, only: ['laser-projector'], limit: 1 })
+    expect(radar.candidates).toEqual([])
+    expect(queries).toBe(9)
   })
 })

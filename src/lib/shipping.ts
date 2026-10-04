@@ -84,7 +84,7 @@ export const RATE: Record<Origin, Record<Zone, Rate>> = {
 }
 
 export const etaDays = (origin: Origin, zone: Zone): [number, number] => ETA[origin][zone]
-export const etaText = (origin: Origin, zone: Zone): string => { const [a, b] = ETA[origin][zone]; return `${a}–${b} days` }
+export const etaText = (origin: Origin, zone: Zone): string => { const [a, b] = ETA[origin][zone]; return `${a}-${b} days` }
 
 const ORIGIN_NAME: Record<Origin, string> = { AU: 'Australia', CN: 'China', US: 'the United States', EU: 'Europe', UK: 'the United Kingdom' }
 export function originLabel(f: Fulfil): string {

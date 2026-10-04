@@ -2,6 +2,7 @@
 import type { SourceId, TermScore } from '../../../radar/src/types'
 import { Sparkline } from '../../components/ProductCard'
 import { cn } from '../../lib/cn'
+import { signedPct } from '../../lib/text'
 
 const SHORT: Record<SourceId, string> = { wikipedia: 'W', hackernews: 'HN', reddit: 'R', tiwib: 'T' }
 
@@ -21,7 +22,7 @@ export function TermsTable({ terms, reason }: { terms: TermScore[]; reason: stri
             <tr key={t.id} className="border-b border-rule">
               <td className="py-1.5 pr-3 text-ink">{t.label}</td>
               <td className="py-1.5 pr-3 text-ink-2">{t.section}</td>
-              <td className={cn('reading py-1.5 pr-3 text-right', t.delta >= 50 ? 'text-ink' : 'text-ink-3')}>{t.delta >= 0 ? '+' : '−'}{Math.abs(t.delta)} %</td>
+              <td className={cn('reading py-1.5 pr-3 text-right', t.delta >= 50 ? 'text-ink' : 'text-ink-3')}>{signedPct(t.delta)}</td>
               <td className="py-1.5 pr-3"><span className={cn('reading px-1.5 py-0.5 text-[11px]', t.trendLabel === 'Steady' ? 'bg-paper-2 text-ink-2' : 'bg-signal text-ink')}>{t.trendLabel}</span></td>
               <td className="py-1.5 pr-3"><Sparkline series={t.series.length ? t.series : [0, 0, 0, 0, 0, 0, 0, 0]} /></td>
               <td className="reading py-1.5 pr-3 text-[11.5px] text-ink-2">{(Object.keys(t.sources) as SourceId[]).filter((s) => t.sources[s]).map((s) => SHORT[s]).join(' ') || 'none'} <span className="text-ink-3">({t.confidence})</span></td>

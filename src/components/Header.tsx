@@ -13,7 +13,7 @@ export function Logo({ onClick }: { onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} className="flex items-baseline gap-2" aria-label="NEXUS home">
       <span className="display text-[22px] text-ink">Nexus</span>
-      <span className="hidden text-[12px] text-ink-3 sm:inline">checked, then shipped</span>
+      <span className="hidden whitespace-nowrap text-[12px] text-ink-3 sm:inline lg:hidden 2xl:inline">checked, then shipped</span>
     </button>
   )
 }
@@ -55,8 +55,8 @@ export function Header() {
 
   return (
     <header className="sticky z-40 w-full border-b border-rule bg-paper" style={{ top: 'env(safe-area-inset-top, 0px)' }} onMouseLeave={leave}>
-      <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-4 px-4 md:px-6">
-        <button type="button" className="p-1 text-ink lg:hidden" aria-label="Open menu" onClick={() => setMobileNav(true)}>
+      <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-4 px-4 md:px-6 lg:h-[72px]">
+        <button type="button" className="-ml-2.5 flex h-11 w-11 items-center justify-center text-ink lg:hidden" aria-label="Open menu" onClick={() => setMobileNav(true)}>
           <Menu size={20} strokeWidth={1.75} />
         </button>
 
@@ -73,22 +73,22 @@ export function Header() {
               onFocus={() => setOpenId(s.id)}
               onClick={() => { setOpenId(null); go(navTarget(s.label)) }}
               className={cn(
-                'relative whitespace-nowrap px-2.5 py-1.5 text-[14px] transition-colors duration-120',
+                'relative whitespace-nowrap px-2 py-1.5 text-[14px] transition-colors duration-120 xl:px-2.5 xl:text-[15px]',
                 openId === s.id ? 'text-ink' : 'text-ink-2 hover:text-ink',
               )}
             >
               {s.label}
-              {openId === s.id && <span className="absolute inset-x-2.5 -bottom-[17px] h-[2px] bg-ink" />}
+              {openId === s.id && <span className="absolute inset-x-2 -bottom-[24px] h-[2px] bg-ink xl:inset-x-2.5" />}
             </button>
           ))}
         </nav>
 
-        <div className="ml-auto hidden min-w-[200px] flex-1 max-w-[480px] md:block">
+        <div className="ml-auto hidden min-w-[200px] flex-1 max-w-[480px] md:block lg:hidden xl:block xl:w-[220px] xl:flex-none">
           <PredictiveSearch />
         </div>
 
-        <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-2">
-          <span className="hidden items-center gap-1.5 whitespace-nowrap pr-2 text-[12.5px] text-ink-3 xl:flex" title={TREND_NOTE}>
+        <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-2 lg:ml-auto xl:ml-2">
+          <span className="hidden items-center gap-1.5 whitespace-nowrap pr-2 text-[12.5px] text-ink-3 min-[1680px]:flex" title={TREND_NOTE}>
             <span className="inline-block h-1.5 w-1.5 bg-check" aria-hidden />
             Trends: {trendStatus()}
           </span>
@@ -99,7 +99,7 @@ export function Header() {
               aria-haspopup="listbox"
               aria-expanded={ccyOpen}
               onClick={() => setCcyOpen((v) => !v)}
-              className="reading h-9 whitespace-nowrap px-2 text-[12.5px] text-ink-2 hover:text-ink"
+              className="reading h-11 whitespace-nowrap px-2 text-[12.5px] text-ink-2 hover:text-ink lg:h-9"
             >
               {currency}
             </button>
@@ -130,11 +130,11 @@ export function Header() {
             </AnimatePresence>
           </div>
 
-          <button type="button" onClick={() => setAdvisor(true)} className="hidden h-9 items-center whitespace-nowrap border border-ink px-3 text-[13px] font-medium text-ink transition-colors hover:bg-ink hover:text-paper sm:flex">
+          <button type="button" onClick={() => setAdvisor(true)} className="press hidden h-11 items-center whitespace-nowrap rounded-[2px] border border-ink px-3.5 text-[14px] font-medium text-ink hover:bg-ink hover:text-paper sm:flex lg:h-10">
             Trend Scout
           </button>
 
-          <button type="button" className="h-9 w-9 text-ink md:hidden" aria-label="Search" onClick={() => setMobileSearch((v) => !v)}>
+          <button type="button" className="h-11 w-11 text-ink md:hidden lg:block lg:h-9 lg:w-9 xl:hidden" aria-label="Search" onClick={() => setMobileSearch((v) => !v)}>
             <Search size={18} strokeWidth={1.75} className="mx-auto" />
           </button>
 
@@ -146,7 +146,7 @@ export function Header() {
             type="button"
             onClick={() => openCart(true)}
             aria-label={`Cart, ${count} items`}
-            className="flex h-9 items-center gap-1.5 px-2 text-ink"
+            className="flex h-11 items-center gap-1.5 px-2 text-ink lg:h-9"
           >
             <ShoppingBag size={18} strokeWidth={1.75} />
             <span className="reading text-[13px]">{count}</span>
@@ -156,7 +156,7 @@ export function Header() {
 
       <AnimatePresence>
         {mobileSearch && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.16 }} className="overflow-visible border-t border-rule px-4 py-3 md:hidden">
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.16 }} className="overflow-visible border-t border-rule px-4 py-3 md:hidden lg:block xl:hidden">
             <PredictiveSearch />
           </motion.div>
         )}

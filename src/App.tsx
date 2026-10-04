@@ -131,7 +131,6 @@ function Footer() {
           <div className="display text-[28px] text-ink">Nexus</div>
           <p className="mt-2 max-w-[38ch] text-[13.5px] text-ink-2">Trending tech, specs and prices checked against the maker, checked against your phone, home and plug, and shipped from Sydney or straight from the maker.</p>
           <p className="mt-2 max-w-[38ch] text-[12.5px] text-ink-3">{RETURNS_LINE[0].toUpperCase() + RETURNS_LINE.slice(1)}.</p>
-          <div className="mt-4 flex items-center gap-2 text-[12.5px] text-ink-3"><span className="inline-block h-1.5 w-1.5 bg-pass" /> All systems operational, status.nexus.store</div>
         </div>
         {FOOTER.map((g) => (
           <div key={g.title}>

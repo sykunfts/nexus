@@ -172,8 +172,8 @@ export function SetupPage() {
           <h2 className="display-md text-[26px] text-ink sm:text-[30px]">Works with everything here</h2>
           <button type="button" onClick={() => go({ name: 'collection', slug: 'trending', filters: { worksWithSetup: true } })} className="text-[13px] text-ink-2 underline underline-offset-4 hover:text-ink">See all {passing.length}</button>
         </div>
-        <div className="scrollbar-none -mx-4 flex gap-px overflow-x-auto border-y border-rule bg-rule md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:border-x">
-          {passing.slice(0, 4).map((p, i) => <div key={p.id} className="min-w-[270px] md:min-w-0"><ProductCard product={p} index={i} /></div>)}
+        <div className="scrollbar-none -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pt-1 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0 md:pb-0 md:pt-0">
+          {passing.slice(0, 4).map((p, i) => <div key={p.id} className="min-w-[270px] snap-start md:min-w-0"><ProductCard product={p} index={i} /></div>)}
         </div>
       </section>
     </div>

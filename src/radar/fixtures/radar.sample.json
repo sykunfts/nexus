@@ -239,98 +239,6 @@
   ],
   "candidates": [
     {
-      "pid": "DEMO-RING-1",
-      "termId": "smart-ring",
-      "section": "Wearables",
-      "name": "Titanium Smart Ring Sleep & Heart Rate Tracker, App Included",
-      "image": "",
-      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-RING-1.html",
-      "listedNum": 1532,
-      "cjScope": "category",
-      "variant": {
-        "vid": "DEMO-RING-1-v",
-        "name": "Size 9 / Black",
-        "weightG": 60,
-        "priceUsd": 23.4,
-        "auPlug": false,
-        "variantCount": 4
-      },
-      "freight": {
-        "AU": {
-          "cheapest": {
-            "name": "CJPacket Ordinary",
-            "usd": 6.1,
-            "days": [
-              8,
-              15
-            ]
-          },
-          "fastest": {
-            "name": "DHL Express",
-            "usd": 28,
-            "days": [
-              3,
-              5
-            ]
-          },
-          "lines": 5
-        },
-        "US": {
-          "cheapest": {
-            "name": "CJPacket Ordinary",
-            "usd": 5.2,
-            "days": [
-              7,
-              12
-            ]
-          },
-          "fastest": {
-            "name": "DHL Express",
-            "usd": 26,
-            "days": [
-              3,
-              5
-            ]
-          },
-          "lines": 5
-        },
-        "GB": {
-          "cheapest": {
-            "name": "CJPacket Ordinary",
-            "usd": 6.8,
-            "days": [
-              9,
-              16
-            ]
-          },
-          "fastest": {
-            "name": "DHL Express",
-            "usd": 30,
-            "days": [
-              3,
-              5
-            ]
-          },
-          "lines": 5
-        }
-      },
-      "money": {
-        "costAud": 35.45,
-        "freightAud": 9.24,
-        "landedAud": 44.69,
-        "retailAud": 95.95,
-        "marginPct": 0.45232094841063053,
-        "netAud": 39.45,
-        "at2x": 0.41791656475819894,
-        "at3x": 0.6013789922193404,
-        "sectionMedianAud": 399
-      },
-      "flags": [],
-      "score": 0.86,
-      "why": "Smart rings +212 % on Wikipedia, Hacker News and TIWIB; 1,532 dropshippers list this; 45 % margin at $95.95.",
-      "firstSeen": "2026-10-04"
-    },
-    {
       "pid": "DEMO-MASK-1",
       "termId": "led-mask",
       "section": "Health",
@@ -421,9 +329,11 @@
         "mains",
         "skin"
       ],
-      "score": 0.833,
-      "why": "LED masks +260 % on Wikipedia, Hacker News and TIWIB; 640 dropshippers list this; 45 % margin at $164.95.",
-      "firstSeen": "2026-10-04"
+      "match": 0.6,
+      "score": 0.894,
+      "why": "LED masks +260% on Wikipedia, Hacker News and TIWIB; A$67.91 profit a sale at A$164.95; 640 dropshippers list it.",
+      "firstSeen": "2026-10-04",
+      "thin": false
     },
     {
       "pid": "DEMO-PROJ-1",
@@ -497,9 +407,105 @@
       "flags": [
         "mains"
       ],
-      "score": 0.756,
-      "why": "Laser projectors +140 % on Wikipedia, Hacker News and TIWIB; 880 dropshippers list this; 45 % margin at $272.95.",
-      "firstSeen": "2026-09-28"
+      "match": 1,
+      "score": 0.758,
+      "why": "Laser projectors +140% on Wikipedia, Hacker News and TIWIB; A$111.97 profit a sale at A$272.95; 880 dropshippers list it.",
+      "firstSeen": "2026-09-28",
+      "thin": false
+    },
+    {
+      "pid": "DEMO-RING-1",
+      "termId": "smart-ring",
+      "section": "Wearables",
+      "name": "Titanium Smart Ring Sleep & Heart Rate Tracker, App Included",
+      "image": "",
+      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-RING-1.html",
+      "listedNum": 1532,
+      "cjScope": "category",
+      "variant": {
+        "vid": "DEMO-RING-1-v",
+        "name": "Size 9 / Black",
+        "weightG": 60,
+        "priceUsd": 23.4,
+        "auPlug": false,
+        "variantCount": 4
+      },
+      "freight": {
+        "AU": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 6.1,
+            "days": [
+              8,
+              15
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 28,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "US": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 5.2,
+            "days": [
+              7,
+              12
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 26,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "GB": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 6.8,
+            "days": [
+              9,
+              16
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 30,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        }
+      },
+      "money": {
+        "costAud": 35.45,
+        "freightAud": 9.24,
+        "landedAud": 44.69,
+        "retailAud": 95.95,
+        "marginPct": 0.45232094841063053,
+        "netAud": 39.45,
+        "at2x": 0.41791656475819894,
+        "at3x": 0.6013789922193404,
+        "sectionMedianAud": 399
+      },
+      "flags": [],
+      "match": 1,
+      "score": 0.748,
+      "why": "Smart rings +212% on Wikipedia, Hacker News and TIWIB; A$39.45 profit a sale at A$95.95; 1,532 dropshippers list it.",
+      "firstSeen": "2026-10-04",
+      "thin": false
     },
     {
       "pid": "DEMO-BUDS-1",
@@ -591,9 +597,11 @@
       "flags": [
         "radio"
       ],
-      "score": 0.756,
-      "why": "Open-ear buds +96 % on Wikipedia, Hacker News and TIWIB; 2,210 dropshippers list this; 46 % margin at $56.95.",
-      "firstSeen": "2026-10-04"
+      "match": 0.6,
+      "score": 0.443,
+      "why": "Open-ear buds +96% on Wikipedia, Hacker News and TIWIB; A$23.76 profit a sale at A$56.95; 2,210 dropshippers list it.",
+      "firstSeen": "2026-10-04",
+      "thin": false
     },
     {
       "pid": "DEMO-BANK-1",
@@ -686,15 +694,97 @@
         "battery",
         "radio"
       ],
-      "score": 0.721,
-      "why": "Qi2 power banks +62 % on Wikipedia, Hacker News and TIWIB; 3,100 dropshippers list this; 45 % margin at $71.95.",
-      "firstSeen": "2026-10-04"
+      "match": 0.6,
+      "score": 0.425,
+      "why": "Qi2 power banks +62% on Wikipedia, Hacker News and TIWIB; A$29.54 profit a sale at A$71.95; 3,100 dropshippers list it.",
+      "firstSeen": "2026-10-04",
+      "thin": false
+    },
+    {
+      "pid": "DEMO-VAC-1",
+      "termId": "robot-vacuum",
+      "section": "Smart home",
+      "name": "Robot Vacuum And Mop With Self-Empty Base, Wi-Fi App Control",
+      "image": "",
+      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-VAC-1.html",
+      "listedNum": 410,
+      "cjScope": "keyword",
+      "variant": {
+        "vid": "DEMO-VAC-1-v",
+        "name": "US Plug / White",
+        "weightG": 6800,
+        "priceUsd": 189,
+        "auPlug": false,
+        "variantCount": 4
+      },
+      "freight": {
+        "AU": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 61,
+            "days": [
+              10,
+              20
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 140,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "US": {
+          "cheapest": {
+            "name": "CJPacket Ordinary",
+            "usd": 48,
+            "days": [
+              8,
+              14
+            ]
+          },
+          "fastest": {
+            "name": "DHL Express",
+            "usd": 120,
+            "days": [
+              3,
+              5
+            ]
+          },
+          "lines": 5
+        },
+        "GB": null
+      },
+      "money": {
+        "costAud": 286.33,
+        "freightAud": 92.42,
+        "landedAud": 378.75,
+        "retailAud": 804.95,
+        "marginPct": 0.4501113050500031,
+        "netAud": 329.38,
+        "at2x": 0.41799115377003765,
+        "at3x": 0.6013688332820264,
+        "sectionMedianAud": 1299
+      },
+      "flags": [
+        "mains",
+        "radio",
+        "heavy"
+      ],
+      "match": 1,
+      "score": 0.164,
+      "why": "Robot vacuums +18% on Wikipedia, Hacker News and TIWIB; A$329.38 profit a sale at A$804.95; 410 dropshippers list it.",
+      "firstSeen": "2026-10-04",
+      "thin": false
     },
     {
       "pid": "DEMO-RING-2",
       "termId": "smart-ring",
       "section": "Wearables",
-      "name": "Smart Ring Charging Case Only (No Ring)",
+      "name": "Basic NFC Smart Ring Step Counter, Ceramic Black",
       "image": "",
       "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-RING-2.html",
       "listedNum": 220,
@@ -778,89 +868,34 @@
         "sectionMedianAud": 399
       },
       "flags": [],
-      "score": 0.636,
-      "why": "Smart rings +212 % on Wikipedia, Hacker News and TIWIB; 220 dropshippers list this; 47 % margin at $26.95.",
-      "firstSeen": "2026-10-04"
-    },
-    {
-      "pid": "DEMO-VAC-1",
-      "termId": "robot-vacuum",
-      "section": "Smart home",
-      "name": "Robot Vacuum And Mop With Self-Empty Base, Wi-Fi App Control",
-      "image": "",
-      "cjUrl": "https://www.cjdropshipping.com/product/-p-DEMO-VAC-1.html",
-      "listedNum": 410,
-      "cjScope": "keyword",
-      "variant": {
-        "vid": "DEMO-VAC-1-v",
-        "name": "US Plug / White",
-        "weightG": 6800,
-        "priceUsd": 189,
-        "auPlug": false,
-        "variantCount": 4
-      },
-      "freight": {
-        "AU": {
-          "cheapest": {
-            "name": "CJPacket Ordinary",
-            "usd": 61,
-            "days": [
-              10,
-              20
-            ]
-          },
-          "fastest": {
-            "name": "DHL Express",
-            "usd": 140,
-            "days": [
-              3,
-              5
-            ]
-          },
-          "lines": 5
-        },
-        "US": {
-          "cheapest": {
-            "name": "CJPacket Ordinary",
-            "usd": 48,
-            "days": [
-              8,
-              14
-            ]
-          },
-          "fastest": {
-            "name": "DHL Express",
-            "usd": 120,
-            "days": [
-              3,
-              5
-            ]
-          },
-          "lines": 5
-        },
-        "GB": null
-      },
-      "money": {
-        "costAud": 286.33,
-        "freightAud": 92.42,
-        "landedAud": 378.75,
-        "retailAud": 804.95,
-        "marginPct": 0.4501113050500031,
-        "netAud": 329.38,
-        "at2x": 0.41799115377003765,
-        "at3x": 0.6013688332820264,
-        "sectionMedianAud": 1299
-      },
-      "flags": [
-        "mains",
-        "radio",
-        "heavy"
-      ],
-      "score": 0.165,
-      "why": "Robot vacuums +18 % on Wikipedia, Hacker News and TIWIB; 410 dropshippers list this; 45 % margin at $804.95.",
-      "firstSeen": "2026-10-04"
+      "match": 1,
+      "score": 0.413,
+      "why": "Smart rings +212% on Wikipedia, Hacker News and TIWIB; A$11.46 profit a sale at A$26.95; 220 dropshippers list it.",
+      "firstSeen": "2026-10-04",
+      "thin": true
     }
   ],
+  "rejected": [
+    {
+      "pid": "DEMO-X-1",
+      "termId": "smart-ring",
+      "name": "Stainless Steel Contrasting Zircon Ring",
+      "reason": "has \"zircon\""
+    },
+    {
+      "pid": "DEMO-X-2",
+      "termId": "smart-lock",
+      "name": "Smart Teaser Cat Toy Electric UFO Cat Teaser Stick With Bell Training Pet Toys",
+      "reason": "has \"pet\""
+    },
+    {
+      "pid": "DEMO-X-3",
+      "termId": "travel-adapter",
+      "name": "Outdoor Travel Backpack Student-style Simple Design",
+      "reason": "has \"backpack\""
+    }
+  ],
+  "noveltyHidden": 2,
   "novelty": [
     {
       "title": "Smart Ring That Tracks Your Sleep",

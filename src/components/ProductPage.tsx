@@ -7,7 +7,11 @@ import { defaultSelection, priceFor, useSetup, useStore, useZone } from '../lib/
 import { checkBuild, CompatResult, resolveFacts } from '../lib/compat'
 import { isLightSwatch, ProductImage } from './ProductVisual'
 import { ProductCard, Sparkline } from './ProductCard'
-import { Button, Chip, Row, Stars, StockDot, Toggle } from './ui'
+import { Button, Chip, Reveal, Row, Stars, StockDot, Tile, Toggle } from './ui'
+import { Callouts } from './Callouts'
+import { BenchResults } from './BenchResults'
+import { benchFor } from '../lib/bench'
+import { signedPct } from '../lib/text'
 import { PARTS, CanvasMode } from '../lib/parts'
 import { cn } from '../lib/cn'
 import { etaText, originLabel, originShort } from '../lib/shipping'
@@ -92,9 +96,9 @@ export function ProductPage({ product }: { product: Product }) {
 
       <div className="grid grid-cols-12 gap-x-8 gap-y-8">
         {/* ---------- media on the bench mat ---------- */}
-        <div className="col-span-12 lg:col-span-7">
-          <div className="border border-ink">
-            <div className="flex items-center justify-between border-b border-ink bg-sheet px-3">
+        <Reveal className="col-span-12 lg:col-span-7">
+          <div className="slab">
+            <div className="flex items-center justify-between px-4 pt-1.5 sm:px-5">
               <div className="flex gap-4" role="tablist" aria-label="View mode">
                 {([
                   { id: '360', label: '360°', show: is3D },
@@ -107,17 +111,17 @@ export function ProductPage({ product }: { product: Product }) {
                     role="tab"
                     aria-selected={mode === m.id}
                     onClick={() => setMode(m.id)}
-                    className={cn('relative py-2.5 text-[13.5px]', mode === m.id ? 'text-ink' : 'text-ink-2 hover:text-ink')}
+                    className={cn('relative py-3 text-[14.5px]', mode === m.id ? 'text-on-mat' : 'text-rule hover:text-on-mat')}
                   >
                     {m.label}
-                    {mode === m.id && <span className="absolute inset-x-0 -bottom-px h-[2px] bg-signal" />}
+                    {mode === m.id && <span className="absolute inset-x-0 bottom-1.5 h-[2px] bg-signal" />}
                   </button>
                 ))}
               </div>
-              <span className="reading hidden text-[11px] text-ink-3 sm:inline">{is3D && mode !== 'gallery' ? 'Procedural model' : photos.length ? `Photo ${photo + 1} of ${photos.length}` : 'Render, photo pending'}</span>
+              <span className="reading hidden text-[11.5px] text-rule sm:inline">{is3D && mode !== 'gallery' ? 'Procedural model' : photos.length ? `Photo ${photo + 1} of ${photos.length}` : 'Render, photo pending'}</span>
             </div>
 
-            <div className="aspect-[4/3] w-full bg-mat">
+            <div className="relative aspect-[4/3] w-full">
               {is3D && mode !== 'gallery' ? (
                 <Suspense fallback={fallback}>
                   <ProductCanvas mode={mode} light={isLightSwatch(variant.swatch)} hue={variant.hue} hovered={hovered} setHovered={setHovered} fallback={fallback} label={`${product.brand} ${product.name}`} />
@@ -125,18 +129,21 @@ export function ProductPage({ product }: { product: Product }) {
               ) : (
                 <div className={cn('h-full w-full', photos.length ? '' : 'p-6 sm:p-10')}><ProductImage product={product} index={photo} hue={variant.hue} swatch={variant.swatch} /></div>
               )}
+              {is3D && mode !== 'gallery' && (
+                <div className="pointer-events-none absolute inset-y-0 left-0 right-7 lg:right-0"><Callouts product={product} lines={false} /></div>
+              )}
             </div>
 
-            <div className="flex items-center justify-between border-t border-ink bg-sheet px-3 py-1.5 text-[12px] text-ink-3">
+            <div className="flex items-center justify-between border-t border-on-mat/15 px-4 py-3 text-[13px] text-rule sm:px-5">
               <span>{is3D && mode !== 'gallery' ? 'Drag to rotate, scroll to zoom, arrow keys rotate' : `${product.brand} ${product.name}, ${variant.label.toLowerCase()}`}</span>
               <span>{variant.label}</span>
             </div>
           </div>
 
           {mode === 'gallery' && photos.length > 1 && (
-            <div className="mt-px flex gap-px bg-rule" role="tablist" aria-label="Photos">
+            <div className="mt-3 flex gap-2" role="tablist" aria-label="Photos">
               {photos.map((src, i) => (
-                <button key={i} type="button" role="tab" aria-selected={photo === i} onClick={() => setPhoto(i)} className={cn('h-16 w-20 overflow-hidden bg-paper', photo === i ? 'ring-2 ring-inset ring-ink' : 'opacity-80 hover:opacity-100')}>
+                <button key={i} type="button" role="tab" aria-selected={photo === i} onClick={() => setPhoto(i)} className={cn('h-16 w-20 overflow-hidden rounded-[2px] border border-rule bg-sheet', photo === i ? 'ring-2 ring-inset ring-ink' : 'opacity-80 hover:opacity-100')}>
                   <img src={src} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
@@ -144,7 +151,7 @@ export function ProductPage({ product }: { product: Product }) {
           )}
 
           {is3D && mode !== 'gallery' && (
-            <ul className="mt-px hidden sheet-grid grid-cols-3 border-t-0 md:grid lg:grid-cols-6" aria-label="Components">
+            <ul className="mt-4 hidden grid-cols-3 gap-px overflow-hidden rounded-[2px] border border-rule bg-rule md:grid lg:grid-cols-6" aria-label="Components">
               {PARTS.map((p) => (
                 <li key={p.id}>
                   <button
@@ -154,33 +161,32 @@ export function ProductPage({ product }: { product: Product }) {
                     onFocus={() => setHovered(p.id)}
                     onBlur={() => setHovered(null)}
                     onClick={() => setMode('exploded')}
-                    className={cn('block h-full w-full px-3 py-2 text-left transition-colors', hovered === p.id ? 'bg-signal-2' : 'bg-paper hover:bg-paper-2')}
+                    className={cn('block h-full w-full px-4 py-3.5 text-left transition-colors', hovered === p.id ? 'bg-signal-2' : 'bg-sheet hover:bg-paper')}
                   >
-                    <div className="text-[13px] text-ink">{p.name}</div>
-                    <div className="truncate text-[11.5px] text-ink-3">{p.spec}</div>
+                    <div className="text-[14.5px] font-medium text-ink">{p.name}</div>
+                    <div className="truncate text-[13px] text-ink-2">{p.spec}</div>
                   </button>
                 </li>
               ))}
             </ul>
           )}
-        </div>
+        </Reveal>
 
         {/* ---------- configurator on a white sheet ---------- */}
         <aside className="col-span-12 lg:col-span-5 lg:row-span-2">
-          <div className="lg:sticky lg:top-[72px]">
-            <div className="border border-ink bg-sheet">
-              <div className="px-5 pt-5 sm:px-6">
-                <div className="text-[13px] text-ink-2">{product.brand}, {product.category.toLowerCase()}</div>
-                <div className="mt-1 flex items-start justify-between gap-4">
-                  <h1 className="display-md text-[34px] text-ink sm:text-[40px]">{product.name}</h1>
-                  <div className="text-right">
-                    <div className="reading text-[24px] text-ink" aria-live="polite">{fmt(price, currency, { compact: true })}</div>
-                    <div className="text-[12px] text-ink-3">or {fmt(price / 12, currency)} a month for 12</div>
-                  </div>
+          <div className="lg:sticky lg:top-[88px]">
+            <Reveal delay={0.12} className="rounded-[2px] border border-ink bg-sheet">
+              <div className="flex flex-col gap-3.5 px-5 pt-6 sm:px-6">
+                <div className="text-[13.5px] text-ink-2">{product.brand}, {product.category.toLowerCase()}</div>
+                <h1 className="display text-[44px] text-ink lg:text-[64px]">{product.name}</h1>
+                <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1">
+                  <span className="numeral text-[30px] text-ink lg:text-[36px]" aria-live="polite">{fmt(price, currency, { compact: true })}</span>
+                  {product.compareAt ? <span className="numeral text-[13px] text-ink-3">RRP {fmt(product.compareAt, currency, { compact: true })}</span> : null}
+                  <span className="text-[13.5px] text-ink-2">or {fmt(price / 12, currency)} a month for 12</span>
                 </div>
-                <div className="mt-2 flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3.5">
                   <Stars rating={product.rating} size={12} />
-                  <span className="flex items-center gap-2"><Sparkline series={product.trend.series} /><span className="reading text-[12px] text-ink-2">+{product.trend.delta}% this week</span></span>
+                  {product.trend.label !== 'Steady' && <Tile>{signedPct(product.trend.delta)} this week</Tile>}
                 </div>
               </div>
 
@@ -215,14 +221,14 @@ export function ProductPage({ product }: { product: Product }) {
 
                 {/* options as ruled cells */}
                 {product.options?.map((g) => (
-                  <div key={g.id} className="border-b border-rule py-3">
+                  <div key={g.id} className="border-b border-rule py-4">
                     <div className="mb-2 flex items-center justify-between text-[13.5px]">
                       <span className="text-ink">{g.label}</span>
                       <span className="text-ink-3">{g.choices.find((c) => c.id === selection[g.id])?.label}</span>
                     </div>
                     <div className={cn('sheet-grid', g.choices.length === 3 ? 'grid-cols-3' : g.choices.length > 3 ? 'grid-cols-4' : 'grid-cols-2')} role="radiogroup" aria-label={g.label}>
                       {g.choices.map((c) => (
-                        <Chip key={c.id} selected={selection[g.id] === c.id} role="radio" aria-checked={selection[g.id] === c.id} onClick={() => setSelection((s) => ({ ...s, [g.id]: c.id }))} sub={c.sub}>
+                        <Chip key={c.id} className="min-h-[56px]" selected={selection[g.id] === c.id} role="radio" aria-checked={selection[g.id] === c.id} onClick={() => setSelection((s) => ({ ...s, [g.id]: c.id }))} sub={c.sub}>
                           <span className="flex w-full items-baseline justify-between gap-2">
                             {c.label}
                             {c.delta ? <span className="reading text-[11px] font-normal text-ink-3">+{fmt(c.delta, currency, { compact: true })}</span> : null}
@@ -244,27 +250,27 @@ export function ProductPage({ product }: { product: Product }) {
               </div>
 
               {buyable ? (
-                <div className="hidden gap-px border-t border-ink bg-ink lg:grid lg:grid-cols-[1fr_auto]">
-                  <button type="button" onClick={onAdd} className="flex h-14 items-center justify-center gap-2 bg-ink px-5 text-[15px] font-medium text-paper hover:bg-[#1f2730]" aria-live="polite">
+                <div className="hidden gap-2.5 px-5 pb-6 sm:px-6 lg:flex">
+                  <Button variant="primary" size="lg" onClick={onAdd} className="flex-1" aria-live="polite">
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.span key={added ? 'ok' : 'add'} initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.14 }} className="flex items-center gap-2">
                         {added ? <><Check size={16} strokeWidth={2.5} /> Added to cart</> : <>Add to cart, {fmt(price, currency, { compact: true })}</>}
                       </motion.span>
                     </AnimatePresence>
-                  </button>
-                  <button type="button" onClick={() => add(product, variantId, selection)} className="h-14 bg-sheet px-5 text-[15px] font-medium text-ink hover:bg-paper">Buy now</button>
+                  </Button>
+                  <Button variant="secondary" size="lg" onClick={() => add(product, variantId, selection)}>Buy now</Button>
                 </div>
               ) : (
-                <div className="border-t border-ink pt-3">
+                <div className="border-t border-ink px-5 pb-5 pt-3 sm:px-6">
                   <NotifyMe productId={product.id} />
                 </div>
               )}
-            </div>
+            </Reveal>
 
-            <button type="button" onClick={() => setAdvisor(true)} className="mt-3 text-[13px] text-ink-2 underline underline-offset-4 hover:text-ink">
+            <button type="button" onClick={() => setAdvisor(true)} className="mt-4 text-[14.5px] text-ink underline decoration-rule-2 underline-offset-4 hover:decoration-ink">
               Will this work with my phone and home? Ask the Trend Scout
             </button>
-            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[12.5px] text-ink-3">
+            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[13.5px] text-ink-2">
               <span>2-year warranty</span><span>Local repairs</span><span>Tracked on both routes</span>
             </div>
           </div>
@@ -272,7 +278,7 @@ export function ProductPage({ product }: { product: Product }) {
 
         {/* ---------- tabs ---------- */}
         <div className="col-span-12 lg:col-span-7">
-          <div role="tablist" aria-label="Product details" className="scrollbar-none flex gap-6 overflow-x-auto whitespace-nowrap border-b border-ink">
+          <div role="tablist" aria-label="Product details" className="scrollbar-none flex gap-7 overflow-x-auto whitespace-nowrap border-b border-rule">
             {([
               ['overview', 'Overview'], ['specs', 'Specifications'], ['compat', 'Works with'], ['reviews', product.rating ? `Reviews (${product.rating.count.toLocaleString()})` : 'Reviews'],
             ] as [Tab, string][]).map(([id, label]) => (
@@ -284,7 +290,7 @@ export function ProductPage({ product }: { product: Product }) {
                 aria-selected={tab === id}
                 aria-controls={`panel-${id}`}
                 onClick={() => setTab(id)}
-                className={cn('relative flex items-center gap-2 py-2.5 text-[14px]', tab === id ? 'text-ink' : 'text-ink-2 hover:text-ink')}
+                className={cn('relative flex items-center gap-2 py-3 text-[15.5px]', tab === id ? 'text-ink' : 'text-ink-2 hover:text-ink')}
               >
                 {id === 'compat' && <span className={cn('h-2 w-2', st.mark)} />}
                 {label}
@@ -313,7 +319,7 @@ export function ProductPage({ product }: { product: Product }) {
                     <div className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <Sparkline series={product.trend.series} width={96} height={28} />
-                        <div className="text-[13px]"><span className="reading text-ink">+{product.trend.delta}%</span> <span className="text-ink-2">interest, 7 days</span></div>
+                        <div className="text-[13px]"><span className="reading text-ink">{signedPct(product.trend.delta)}</span> <span className="text-ink-2">interest, 7 days</span></div>
                       </div>
                       <div className="mt-1 text-[12px] text-ink-3">{product.trend.source}</div>
                     </div>
@@ -366,7 +372,7 @@ export function ProductPage({ product }: { product: Product }) {
                             <tr key={r.label} className="border-t border-rule bg-sheet">
                               <td className="px-4 py-2 text-ink-2">{r.label}</td>
                               <td className={cn('reading px-4 py-2 text-[12.5px]', win === 'a' ? 'text-pass' : 'text-ink')}>{r.value}</td>
-                              {other && <td className={cn('reading px-4 py-2 text-[12.5px]', win === 'b' ? 'text-pass' : 'text-ink-2')}>{o?.value ?? '—'}</td>}
+                              {other && <td className={cn('reading px-4 py-2 text-[12.5px]', win === 'b' ? 'text-pass' : 'text-ink-2')}>{o?.value ?? 'not listed'}</td>}
                             </tr>
                           )
                         })}
@@ -424,13 +430,15 @@ export function ProductPage({ product }: { product: Product }) {
         </div>
       </div>
 
+      {benchFor(product.id).length > 0 && <div className="mt-16 lg:mt-24"><BenchResults productId={product.id} /></div>}
+
       {/* related */}
-      <section className="mt-12">
+      <section className="mt-16 lg:mt-24">
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="display-md text-[26px] text-ink sm:text-[30px]">{product.id === HERO ? `Checked to work with the ${product.name}` : `Rising alongside the ${product.name}`}</h2>
+          <h2 className="display text-[30px] text-ink lg:text-[40px]">{product.id === HERO ? `Checked to work with the ${product.name}` : `Rising alongside the ${product.name}`}</h2>
         </div>
-        <div className="scrollbar-none -mx-4 flex gap-px overflow-x-auto border-y border-rule bg-rule md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:border-x">
-          {related.map((p) => <div key={p.id} className="min-w-[270px] md:min-w-0"><ProductCard product={p} /></div>)}
+        <div className="scrollbar-none -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pt-1 md:mx-0 md:grid md:grid-cols-4 md:overflow-visible md:px-0 md:pb-0 md:pt-0">
+          {related.map((p) => <div key={p.id} className="min-w-[270px] snap-start md:min-w-0"><ProductCard product={p} /></div>)}
         </div>
       </section>
 
@@ -442,8 +450,8 @@ export function ProductPage({ product }: { product: Product }) {
             <div className={cn('truncate text-[12px]', buyable ? st.text : 'text-ink-3')}>{!buyable ? 'Not yet stocked' : compat.status === 'ok' ? 'Works with your setup' : compat.summary}</div>
           </div>
           {buyable
-            ? <Button variant="primary" size="lg" onClick={onAdd} className="ml-auto h-12 flex-1 max-w-[240px]">{added ? 'Added' : 'Add to cart'}</Button>
-            : <Button variant="secondary" size="lg" onClick={() => { document.getElementById(NOTIFY_INPUT_ID)?.scrollIntoView({ block: 'center' }); document.getElementById(NOTIFY_INPUT_ID)?.focus() }} className="ml-auto h-12 flex-1 max-w-[240px]">Tell me when</Button>}
+            ? <Button variant="primary" size="lg" onClick={onAdd} className="ml-auto !h-12 !text-[15px] flex-1 max-w-[240px]">{added ? 'Added' : 'Add to cart'}</Button>
+            : <Button variant="secondary" size="lg" onClick={() => { document.getElementById(NOTIFY_INPUT_ID)?.scrollIntoView({ block: 'center' }); document.getElementById(NOTIFY_INPUT_ID)?.focus() }} className="ml-auto !h-12 !text-[15px] flex-1 max-w-[240px]">Tell me when</Button>}
         </div>
       </div>
     </div>

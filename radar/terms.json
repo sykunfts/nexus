@@ -12,6 +12,45 @@
       "category": "smart ring",
       "keyword": "smart ring"
     },
+    "match": {
+      "all": [
+        [
+          "ring"
+        ],
+        [
+          "smart",
+          "sleep",
+          "health",
+          "heart rate",
+          "fitness",
+          "tracker",
+          "nfc",
+          "oxygen"
+        ]
+      ],
+      "not": [
+        "zircon",
+        "wedding",
+        "engagement",
+        "diamond",
+        "couple",
+        "couples",
+        "birthstone",
+        "gemstone",
+        "ring light",
+        "key ring",
+        "keyring",
+        "doorbell",
+        "no ring",
+        "case only",
+        "charger only",
+        "sizer",
+        "sizing kit",
+        "lymphatic",
+        "magnetic therapy",
+        "weight loss"
+      ]
+    },
     "products": [
       "oura-ring-5",
       "ringconn-gen-3",
@@ -31,6 +70,34 @@
     "cj": {
       "category": "smart glasses",
       "keyword": "smart glasses"
+    },
+    "match": {
+      "all": [
+        [
+          "glasses",
+          "sunglasses",
+          "eyewear",
+          "spectacles"
+        ],
+        [
+          "smart",
+          "ai",
+          "bluetooth",
+          "audio",
+          "camera",
+          "ar",
+          "display"
+        ]
+      ],
+      "not": [
+        "reading glasses",
+        "glasses case",
+        "cleaning",
+        "wine",
+        "drinking",
+        "shot glasses",
+        "magnifying"
+      ]
     },
     "products": [
       "rayban-meta-gen-3",
@@ -52,6 +119,41 @@
       "category": "fitness tracker",
       "keyword": "fitness tracker"
     },
+    "match": {
+      "all": [
+        [
+          "fitness",
+          "activity",
+          "sport",
+          "sports",
+          "health",
+          "heart rate",
+          "smart bracelet",
+          "smart band"
+        ],
+        [
+          "tracker",
+          "band",
+          "bracelet"
+        ]
+      ],
+      "not": [
+        "resistance band",
+        "resistance bands",
+        "yoga",
+        "elastic",
+        "headband",
+        "sweatband",
+        "exercise band",
+        "loop band",
+        "pull up",
+        "replacement",
+        "strap for",
+        "straps for",
+        "band for",
+        "bands for"
+      ]
+    },
     "products": [
       "whoop-5-0",
       "garmin-index-sleep-monitor"
@@ -70,6 +172,52 @@
       "category": "smart watch",
       "keyword": "smart watch"
     },
+    "match": {
+      "all": [
+        [
+          "smartwatch",
+          "smart watch",
+          "watch"
+        ],
+        [
+          "smart",
+          "smartwatch",
+          "fitness",
+          "heart",
+          "sport",
+          "4g",
+          "call",
+          "bluetooth",
+          "gps",
+          "health",
+          "ecg",
+          "spo2",
+          "blood oxygen"
+        ]
+      ],
+      "not": [
+        "watch strap",
+        "watch band only",
+        "replacement band",
+        "replacement strap",
+        "screen protector",
+        "protective case only",
+        "watch winder",
+        "mechanical watch",
+        "quartz watch",
+        "wall clock",
+        "strap for",
+        "straps for",
+        "band for",
+        "bands for",
+        "loop band",
+        "charger for",
+        "charger cable",
+        "charging cable",
+        "cable for",
+        "case for"
+      ]
+    },
     "products": [
       "withings-scanwatch-2"
     ]
@@ -87,6 +235,36 @@
       "category": "wearable",
       "keyword": "AI wearable"
     },
+    "match": {
+      "all": [
+        [
+          "wearable",
+          "pendant",
+          "pin",
+          "necklace",
+          "badge",
+          "clip"
+        ],
+        [
+          "ai",
+          "voice",
+          "recorder",
+          "recording",
+          "assistant",
+          "gpt",
+          "chatgpt",
+          "transcription"
+        ]
+      ],
+      "not": [
+        "jewelry",
+        "jewellery",
+        "brooch",
+        "enamel pin",
+        "lapel pin",
+        "badge holder"
+      ]
+    },
     "products": [
       "bee-pioneer"
     ]
@@ -103,6 +281,40 @@
     "cj": {
       "category": "earphone",
       "keyword": "open ear earbuds"
+    },
+    "match": {
+      "all": [
+        [
+          "open ear",
+          "open-ear",
+          "ear hook",
+          "ear-hook",
+          "earhook",
+          "bone conduction",
+          "air conduction",
+          "ear clip",
+          "clip-on",
+          "clip on",
+          "ows"
+        ],
+        [
+          "headphones",
+          "headphone",
+          "earphones",
+          "earphone",
+          "earbuds",
+          "earbud",
+          "headset",
+          "buds"
+        ]
+      ],
+      "not": [
+        "ear pads",
+        "eartips",
+        "ear tips",
+        "cushion",
+        "case only"
+      ]
     },
     "products": [
       "bose-ultra-open-2",
@@ -124,6 +336,30 @@
       "category": "speaker",
       "keyword": "portable bluetooth speaker"
     },
+    "match": {
+      "all": [
+        [
+          "speaker",
+          "speakers",
+          "soundbar",
+          "boombox"
+        ],
+        [
+          "bluetooth",
+          "wireless",
+          "portable",
+          "waterproof"
+        ]
+      ],
+      "not": [
+        "speaker wire",
+        "speaker cable",
+        "speaker stand",
+        "speaker mount",
+        "grille",
+        "car speaker"
+      ]
+    },
     "products": [
       "marshall-emberton-iii",
       "jbl-flip-7"
@@ -142,6 +378,47 @@
       "category": "camera",
       "keyword": "indoor security camera"
     },
+    "match": {
+      "all": [
+        [
+          "camera",
+          "cam",
+          "ipc"
+        ],
+        [
+          "security",
+          "indoor",
+          "surveillance",
+          "baby monitor",
+          "pet camera",
+          "wifi",
+          "wi-fi",
+          "smart home",
+          "ptz",
+          "matter",
+          "homekit"
+        ]
+      ],
+      "not": [
+        "dummy",
+        "fake",
+        "lens cap",
+        "camera bag",
+        "tripod",
+        "sticker",
+        "digital camera",
+        "film",
+        "instant camera",
+        "action camera",
+        "dashcam",
+        "dash cam",
+        "wall mount bracket",
+        "camera mount",
+        "camera bracket",
+        "bracket only",
+        "mount only"
+      ]
+    },
     "products": [
       "aqara-camera-e1",
       "tp-link-tapo-c120"
@@ -159,6 +436,40 @@
     "cj": {
       "category": "led strip",
       "keyword": "smart led strip"
+    },
+    "match": {
+      "all": [
+        [
+          "strip",
+          "strips",
+          "tape",
+          "rope light",
+          "neon"
+        ],
+        [
+          "led",
+          "rgb",
+          "rgbic",
+          "smart",
+          "wifi",
+          "app"
+        ]
+      ],
+      "not": [
+        "strip connector",
+        "connector",
+        "connectors",
+        "clips",
+        "power supply",
+        "controller only",
+        "aluminum channel",
+        "diffuser",
+        "power strip",
+        "surge",
+        "socket",
+        "outlet",
+        "outlets"
+      ]
     },
     "products": [
       "nanoleaf-matter-strip-5m",
@@ -180,6 +491,37 @@
       "category": "vacuum",
       "keyword": "robot vacuum"
     },
+    "match": {
+      "all": [
+        [
+          "robot",
+          "robotic"
+        ],
+        [
+          "vacuum",
+          "sweeper",
+          "sweeping",
+          "mop",
+          "mopping"
+        ]
+      ],
+      "not": [
+        "replacement",
+        "spare",
+        "parts",
+        "accessories",
+        "accessory",
+        "kit for",
+        "filter for",
+        "filters for",
+        "brush for",
+        "brushes for",
+        "pads for",
+        "bags for",
+        "pcs",
+        "toy"
+      ]
+    },
     "products": [
       "eufy-x10-pro-omni",
       "dreame-x50-ultra",
@@ -198,6 +540,25 @@
       "category": "window cleaning",
       "keyword": "window cleaning robot"
     },
+    "match": {
+      "all": [
+        [
+          "window",
+          "glass"
+        ],
+        [
+          "robot",
+          "robotic"
+        ]
+      ],
+      "not": [
+        "replacement",
+        "accessories",
+        "pads for",
+        "pcs",
+        "toy"
+      ]
+    },
     "products": [
       "ecovacs-winbot-w2-pro-omni"
     ]
@@ -214,6 +575,47 @@
     "cj": {
       "category": "smart lock",
       "keyword": "smart lock"
+    },
+    "match": {
+      "all": [
+        [
+          "lock",
+          "deadbolt"
+        ],
+        [
+          "smart",
+          "fingerprint",
+          "keyless",
+          "biometric",
+          "wifi",
+          "wi-fi",
+          "bluetooth",
+          "app",
+          "digital",
+          "electronic",
+          "face recognition",
+          "facial recognition",
+          "keypad",
+          "password"
+        ]
+      ],
+      "not": [
+        "pet",
+        "dog",
+        "toy",
+        "cat toy",
+        "cat teaser",
+        "padlock",
+        "bike lock",
+        "lock box",
+        "lockbox",
+        "phone case",
+        "lock screen",
+        "cable lock",
+        "gun",
+        "safe box",
+        "money safe"
+      ]
     },
     "products": [
       "switchbot-lock-ultra",
@@ -233,6 +635,36 @@
       "category": "smart home hub",
       "keyword": "smart home hub"
     },
+    "match": {
+      "all": [
+        [
+          "hub",
+          "gateway",
+          "bridge",
+          "border router"
+        ],
+        [
+          "smart home",
+          "zigbee",
+          "matter",
+          "thread",
+          "z-wave",
+          "homekit",
+          "wifi",
+          "wi-fi",
+          "tuya",
+          "alexa"
+        ]
+      ],
+      "not": [
+        "usb hub",
+        "usb-c hub",
+        "type-c hub",
+        "docking",
+        "dock",
+        "laptop"
+      ]
+    },
     "products": [
       "aqara-hub-m3",
       "switchbot-hub-3"
@@ -250,6 +682,36 @@
     "cj": {
       "category": "projector",
       "keyword": "laser projector"
+    },
+    "match": {
+      "all": [
+        [
+          "projector"
+        ]
+      ],
+      "not": [
+        "lens cap",
+        "projector screen",
+        "star projector",
+        "galaxy projector",
+        "sky projector",
+        "night light",
+        "logo projector",
+        "gobo",
+        "projector mount",
+        "projector stand",
+        "projector bracket",
+        "ceiling mount",
+        "mount for",
+        "stand for",
+        "bracket for",
+        "remote control for",
+        "projector lamp",
+        "projector bulb",
+        "replacement lamp",
+        "lamp for",
+        "bulb for"
+      ]
     },
     "products": [
       "xgimi-mogo-4-laser",
@@ -270,6 +732,43 @@
       "category": "projector",
       "keyword": "portable projector"
     },
+    "match": {
+      "all": [
+        [
+          "projector"
+        ],
+        [
+          "portable",
+          "mini",
+          "pocket",
+          "battery",
+          "handheld"
+        ]
+      ],
+      "not": [
+        "lens cap",
+        "projector screen",
+        "star projector",
+        "galaxy projector",
+        "sky projector",
+        "night light",
+        "logo projector",
+        "gobo",
+        "projector mount",
+        "projector stand",
+        "projector bracket",
+        "ceiling mount",
+        "mount for",
+        "stand for",
+        "bracket for",
+        "remote control for",
+        "projector lamp",
+        "projector bulb",
+        "replacement lamp",
+        "lamp for",
+        "bulb for"
+      ]
+    },
     "products": [
       "xgimi-vibe-one",
       "samsung-the-freestyle-plus-2026"
@@ -288,6 +787,28 @@
       "category": "projector screen",
       "keyword": "projector screen"
     },
+    "match": {
+      "all": [
+        [
+          "screen",
+          "screens"
+        ],
+        [
+          "projector",
+          "projection",
+          "movie"
+        ]
+      ],
+      "not": [
+        "screen protector",
+        "phone screen",
+        "lcd screen",
+        "touch screen",
+        "monitor",
+        "screen mirroring",
+        "mirroring"
+      ]
+    },
     "products": [
       "elite-yard-master-2-100"
     ]
@@ -304,6 +825,29 @@
     "cj": {
       "category": "power bank",
       "keyword": "magnetic power bank"
+    },
+    "match": {
+      "all": [
+        [
+          "power bank",
+          "powerbank",
+          "battery pack",
+          "portable charger"
+        ],
+        [
+          "magnetic",
+          "magsafe",
+          "qi2",
+          "wireless"
+        ]
+      ],
+      "not": [
+        "case for",
+        "case only",
+        "phone case",
+        "silicone case",
+        "cable only"
+      ]
     },
     "products": [
       "anker-maggo-10k",
@@ -323,6 +867,56 @@
       "category": "charger",
       "keyword": "gan charger"
     },
+    "match": {
+      "all": [
+        [
+          "charger",
+          "adapter",
+          "adaptor"
+        ],
+        [
+          "gan",
+          "pd",
+          "usb c",
+          "usb-c",
+          "type-c",
+          "type c",
+          "fast charging",
+          "fast charger",
+          "65w",
+          "100w",
+          "120w",
+          "140w",
+          "multi-port"
+        ]
+      ],
+      "not": [
+        "car",
+        "car charger",
+        "wireless charger",
+        "cable only",
+        "charging cable",
+        "solar",
+        "otg",
+        "hdmi",
+        "jack",
+        "3.5mm",
+        "headphone",
+        "audio",
+        "card reader",
+        "ethernet",
+        "converter",
+        "usb c to",
+        "usb-c to",
+        "type c to",
+        "type-c to",
+        "to usb",
+        "to lightning",
+        "to type-c",
+        "to type c",
+        "to usb-c"
+      ]
+    },
     "products": [
       "anker-prime-100w",
       "ugreen-nexode-100w-3-port"
@@ -340,6 +934,29 @@
     "cj": {
       "category": "wireless charger",
       "keyword": "magnetic wireless charger"
+    },
+    "match": {
+      "all": [
+        [
+          "charger",
+          "charging stand",
+          "charging pad",
+          "charging station"
+        ],
+        [
+          "magnetic",
+          "magsafe",
+          "qi2",
+          "wireless"
+        ]
+      ],
+      "not": [
+        "cable only",
+        "power bank",
+        "case for",
+        "case only",
+        "phone case"
+      ]
     },
     "products": [
       "belkin-boostcharge-pro-3-in-1-qi2-pad",
@@ -359,6 +976,37 @@
       "category": "travel adapter",
       "keyword": "travel adapter"
     },
+    "match": {
+      "all": [
+        [
+          "adapter",
+          "adaptor",
+          "converter"
+        ],
+        [
+          "travel",
+          "universal",
+          "plug",
+          "worldwide",
+          "international",
+          "wall"
+        ]
+      ],
+      "not": [
+        "usb to",
+        "hdmi",
+        "audio",
+        "lens",
+        "card reader",
+        "otg",
+        "to lightning",
+        "lightning to",
+        "usb c to",
+        "usb-c to",
+        "type c to",
+        "type-c to"
+      ]
+    },
     "products": [
       "sansai-au-travel-adapter"
     ]
@@ -375,6 +1023,43 @@
     "cj": {
       "category": "electric scooter",
       "keyword": "electric scooter"
+    },
+    "match": {
+      "all": [
+        [
+          "scooter"
+        ],
+        [
+          "electric",
+          "e-scooter",
+          "motor",
+          "battery",
+          "lithium"
+        ]
+      ],
+      "not": [
+        "tire for",
+        "tyre for",
+        "tires for",
+        "inner tube",
+        "brake pads",
+        "brake for",
+        "fender for",
+        "mudguard",
+        "charger for",
+        "battery only",
+        "grips for",
+        "bag for",
+        "phone holder",
+        "replacement",
+        "parts",
+        "accessories",
+        "accessory",
+        "sticker",
+        "toy",
+        "model toy",
+        "die cast"
+      ]
     },
     "products": [
       "segway-e3-pro",
@@ -394,6 +1079,36 @@
     "cj": {
       "category": "beauty device",
       "keyword": "led face mask"
+    },
+    "match": {
+      "all": [
+        [
+          "mask"
+        ],
+        [
+          "led",
+          "light therapy",
+          "red light",
+          "photon",
+          "infrared"
+        ]
+      ],
+      "not": [
+        "sheet mask",
+        "disposable",
+        "surgical",
+        "sleep mask",
+        "eye mask",
+        "halloween",
+        "costume",
+        "party",
+        "respirator",
+        "dust mask",
+        "cosplay",
+        "cyberpunk",
+        "rave",
+        "purge"
+      ]
     },
     "products": [
       "omnilux-contour-face",
@@ -415,6 +1130,34 @@
       "category": "scale",
       "keyword": "smart scale"
     },
+    "match": {
+      "all": [
+        [
+          "scale",
+          "scales"
+        ],
+        [
+          "smart",
+          "body fat",
+          "bmi",
+          "bluetooth",
+          "wifi",
+          "app",
+          "bioimpedance",
+          "composition"
+        ]
+      ],
+      "not": [
+        "kitchen",
+        "luggage",
+        "jewelry",
+        "food",
+        "postal",
+        "fish",
+        "hanging",
+        "crane"
+      ]
+    },
     "products": [
       "withings-body-smart"
     ]
@@ -432,6 +1175,43 @@
       "category": "massager",
       "keyword": "massage gun"
     },
+    "match": {
+      "all": [
+        [
+          "massage gun",
+          "massager",
+          "percussion",
+          "fascia gun",
+          "muscle gun",
+          "massage",
+          "compression boots",
+          "compression boot",
+          "air compression",
+          "recovery boots"
+        ],
+        [
+          "gun",
+          "percussion",
+          "deep tissue",
+          "muscle",
+          "fascia",
+          "compression",
+          "recovery"
+        ]
+      ],
+      "not": [
+        "toy",
+        "water gun",
+        "glue gun",
+        "nail gun",
+        "heat gun",
+        "replacement",
+        "attachments for",
+        "heads for",
+        "case for",
+        "bag for"
+      ]
+    },
     "products": [
       "hyperice-normatec-elite"
     ]
@@ -448,6 +1228,35 @@
     "cj": {
       "category": "3d printer",
       "keyword": "3d printer"
+    },
+    "match": {
+      "all": [
+        [
+          "3d printer",
+          "3d printing",
+          "3d printers"
+        ]
+      ],
+      "not": [
+        "accessories",
+        "accessory",
+        "motherboard",
+        "nozzles",
+        "nozzle kit",
+        "replacement",
+        "parts",
+        "spare",
+        "for 3d printer",
+        "upgrade kit",
+        "pcs",
+        "night light",
+        "moonlight",
+        "lamp",
+        "pen",
+        "3d pen",
+        "printing pen",
+        "model"
+      ]
     },
     "products": [
       "bambu-a1-mini",
@@ -467,6 +1276,40 @@
       "category": "development board",
       "keyword": "development board"
     },
+    "match": {
+      "all": [
+        [
+          "development board",
+          "dev board",
+          "arduino",
+          "esp32",
+          "esp8266",
+          "raspberry pi",
+          "orange pi",
+          "single board computer",
+          "sbc",
+          "microcontroller",
+          "stm32",
+          "pico",
+          "nodemcu",
+          "mcu",
+          "flipper",
+          "hacking multitool"
+        ]
+      ],
+      "not": [
+        "case only",
+        "case for",
+        "enclosure for",
+        "case enclosure",
+        "sticker",
+        "active cooler",
+        "heatsink",
+        "heat sink",
+        "cooler for",
+        "fan for"
+      ]
+    },
     "products": [
       "flipper-zero",
       "raspberry-pi-5-desktop-kit-8gb"
@@ -484,6 +1327,33 @@
     "cj": {
       "category": "voice recorder",
       "keyword": "voice recorder"
+    },
+    "match": {
+      "all": [
+        [
+          "recorder",
+          "recording",
+          "note taker",
+          "notetaker",
+          "voice note"
+        ],
+        [
+          "voice",
+          "audio",
+          "ai",
+          "transcription",
+          "dictaphone",
+          "meeting"
+        ]
+      ],
+      "not": [
+        "video recorder",
+        "dash",
+        "dvr",
+        "car",
+        "camera",
+        "tape"
+      ]
     },
     "products": [
       "plaud-notepin-s",
@@ -503,6 +1373,31 @@
       "category": "gimbal",
       "keyword": "gimbal camera"
     },
+    "match": {
+      "all": [
+        [
+          "gimbal",
+          "stabilizer",
+          "stabiliser",
+          "vlog camera"
+        ],
+        [
+          "camera",
+          "pocket",
+          "handheld",
+          "vlog",
+          "4k"
+        ]
+      ],
+      "not": [
+        "tripod only",
+        "mount only",
+        "replacement",
+        "case for",
+        "case only",
+        "bag for"
+      ]
+    },
     "products": [
       "dji-osmo-pocket-3"
     ]
@@ -519,6 +1414,36 @@
     "cj": {
       "category": "action camera",
       "keyword": "360 camera"
+    },
+    "match": {
+      "all": [
+        [
+          "360",
+          "panoramic",
+          "action camera",
+          "action cam"
+        ],
+        [
+          "camera",
+          "cam"
+        ]
+      ],
+      "not": [
+        "selfie stick for",
+        "selfie stick only",
+        "case for",
+        "case only",
+        "lens cap",
+        "lens protector",
+        "lens guard",
+        "bag for",
+        "mount for",
+        "mount only",
+        "camera mount",
+        "phone holder",
+        "holder for",
+        "tripod for"
+      ]
     },
     "products": [
       "insta360-x5"
@@ -537,6 +1462,41 @@
       "category": "keyboard",
       "keyword": "mechanical keyboard"
     },
+    "match": {
+      "all": [
+        [
+          "keyboard"
+        ],
+        [
+          "mechanical",
+          "hot-swap",
+          "hot swappable",
+          "hall effect",
+          "magnetic switch",
+          "gaming",
+          "wireless",
+          "rgb",
+          "75%",
+          "65%"
+        ]
+      ],
+      "not": [
+        "keycaps",
+        "keycap",
+        "switches only",
+        "wrist rest",
+        "case only",
+        "cover",
+        "sticker",
+        "piano",
+        "musical",
+        "toy",
+        "mouse pad",
+        "mousepad",
+        "desk mat",
+        "mat"
+      ]
+    },
     "products": [
       "keychron-k2-he"
     ]
@@ -553,6 +1513,42 @@
     "cj": {
       "category": "tracker",
       "keyword": "bluetooth tracker"
+    },
+    "match": {
+      "all": [
+        [
+          "tracker",
+          "tag",
+          "finder",
+          "locator"
+        ],
+        [
+          "bluetooth",
+          "find my",
+          "airtag",
+          "smart",
+          "gps",
+          "anti-lost",
+          "anti lost",
+          "key finder",
+          "item finder"
+        ]
+      ],
+      "not": [
+        "fitness",
+        "sleep",
+        "watch",
+        "band",
+        "price tag",
+        "tag gun",
+        "case for",
+        "cover for",
+        "holder for",
+        "silicone case",
+        "protective case",
+        "airtag holder",
+        "airtag case"
+      ]
     },
     "products": [
       "chipolo-pop"

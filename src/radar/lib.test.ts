@@ -19,7 +19,7 @@ describe('radar lib', () => {
   })
   it('sortCandidates by each key', () => {
     const by = (k: Parameters<typeof sortCandidates>[1]) => sortCandidates(c, k, termDeltas(file)).map((x) => x.pid)
-    expect(by('score')[0]).toBe('DEMO-RING-1')
+    expect(by('score')[0]).toBe('DEMO-MASK-1')   // hottest term and full profit marks
     expect(by('net')[0]).toBe([...c].sort((a, b) => b.money.netAud - a.money.netAud)[0].pid)   // dollars per sale, not the by-construction 45 %
     expect(by('trend')[0]).toBe('DEMO-MASK-1')       // +260 %
     expect(by('demand')[0]).toBe('DEMO-BANK-1')      // 3,100 listed
@@ -29,10 +29,10 @@ describe('radar lib', () => {
     const u = issueUrl('sykunfts/nexus', c[0])
     expect(u.startsWith('https://github.com/sykunfts/nexus/issues/new?')).toBe(true)
     const sp = new URL(u).searchParams
-    expect(sp.get('title')).toBe('list: DEMO-RING-1')
+    expect(sp.get('title')).toBe('list: DEMO-MASK-1')
     expect(sp.get('labels')).toBe('listing')
-    expect(sp.get('body')).toContain('"pid":"DEMO-RING-1"')
-    expect(sp.get('body')).toContain('"retailAud":95.95')
+    expect(sp.get('body')).toContain('"pid":"DEMO-MASK-1"')
+    expect(sp.get('body')).toContain('"retailAud":164.95')
   })
   it('rateLabel and sourcesLine wording', () => {
     expect(rateLabel({ usdAud: 1.515, source: 'ecb', date: '2026-10-03' })).toBe('A$1.515 per US dollar, ECB rate for 3 October 2026')

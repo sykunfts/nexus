@@ -31,7 +31,7 @@ export function parseList(json: unknown): CjListItem[] {
   for (const it of list) {
     if (!isObj(it)) continue
     const pid = str(it.pid); const name = str(it.productNameEn); const price = num(it.sellPrice)
-    if (!pid || !name || price === null) continue
+    if (!pid || price === null) continue   // a missing name is kept (as '') so the match gate can reject it with a reason
     out.push({ pid, name, image: str(it.productImage), sellPrice: price, listedNum: num(it.listedNum) ?? 0, categoryName: str(it.categoryName) })
   }
   return out

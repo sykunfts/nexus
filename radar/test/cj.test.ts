@@ -10,7 +10,7 @@ import freight from './fixtures/cj-freight.json'
 import type { Term } from '../src/types'
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
-const term: Term = { id: 'laser-projector', label: 'Laser projectors', section: 'Home cinema', wikipedia: 'Video_projector', phrases: ['laser projector'], cj: { category: 'projector', keyword: 'laser projector' }, products: [] }
+const term: Term = { id: 'laser-projector', label: 'Laser projectors', section: 'Home cinema', wikipedia: 'Video_projector', phrases: ['laser projector'], cj: { category: 'projector', keyword: 'laser projector' }, match: { all: [['projector']], not: ['lens cap', 'projector screen'] }, products: [] }
 
 describe('cj parse', () => {
   it('flattenCategories finds Projectors at depth 3', () => {
@@ -75,13 +75,60 @@ describe('cj client and search', () => {
     const cj = createCjClient({ apiKey: 'k', http })
     await cj.auth()
     const flat = flattenCategories(cats)
-    const scoped = await searchTerm(cj, term, flat)
+    const scoped = await searchTerm(cj, { ...term, phrases: ['Laser Projector', '4K projector '] }, flat)
     expect(scoped.scope).toBe('category')
-    expect(urls[1]).toContain('categoryId=0AC6B44A-12CC-456F-831F-54064C77D303')
-    expect(urls[1]).toMatch(/productNameEn=laser(\+|%20)projector/)
-    expect(scoped.items.map((i) => i.pid)).toEqual(['P-A1', 'P-B2'])   // ≥ 3 USD, sorted by listedNum, the $1.20 cable dropped
+    const searches = urls.slice(1)
+    expect(searches.length).toBe(2)   // keyword and the one new phrase; the repeated phrase is searched once
+    expect(searches[0]).toContain('categoryId=0AC6B44A-12CC-456F-831F-54064C77D303')
+    expect(searches[0]).toMatch(/productNameEn=laser(\+|%20)projector/)
+    expect(searches[0]).toContain('pageSize=50')
+    expect(searches[1]).toMatch(/productNameEn=4k(\+|%20)projector/)
+    expect(searches[1]).toContain('categoryId=0AC6B44A-12CC-456F-831F-54064C77D303')
+    expect(scoped.items.map((i) => i.pid)).toEqual(['P-A1', 'P-B2'])   // >= 3 USD, sorted by listedNum, merged by pid, the $1.20 cable dropped
+    expect(scoped.items.every((i) => i.strength > 0)).toBe(true)
+    expect(scoped.rejected.map((r) => r.pid)).not.toContain('P-C3')   // its "abc" price never parses, so it is in neither list
+    expect(scoped.items.map((i) => i.pid)).not.toContain('P-C3')
+    expect(scoped.rejected.map((r) => r.pid)).not.toContain('P-D4')   // under MIN_PRICE_USD: dropped without a record
+    const before = urls.length
     const loose = await searchTerm(cj, { ...term, cj: { category: 'zzz', keyword: 'laser projector' } }, flat)
     expect(loose.scope).toBe('keyword')
-    expect(urls[2]).not.toContain('categoryId')
+    for (const u of urls.slice(before)) expect(u).not.toContain('categoryId')
+  })
+
+  it('gates titles, de-duplicates across phrases and stops at nine passes', async () => {
+    let calls = 0
+    const http = createHttp({ fetch: async (url) => {
+      if (url.includes('getAccessToken')) return json({ result: true, data: { accessToken: 't' } })
+      calls++
+      const page = Array.from({ length: 6 }, (_, i) => ({ pid: `P-${calls}-${i}`, productNameEn: `Mini Projector ${calls}-${i}`, sellPrice: 20, listedNum: calls * 10 + i }))
+      page.push({ pid: `P-${calls}-cap`, productNameEn: 'Projector Lens Cap', sellPrice: 5, listedNum: 1 })
+      if (calls === 2) page.push({ pid: 'P-1-0', productNameEn: 'Mini Projector 1-0 again', sellPrice: 20, listedNum: 999 })   // seen in the first search: first one wins
+      return json({ code: 200, result: true, data: { list: page } })
+    }, sleep: async () => {}, retryDelays: [] })
+    const cj = createCjClient({ apiKey: 'k', http })
+    await cj.auth()
+    const out = await searchTerm(cj, { ...term, phrases: ['portable projector', 'mini projector'] }, [])
+    expect(calls).toBe(2)
+    expect(out.items.length).toBe(12)
+    expect(out.items.find((i) => i.pid === 'P-1-0')?.name).toBe('Mini Projector 1-0')
+    expect(out.items.map((i) => i.listedNum)).toEqual([...out.items.map((i) => i.listedNum)].sort((a, b) => b - a))
+    expect(out.rejected).toEqual([
+      { pid: 'P-1-cap', termId: 'laser-projector', name: 'Projector Lens Cap', reason: 'has "lens cap"' },
+      { pid: 'P-2-cap', termId: 'laser-projector', name: 'Projector Lens Cap', reason: 'has "lens cap"' },
+    ])
+  })
+
+  it('a list item with no name is rejected, not thrown on', async () => {
+    const http = createHttp({ fetch: async (url) => url.includes('getAccessToken')
+      ? json({ result: true, data: { accessToken: 't' } })
+      : json({ code: 200, result: true, data: { list: [{ pid: 'P-X', productNameEn: '', sellPrice: 9 }, { pid: 'P-Y', sellPrice: 9 }] } }), sleep: async () => {}, retryDelays: [] })
+    const cj = createCjClient({ apiKey: 'k', http })
+    await cj.auth()
+    const out = await searchTerm(cj, term, [])
+    expect(out.items).toEqual([])
+    expect(out.rejected).toEqual([
+      { pid: 'P-X', termId: 'laser-projector', name: '', reason: 'no "projector"' },
+      { pid: 'P-Y', termId: 'laser-projector', name: '', reason: 'no "projector"' },
+    ])
   })
 })

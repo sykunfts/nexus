@@ -7,7 +7,7 @@ import wikiFixture from './fixtures/wikipedia.json'
 import hnFixture from './fixtures/hackernews.json'
 import type { Term } from '../src/types'
 
-const term: Term = { id: 'smart-ring', label: 'Smart rings', section: 'Wearables', wikipedia: 'Smart_ring', phrases: ['smart ring', 'sleep tracking ring'], cj: { category: 'smart ring', keyword: 'smart ring' }, products: [] }
+const term: Term = { id: 'smart-ring', label: 'Smart rings', section: 'Wearables', wikipedia: 'Smart_ring', phrases: ['smart ring', 'sleep tracking ring'], cj: { category: 'smart ring', keyword: 'smart ring' }, match: { all: [['ring'], ['smart', 'sleep']] }, products: [] }
 const w = windowEnding(new Date('2026-10-04T03:00:00Z'))
 const httpWith = (handler: (url: string) => Response | Promise<Response>) => createHttp({ fetch: async (url) => handler(url), sleep: async () => {}, retryDelays: [] })
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })

@@ -102,7 +102,7 @@ function ConfirmedView({ order, live = false }: { order: Order; live?: boolean }
               <div key={s.origin} className="border border-rule bg-sheet">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-rule px-4 py-2.5 text-[13.5px]">
                   <span className="text-ink">Shipment {i + 1} of {order.shipments.length}: {originLabel({ route: s.origin === 'AU' ? 'warehouse' : 'supplier', origin: s.origin })}</span>
-                  <span className="reading text-ink-2">{s.etaDays[0]}–{s.etaDays[1]} days, {s.method}</span>
+                  <span className="reading text-ink-2">{s.etaDays[0]}-{s.etaDays[1]} days, {s.method}</span>
                 </div>
                 <ul className="divide-y divide-rule">
                   {order.lines.filter((l) => s.lineKeys.includes(l.key)).map((l) => (

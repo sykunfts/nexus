@@ -1,11 +1,12 @@
-/* One candidate: the numbers that decide a listing on the strip, everything behind them on expand. */
+/* One candidate: profit per sale first, the trend and match behind it, everything else on expand. */
 import type { Candidate, Dest, Flag, TermScore } from '../../../radar/src/types'
 import { FLAG_NOTES } from '../../../radar/src/flags'
 import { Sparkline } from '../../components/ProductCard'
 import { Button } from '../../components/ui'
 import { cn } from '../../lib/cn'
-import { issueUrl } from '../lib'
-import { aud, marginTone, MoneyStrip } from './MoneyStrip'
+import { signedPct } from '../../lib/text'
+import { issueUrl, matchLabel } from '../lib'
+import { aud, marginTone, MoneyStrip, netTone } from './MoneyStrip'
 
 const FLAG_MARK: Record<Flag, string> = { battery: 'Li', mains: '~V', radio: '((•))', skin: 'skin', kids: 'kids', heavy: 'kg' }
 const DEST_LABEL: Record<Dest, string> = { AU: 'Australia', US: 'United States', GB: 'United Kingdom' }
@@ -24,17 +25,17 @@ export function CandidateCard(p: { c: Candidate; rank: number; delta: number; te
         </div>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className={cn('reading px-1.5 py-0.5 text-[11px]', label === 'Steady' ? 'bg-paper-2 text-ink-2' : 'bg-signal text-ink')}>{label} {p.delta >= 0 ? '+' : '−'}{Math.abs(p.delta)} %</span>
+            <span className={cn('reading px-1.5 py-0.5 text-[11px]', label === 'Steady' ? 'bg-paper-2 text-ink-2' : 'bg-signal text-ink')}>{label} {signedPct(p.delta)}</span>
             <Sparkline series={p.term?.series ?? [0, 0, 0, 0, 0, 0, 0, 0]} />
             <span className="text-[12.5px] text-ink-3">{p.term?.label ?? c.termId}, {c.section}</span>
-            {c.cjScope === 'keyword' && <span className="border border-rule-2 px-1.5 text-[11px] text-ink-3" title="No matching CJ category; found by keyword, so the match is looser">keyword match</span>}
+            <span className="border border-rule-2 px-1.5 text-[11px] text-ink-3" title={`${c.match === 1 ? 'The CJ title holds the watch phrase.' : "Passes this term's match rules without the exact watch phrase."}${c.cjScope === 'keyword' ? ' Found by keyword: no matching CJ category.' : ''}`}>{matchLabel(c)}</span>
             {c.stale && <span className="border border-check px-1.5 text-[11px] text-check">stale</span>}
           </div>
           <h2 className="mt-1.5 text-[16px] font-medium leading-snug text-ink">{c.name}</h2>
           <p className="mt-1 text-[13px] text-ink-2">{c.why}</p>
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-ink-3">
             <span className="reading">{c.listedNum.toLocaleString('en-US')} listed</span>
-            <span>{c.freight.AU ? `${c.freight.AU.cheapest.name}, ${c.freight.AU.cheapest.days[0]}–${c.freight.AU.cheapest.days[1]} days, ${aud(c.money.freightAud)}` : 'no freight line to Australia'}</span>
+            <span>{c.freight.AU ? `${c.freight.AU.cheapest.name}, ${c.freight.AU.cheapest.days[0]}-${c.freight.AU.cheapest.days[1]} days, ${aud(c.money.freightAud)}` : 'no freight line to Australia'}</span>
             <span>{c.variant.auPlug ? 'AU plug' : c.variant.name}</span>
             <span>{since}</span>
             {c.flags.length > 0 && (
@@ -45,7 +46,11 @@ export function CandidateCard(p: { c: Candidate; rank: number; delta: number; te
           </div>
         </div>
         <div className="flex flex-col items-start gap-3 md:items-end">
-          <MoneyStrip m={c.money} />
+          <div className="flex flex-wrap items-baseline gap-x-2 md:justify-end">
+            <span className={cn('numeral text-[26px] leading-none', netTone(c.money.netAud))}>{`A$${c.money.netAud.toFixed(2)}`}<span className="font-sans text-[14px] text-ink-2"> a sale</span></span>
+            <span className="reading text-[12.5px] text-ink-3">{`at A$${c.money.retailAud.toFixed(2)}`}</span>
+          </div>
+          <MoneyStrip m={c.money} compact />
           <div className="flex gap-2">
             <Button size="sm" variant="ghost" onClick={p.onSkip}>{p.skipped ? 'Unskip' : 'Skip'}</Button>
             <Button size="sm" variant="secondary" onClick={p.onToggle} aria-expanded={p.open}>Details</Button>
@@ -75,7 +80,7 @@ export function CandidateCard(p: { c: Candidate; rank: number; delta: number; te
                 return (
                   <div key={d} className="border-b border-rule py-1.5">
                     <dt className="text-ink">{DEST_LABEL[d]}</dt>
-                    <dd className="reading">{q ? `${q.cheapest.name}: US$${q.cheapest.usd.toFixed(2)}, ${q.cheapest.days[0]}–${q.cheapest.days[1]} days; fastest ${q.fastest.name} US$${q.fastest.usd.toFixed(2)}, ${q.fastest.days[0]}–${q.fastest.days[1]} days; ${q.lines} lines` : 'no quote returned'}</dd>
+                    <dd className="reading">{q ? `${q.cheapest.name}: US$${q.cheapest.usd.toFixed(2)}, ${q.cheapest.days[0]}-${q.cheapest.days[1]} days; fastest ${q.fastest.name} US$${q.fastest.usd.toFixed(2)}, ${q.fastest.days[0]}-${q.fastest.days[1]} days; ${q.lines} lines` : 'no quote returned'}</dd>
                   </div>
                 )
               })}

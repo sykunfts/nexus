@@ -17,12 +17,16 @@ describe('shipping', () => {
     expect(parcelCost('AU', 'AU', 'express', 999)).toBe(14.95)
     expect(parcelCost('CN', 'UK', 'standard', 50)).toBe(16)
     expect(() => parcelCost('CN', 'AU', 'express', 50)).toThrow()
-    expect(etaText('CN', 'AU')).toBe('8–12 days')
+    expect(etaText('CN', 'AU')).toBe('8-12 days')
   })
   it('taxes by destination', () => {
     expect(taxFor('AU', 110)).toEqual({ amount: 10, included: true, label: 'Includes GST 10 %' })
     expect(taxFor('GB', 100)).toEqual({ amount: 20, included: false, label: 'VAT 20 %' })
     expect(taxFor('US', 100).amount).toBe(0)
     expect(taxFor('JP', 100)).toEqual({ amount: 10, included: false, label: 'Consumption tax 10 %' })
+  })
+  it('writes delivery windows with a hyphen, never an en dash', () => {
+    expect(etaText('AU', 'AU')).toMatch(/^\d+-\d+ days$/)
+    expect(etaText('CN', 'UK')).not.toContain('–')
   })
 })

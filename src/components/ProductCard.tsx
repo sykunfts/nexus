@@ -9,6 +9,7 @@ import { cn } from '../lib/cn'
 import { canBuy } from '../lib/office'
 import { NotifyMe } from './NotifyMe'
 import { etaText, originShort } from '../lib/shipping'
+import { signedPct } from '../lib/text'
 
 /** 7-day trend sparkline, drawn in ink: a line, a faint baseline, the last point marked. */
 export function Sparkline({ series, width = 48, height = 16, className }: { series: number[]; width?: number; height?: number; className?: string }) {
@@ -29,7 +30,7 @@ export function Sparkline({ series, width = 48, height = 16, className }: { seri
 export function TrendPill({ product }: { product: Product }) {
   const t = product.trend
   if (t.label === 'Steady') return null
-  return <Tile>{t.label} +{t.delta}%</Tile>
+  return <Tile>{t.label} {signedPct(t.delta)}</Tile>
 }
 
 export function ProductCard({ product, reason }: { product: Product; reason?: string; index?: number }) {
@@ -55,7 +56,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
   }
 
   return (
-    <article className="group flex h-full flex-col bg-paper transition-colors duration-120 hover:bg-paper-2">
+    <article className="lift group flex h-full flex-col rounded-[2px] border border-rule bg-sheet">
       {/* render */}
       <div className="relative">
         <button type="button" onClick={() => go({ name: 'product', id: product.id })} className="block aspect-[4/3] w-full cursor-pointer" aria-label={`View ${product.name}`}>
@@ -99,7 +100,7 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
           <Stars rating={product.rating} />
           <span className="flex items-center gap-2" title={`${product.trend.source}: +${product.trend.delta}%`}>
             <Sparkline series={product.trend.series} />
-            <span className="reading text-[12px] text-ink-2">+{product.trend.delta}%</span>
+            <span className="reading text-[12px] text-ink-2">{signedPct(product.trend.delta)}</span>
           </span>
         </div>
 
@@ -127,13 +128,13 @@ export function ProductCard({ product, reason }: { product: Product; reason?: st
             <span className={cn('text-[12px]', local ? 'text-ink-2' : 'text-ink-3')}>{originShort(product.fulfil)}, {etaText(product.fulfil.origin, zone)}</span>
           </div>
 
-          {!canBuy(product) ? <NotifyMe productId={product.id} compact className="h-10 shrink-0" /> : <button
+          {!canBuy(product) ? <NotifyMe productId={product.id} compact className="!h-11 shrink-0 lg:!h-10" /> : <button
             type="button"
             onClick={onAdd}
             disabled={out}
             aria-label={added ? 'Added to cart' : `Add ${product.name} to cart`}
             className={cn(
-              'flex h-10 items-center gap-1.5 px-3 text-[13.5px] font-medium transition-colors duration-120',
+              'flex h-11 items-center gap-1.5 px-3 text-[13.5px] font-medium transition-colors duration-120 lg:h-10',
               added ? 'bg-pass text-paper' : 'bg-ink text-paper hover:bg-[#1f2730]',
               out && 'opacity-40',
             )}

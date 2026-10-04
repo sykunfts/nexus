@@ -32,7 +32,7 @@ export function ShippingReturns() {
               {ORIGINS.map(({ origin, label }) => (
                 <tr key={origin} className="border-t border-rule">
                   <td className="py-1.5 pr-3 text-ink">{label}</td>
-                  {ZONES.map((z) => <td key={z} className="reading py-1.5 pr-3 text-ink-2">{ETA[origin][z][0]}–{ETA[origin][z][1]} days</td>)}
+                  {ZONES.map((z) => <td key={z} className="reading py-1.5 pr-3 text-ink-2">{ETA[origin][z][0]}-{ETA[origin][z][1]} days</td>)}
                 </tr>
               ))}
             </tbody>
@@ -47,7 +47,7 @@ export function ShippingReturns() {
       <P>Faulty, not as described, or not doing what it should: the Australian Consumer Law guarantees apply to everything we sell, on both routes, and nothing above limits them. You are entitled to a repair, replacement or refund, and for a major failure you choose which.</P>
 
       <H2>How to make a claim</H2>
-      <P>Email {BUSINESS.contactEmail} with the order number, a few photos or a short video of the problem, and what you would like done. We answer with an outcome within five business days. For a change-of-mind return we send a return address; for a fault we usually do not need the item back, and when we do we pay the postage. Refunds go to the card you paid with and take 5–10 business days to show.</P>
+      <P>Email {BUSINESS.contactEmail} with the order number, a few photos or a short video of the problem, and what you would like done. We answer with an outcome within five business days. For a change-of-mind return we send a return address; for a fault we usually do not need the item back, and when we do we pay the postage. Refunds go to the card you paid with and take 5-10 business days to show.</P>
 
       <Note>This policy is a draft in plain language. The change-of-mind part is our choice; the consumer-guarantee part restates the law and will be reviewed by a lawyer before the shop goes live.</Note>
     </>

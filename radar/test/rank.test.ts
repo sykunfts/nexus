@@ -12,7 +12,7 @@ const freight = { cheapest: { name: 'CJPacket', usd: 6, days: [8, 15] as [number
 const base = (pid: string, over: Partial<Unranked> = {}): Unranked => ({
   pid, termId: 'a', section: 'Wearables', name: `Item ${pid}`, image: '', cjUrl: '', listedNum: 1000, cjScope: 'category',
   variant: { vid: 'v', name: 'AU', weightG: 200, priceUsd: 20, auPlug: true, variantCount: 1 },
-  freight: { AU: freight, US: null, GB: null }, money: moneyFor(20, 6, 1.5, null), flags: ['radio'], ...over,
+  freight: { AU: freight, US: null, GB: null }, money: moneyFor(20, 6, 1.5, null), flags: ['radio'], match: 1, ...over,
 })
 
 describe('rank', () => {
@@ -40,9 +40,33 @@ describe('rank', () => {
     expect(out.find((c) => c.pid === 'old')!.firstSeen).toBe('2026-09-28')
     expect(out.find((c) => c.pid === 'new')!.firstSeen).toBe('2026-10-04')
   })
-  it('why names sources, demand and margin', () => {
-    const c = rankCandidates([base('x')], terms, null, '2026-10-04')[0]
-    expect(c.why).toMatch(/^a \+150 % on Wikipedia and Reddit; 1,000 dropshippers list this; \d+ % margin at \$\d+\.\d\d\.$/)
+  it('profit beats listings under equally hot terms', () => {
+    const hot = [term('a', 1, 300), term('b', 1, 300)]
+    const big = base('big', { termId: 'a', listedNum: 1, money: { ...moneyFor(20, 6, 1.5, null), netAud: 60 } })
+    const crowded = base('crowded', { termId: 'b', listedNum: 666, money: { ...moneyFor(20, 6, 1.5, null), netAud: 21 } })
+    expect(rankCandidates([crowded, big], hot, null, '2026-10-04').map((c) => c.pid)).toEqual(['big', 'crowded'])
+  })
+  it('a falling term adds no heat', () => {
+    const down = rankCandidates([base('x', { termId: 'd' })], [term('d', -1, -40)], null, '2026-10-04')[0]
+    const flat = rankCandidates([base('y', { termId: 'f' })], [term('f', 0, 0)], null, '2026-10-04')[0]
+    expect(down.score).toBeCloseTo(flat.score, 3)
+  })
+  it('thin candidates sort after ones that clear A$20, even with a higher score', () => {
+    const thin = base('thin', { money: { ...moneyFor(20, 6, 1.5, null), netAud: 15 }, listedNum: 5000 })
+    const ok = base('ok', { termId: 'b', money: { ...moneyFor(20, 6, 1.5, null), netAud: 25 }, listedNum: 1 })
+    const out = rankCandidates([thin, ok], [term('a', 1, 300), term('b', -1, -10)], null, '2026-10-04')
+    expect(out.map((c) => [c.pid, c.thin])).toEqual([['ok', false], ['thin', true]])
+    expect(out[1].score).toBeGreaterThan(out[0].score)
+  })
+  it('why reads plainly with a hyphen-minus for a fall', () => {
+    const c = rankCandidates([base('w', { termId: 'd' })], [term('d', -1, -12)], null, '2026-10-04')[0]
+    expect(c.why).toMatch(/^d -12% on Wikipedia and Reddit; A\$\d+\.\d\d profit a sale at A\$\d+\.95; 1,000 dropshippers list it\.$/)
+    expect(c.why).not.toMatch(/[–—−]/)
+  })
+  it('match strength and demand count for ten percent each', () => {
+    const exact = rankCandidates([base('e', { match: 1 })], [term('a', 1, 0)], null, '2026-10-04')[0].score
+    const close = rankCandidates([base('c', { match: 0.6 })], [term('a', 1, 0)], null, '2026-10-04')[0].score
+    expect(exact - close).toBeCloseTo(0.04, 3)
   })
   it('writeAtomic leaves no temp file and round-trips', async () => {
     const dir = mkdtempSync(path.join(tmpdir(), 'radar-'))

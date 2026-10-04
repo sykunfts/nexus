@@ -113,7 +113,7 @@ function OfficeTimeline({ order }: { order: Order }) {
       </ol>
       {o.trackNumber && <p className="mt-2 text-[13px] text-ink-2">{o.logisticName ?? 'Carrier'} tracking {o.trackNumber}: <a href={trackingUrl(o.trackNumber)} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-ink">follow it on 17track</a>.</p>}
       {o.state === 'needs_attention' && <p className="mt-2 border border-check bg-check-tint px-3 py-2 text-[13px] text-check">We hit a snag placing this with the supplier and are sorting it out by hand. You will hear from us by email; nothing more is needed from you.</p>}
-      {o.state === 'refunded' && <p className="mt-2 text-[13px] text-ink-2">This order was refunded to the card it was paid with. Refunds take 5–10 business days to show.</p>}
+      {o.state === 'refunded' && <p className="mt-2 text-[13px] text-ink-2">This order was refunded to the card it was paid with. Refunds take 5-10 business days to show.</p>}
       {o.state === 'paid' && <p className="mt-2 text-[13px] text-ink-2">Paid; the supplier is being asked to pack it.</p>}
     </div>
   )
@@ -180,7 +180,7 @@ export function OrderPage({ id }: { id: string }) {
             <div key={s.origin} className="border border-rule bg-sheet">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-rule px-4 py-2.5 text-[13.5px]">
                 <span className="text-ink">Shipment {i + 1}: {originLabel({ route: s.origin === 'AU' ? 'warehouse' : 'supplier', origin: s.origin })}</span>
-                <span className="reading text-ink-2">{s.etaDays[0]}–{s.etaDays[1]} days, {s.method}, {s.cost === 0 ? 'free' : fmt(s.cost, currency, { compact: true })}</span>
+                <span className="reading text-ink-2">{s.etaDays[0]}-{s.etaDays[1]} days, {s.method}, {s.cost === 0 ? 'free' : fmt(s.cost, currency, { compact: true })}</span>
               </div>
               <div className="px-4 py-3">{order.office ? <OfficeTimeline order={order} /> : <Timeline order={order} index={i} />}</div>
               <ul className="divide-y divide-rule border-t border-rule">

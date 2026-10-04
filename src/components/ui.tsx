@@ -1,4 +1,5 @@
 import { forwardRef, ButtonHTMLAttributes, ReactNode } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '../lib/cn'
 import type { Rating } from '../lib/data'
 
@@ -22,7 +23,7 @@ const variants: Record<Variant, string> = {
 const sizes: Record<Size, string> = {
   sm: 'h-8 px-3 text-[13px] gap-1.5',
   md: 'h-10 px-4 text-[14px] gap-2',
-  lg: 'h-12 px-5 text-[15px] gap-2',
+  lg: 'h-14 px-6 text-[17px] gap-2',
   icon: 'h-9 w-9',
 }
 
@@ -34,7 +35,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       ref={ref}
       className={cn(
-        'inline-flex items-center justify-center select-none whitespace-nowrap rounded-[2px] font-medium transition-colors duration-120 disabled:opacity-40 disabled:pointer-events-none',
+        'press inline-flex items-center justify-center select-none whitespace-nowrap rounded-[2px] font-medium disabled:opacity-40 disabled:pointer-events-none',
         variants[variant],
         sizes[size],
         className,
@@ -47,6 +48,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     </button>
   )
 })
+
+/* ---------- Reveal: the mount-in motion (rise and fade), at rest when the shopper asks for reduced motion ---------- */
+export function Reveal({ children, delay = 0, className, as = 'div' }: { children: ReactNode; delay?: number; className?: string; as?: 'div' | 'section' }) {
+  const reduce = useReducedMotion()
+  if (reduce) {
+    const Tag = as
+    return <Tag className={className} data-motion="none">{children}</Tag>
+  }
+  const M = as === 'section' ? motion.section : motion.div
+  return (
+    <M className={className} data-motion="reveal" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay, ease: [0.2, 0.8, 0.2, 1] }}>
+      {children}
+    </M>
+  )
+}
 
 /* ---------- Option cell (radio in a ruled grid) ---------- */
 export function Chip({

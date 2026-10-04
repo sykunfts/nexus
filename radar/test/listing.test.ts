@@ -11,7 +11,7 @@ const freight = { cheapest: { name: 'CJPacket Ordinary', usd: 22.05, days: [6, 1
 const cand: Candidate = {
   pid: 'P-A1', termId: 'laser-projector', section: 'Home cinema', name: 'Mini Laser Projector 1080P Portable Home Cinema With A Very Long Name That Goes On', image: 'https://cc.example/a1.jpg', cjUrl: 'https://www.cjdropshipping.com/product/-p-P-A1.html',
   listedNum: 1532, cjScope: 'category', variant: { vid: 'V-AU', name: 'AU Plug / Black', weightG: 1350, priceUsd: 62.4, auPlug: true, variantCount: 2 },
-  freight: { AU: freight, US: null, GB: null }, money: moneyFor(62.4, 22.05, 1.515, 1099), flags: ['mains', 'radio'], score: 0.71, firstSeen: '2026-10-04', why: 'why',
+  freight: { AU: freight, US: null, GB: null }, money: moneyFor(62.4, 22.05, 1.515, 1099), flags: ['mains', 'radio'], score: 0.71, firstSeen: '2026-10-04', why: 'why', thin: false, match: 1,
 }
 const radar = { generatedAt: '2026-10-04T20:05:10.000Z', candidates: [cand] } as unknown as RadarFile
 

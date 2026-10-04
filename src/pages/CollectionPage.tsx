@@ -78,11 +78,11 @@ export function CollectionPage({ title, blurb, base, filters, sort, defaultSort 
       </div>
 
       <div className="grid grid-cols-12 gap-x-8 pt-6">
-        <aside className="hidden lg:col-span-3 lg:block"><div className="sticky top-[72px]">{rail}</div></aside>
+        <aside className="hidden lg:col-span-3 lg:block"><div className="sticky top-[88px]">{rail}</div></aside>
         <div className="col-span-12 lg:col-span-9">
           {results.length > 0 ? (
-            <div className="grid border-l border-t border-rule sm:grid-cols-2 xl:grid-cols-3">
-              {results.map((p, i) => <div key={p.id} className="border-b border-r border-rule"><ProductCard product={p} index={i} /></div>)}
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {results.map((p, i) => <div key={p.id}><ProductCard product={p} index={i} /></div>)}
             </div>
           ) : (
             <div className="border border-rule bg-sheet p-6">
@@ -93,8 +93,8 @@ export function CollectionPage({ title, blurb, base, filters, sort, defaultSort 
                 <Button variant="primary" size="sm" onClick={() => setAdvisor(true)}>Ask the Trend Scout</Button>
               </div>
               {suggestions.length > 0 && (
-                <div className="mt-6 grid border-l border-t border-rule sm:grid-cols-3">
-                  {suggestions.map((p, i) => <div key={p.id} className="border-b border-r border-rule"><ProductCard product={p} index={i} /></div>)}
+                <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                  {suggestions.map((p, i) => <div key={p.id}><ProductCard product={p} index={i} /></div>)}
                 </div>
               )}
             </div>

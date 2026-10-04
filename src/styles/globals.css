@@ -1,5 +1,5 @@
 /*
-  NEXUS v2.0 · "Test Bench" design tokens
+  NEXUS v3.0 "Test Bench" design tokens (v3: bigger display type, bench slabs, mono numerals, lift/press motion)
   Layout: the same 12-col structure as v1, drawn as a ruled index sheet. Light-first, single theme by choice.
   Paper ground; white only where you operate; ink for text and primary actions; one signal orange that is
   never text (tiles, flip board, focus, dimension lines); printed-ink greens/ambers/reds for states.
@@ -61,7 +61,14 @@ body {
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* clip, not hidden: hidden makes body a scroll container and silently breaks every position: sticky */
   overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* The header sticks, so in-page jumps land below it */
+html {
+  scroll-padding-top: 88px;
 }
 
 body {
@@ -97,8 +104,17 @@ h3 {
   font-family: var(--font-sans);
   font-variation-settings: "opsz" 96, "wdth" 100;
   font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 0.95;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+/* The one oversized headline per page (home h1); size is set where it is used */
+@utility display-xl {
+  font-family: var(--font-sans);
+  font-variation-settings: "opsz" 96, "wdth" 100;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.94;
 }
 
 @utility display-md {
@@ -119,6 +135,46 @@ h3 {
 
 @utility tnum {
   font-variant-numeric: tabular-nums;
+}
+
+/* Big measured numbers: facts, movers, bench results, prices */
+@utility numeral {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* The bench slab: a dark product backdrop, not a section theme */
+@utility slab {
+  background: var(--color-mat);
+  color: var(--color-on-mat);
+  border-radius: var(--radius-ctl);
+}
+
+/* Hover lift for cards and tiles, shadow tinted to ink */
+@utility lift {
+  transition-property: transform, box-shadow, background-color;
+  transition-duration: 250ms;
+  transition-timing-function: var(--ease-snappy);
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 34px -20px rgba(18, 24, 32, 0.4);
+  }
+  &:active {
+    transform: translateY(0) scale(0.99);
+  }
+}
+
+/* Physical push on buttons */
+@utility press {
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-duration: 150ms;
+  transition-timing-function: var(--ease-snappy);
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 /* Ruled sheet: a grid whose 1px gaps show the rule colour */
@@ -175,6 +231,11 @@ h3 {
     animation-iteration-count: 1 !important;
     transition-duration: 120ms !important;
     scroll-behavior: auto !important;
+  }
+  .lift:hover,
+  .lift:active,
+  .press:active {
+    transform: none !important;
   }
 }
 

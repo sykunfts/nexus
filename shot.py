@@ -132,7 +132,7 @@ async def scenarios():
             await page.wait_for_timeout(400)
         await run("reviews-desktop", 1440, 900, reviews)
         async def rails(page):
-            await page.evaluate("window.scrollTo(0, 980)")
+            await page.evaluate("document.getElementById('fastest').scrollIntoView({block:'start'}); window.scrollBy(0, -96)")
             await page.wait_for_timeout(600)
         await run("home-rails", 1440, 900, rails)
         async def route_pdp(page):

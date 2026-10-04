@@ -7,6 +7,7 @@ import { useStore } from '../lib/store'
 import { ProductImage } from './ProductVisual'
 import { Kbd, StockDot, Tile } from './ui'
 import { cn } from '../lib/cn'
+import { signedPct } from '../lib/text'
 
 /* Client-side predictive index. In production: Meilisearch hybrid search with typo tolerance, under 50 ms. */
 const tokens = (s: string) => s.toLowerCase().split(/[^a-z0-9.]+/).filter(Boolean)
@@ -172,7 +173,7 @@ export function PredictiveSearch() {
                           </div>
                           <div className="flex shrink-0 flex-col items-end gap-1">
                             <span className="flex items-center gap-2">
-                              <Tile>+{p.trend.delta}%</Tile>
+                              <Tile>{signedPct(p.trend.delta)}</Tile>
                               <span className="reading text-[13px] text-ink">{fmt(p.price, currency, { compact: true })}</span>
                             </span>
                             <StockDot stock={p.stock} count={p.stockCount} />

@@ -1,7 +1,8 @@
 /*
   One run of the Radar: read the four signals for every term, score them, then (with a key) ask CJ
-  for candidates, price them and rank them. Everything that can fail is recorded in `sources`
-  and the run goes on; the two output files are returned, never written here.
+  for candidates, check every name against the term's match rules, price them and rank them.
+  Everything that can fail is recorded in `sources` and the run goes on; what the rules threw out is
+  kept (up to MAX_REJECTED) so the page can show it. The two output files are returned, never written here.
 */
 import type { Http } from './fetch'
 import { fetchDaily as wikipedia } from './sources/wikipedia'
@@ -12,11 +13,13 @@ import { productTrends, scoreTerms } from './score'
 import { iso, windowEnding } from './window'
 import { createCjClient } from './cj/client'
 import { pickVariant } from './cj/parse'
-import { fetchCategories, fetchDetail, fetchFreight, searchTerm } from './cj/search'
+import { ENOUGH, fetchCategories, fetchDetail, fetchFreight, searchTerm } from './cj/search'
 import { fetchRate, moneyFor, sectionMedian } from './money'
 import { flagsFor } from './flags'
 import { rankCandidates, type Unranked } from './rank'
-import type { Candidate, DailySeries, Dest, FreightQuote, NoveltyItem, RadarFile, SourceId, Term, TermScore, TrendsFile } from './types'
+import { matchTitle } from './match'
+import { filterNovelty } from './novelty'
+import type { Candidate, DailySeries, Dest, FreightQuote, NoveltyItem, RadarFile, Rejected, SourceId, Term, TermScore, TrendsFile } from './types'
 
 export interface RunDeps {
   http: Http
@@ -33,6 +36,7 @@ export interface RunDeps {
 
 export const TOP_TERMS = 8
 export const PER_TERM = 3
+export const MAX_REJECTED = 60   // rejections kept in radar.json, shared across terms, terms in run order
 export const BREAKER = 3          // consecutive failures before a source is given up for the run
 const DESTS: Dest[] = ['AU', 'US', 'GB']
 
@@ -58,6 +62,16 @@ export function selectTerms(scores: TermScore[]): TermScore[] {
   const byScore = [...withData].sort((a, b) => b.score - a.score)
   const chosen = new Set<string>([...withData.filter((t) => t.trendLabel !== 'Steady').map((t) => t.id), ...byScore.slice(0, TOP_TERMS).map((t) => t.id)])
   return byScore.filter((t) => chosen.has(t.id))
+}
+
+/* Keeps at most `cap` items, taken a round at a time (one per group per round) so every term gets its share; output stays grouped, groups in order. */
+export function shareCap<T>(groups: T[][], cap: number): T[] {
+  const take = groups.map(() => 0)
+  let left = cap
+  while (left > 0 && groups.some((g, i) => take[i] < g.length)) {
+    for (let i = 0; i < groups.length && left > 0; i++) if (take[i] < groups[i].length) { take[i]++; left-- }
+  }
+  return groups.flatMap((g, i) => g.slice(0, take[i]))
 }
 
 export async function runRadar(d: RunDeps): Promise<{ radar: RadarFile; trends: TrendsFile; ok: boolean }> {
@@ -98,11 +112,13 @@ export async function runRadar(d: RunDeps): Promise<{ radar: RadarFile; trends: 
   const withData = termScores.filter((t) => t.confidence !== 'none').length
   const ok = withData >= Math.ceil(termScores.length / 2)
   const products = productTrends(termScores, terms)
-  const novelty = feed.map((n) => ({ ...n, termId: matchTerm(n.title, d.terms) }))
+  const { items: novelty, hidden: noveltyHidden } = filterNovelty(feed.map((n) => ({ ...n, termId: matchTerm(n.title, d.terms) })))
   const rate = await fetchRate(d.http, d.previous?.rate ?? null, today)
 
   let candidates: Candidate[] = (d.previous?.candidates ?? []).map((c) => ({ ...c, stale: true }))
   let cjGeneratedAt = d.previous?.cjGeneratedAt ?? null
+  let rejected: Rejected[] | undefined
+  let rejectedTotal: number | undefined
   const key = d.env.CJ_API_KEY
   if (d.cj !== false && key) {
     try {
@@ -113,6 +129,7 @@ export async function runRadar(d: RunDeps): Promise<{ radar: RadarFile; trends: 
       if (d.limit) selected = selected.slice(0, d.limit)
       const unranked: Unranked[] = []
       const seen = new Set<string>()
+      const thrown: Rejected[][] = []   // per term, in run order
       let cjErrors = 0, cjStreak = 0
       const cjFail = (what: string, e: unknown) => { cjErrors++; cjStreak++; d.log(`${what}: ${msg(e)}`); if (cjStreak >= BREAKER) throw new Error(`${BREAKER} CJ calls failed in a row, last: ${msg(e)}`) }
       for (const ts of selected) {
@@ -120,20 +137,33 @@ export async function runRadar(d: RunDeps): Promise<{ radar: RadarFile; trends: 
         let found: Awaited<ReturnType<typeof searchTerm>>
         try { found = await searchTerm(cj, term, cats); cjStreak = 0 } catch (e) { cjFail(`${term.id} search`, e); continue }
         const { items, scope } = found
-        for (const item of items.filter((i) => !seen.has(i.pid)).slice(0, PER_TERM)) {
+        const detailThrown: Rejected[] = []
+        let built = 0, tried = 0
+        /* passing items in listedNum order until PER_TERM are built: a detail name that fails the rules, a failed call or no variant does not use a slot; at most ENOUGH detail calls a term */
+        for (const item of items) {
+          if (built >= PER_TERM || tried >= ENOUGH) break
+          if (seen.has(item.pid)) continue
           seen.add(item.pid)
+          tried++
           let detail: Awaited<ReturnType<typeof fetchDetail>>
           try { detail = await fetchDetail(cj, item.pid); cjStreak = 0 } catch (e) { cjFail(`${item.pid} detail`, e); continue }
           if (!detail) { d.log(`${item.pid}: no usable variant, skipped`); continue }
+          const m = matchTitle(detail.name, term)
+          if (!m.ok) { detailThrown.push({ pid: item.pid, termId: term.id, name: detail.name, reason: `detail: ${m.reason}` }); continue }
           const variant = pickVariant(detail)
           const freight = {} as Record<Dest, FreightQuote | null>
           for (const dest of DESTS) freight[dest] = await fetchFreight(cj, variant.vid, dest).catch((e) => { d.log(`${item.pid} ${dest} freight: ${msg(e)}`); return null })
           const money = moneyFor(variant.priceUsd, freight.AU?.cheapest.usd ?? null, rate.usdAud, sectionMedian(d.products, term.section))
           const flags = flagsFor(`${detail.name} ${variant.name} ${item.categoryName}`, variant.weightG)
-          unranked.push({ pid: item.pid, termId: term.id, section: term.section, name: detail.name, image: detail.images[0] ?? item.image, cjUrl: detail.productUrl, listedNum: item.listedNum, cjScope: scope, variant, freight, money, flags })
+          unranked.push({ pid: item.pid, termId: term.id, section: term.section, name: detail.name, image: detail.images[0] ?? item.image, cjUrl: detail.productUrl, listedNum: item.listedNum, cjScope: scope, variant, freight, money, flags, match: m.strength })
+          built++
         }
+        thrown.push([...detailThrown, ...found.rejected])   // detail rejections first: they passed the list name and are the most telling
+        d.log(`${term.id}: ${built} built, ${found.rejected.length + detailThrown.length} thrown out by the match rules`)
       }
       candidates = rankCandidates(unranked, termScores, d.previous, today)
+      rejected = shareCap(thrown, MAX_REJECTED)
+      rejectedTotal = thrown.reduce((n, t) => n + t.length, 0)
       sources.cj = cjErrors ? `partial: ${cjErrors} CJ calls failed` : 'ok'
       cjGeneratedAt = generatedAt
     } catch (e) {
@@ -142,7 +172,7 @@ export async function runRadar(d: RunDeps): Promise<{ radar: RadarFile; trends: 
     }
   }
 
-  const radar: RadarFile = { generatedAt, cjGeneratedAt, rate, sources, terms: termScores, candidates, novelty }
+  const radar: RadarFile = { generatedAt, cjGeneratedAt, rate, sources, terms: termScores, candidates, ...(rejected ? { rejected, rejectedTotal } : {}), novelty, noveltyHidden }
   const trends: TrendsFile = { generatedAt, window: w, sources: { wikipedia: sources.wikipedia, hackernews: sources.hackernews, reddit: sources.reddit, tiwib: sources.tiwib }, products, terms: termScores }
   return { radar, trends, ok }
 }

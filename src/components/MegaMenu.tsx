@@ -5,6 +5,7 @@ import { useStore } from '../lib/store'
 import { navTarget } from '../lib/collections'
 import { ProductImage } from './ProductVisual'
 import { Tile } from './ui'
+import { signedPct } from '../lib/text'
 
 export function MegaMenu({ section, onClose }: { section: NavSection; onClose: () => void }) {
   const featured = byId(section.featured)
@@ -53,7 +54,7 @@ export function MegaMenu({ section, onClose }: { section: NavSection; onClose: (
             <div className="mt-1 line-clamp-2 text-[13px] text-ink-2">{featured.tagline}</div>
             <div className="mt-3 flex items-center gap-2">
               <span className="reading text-[13px] text-ink">{fmt(featured.price, currency, { compact: true })}</span>
-              <Tile>+{featured.trend.delta}%</Tile>
+              <Tile>{signedPct(featured.trend.delta)}</Tile>
             </div>
           </div>
         </button>
